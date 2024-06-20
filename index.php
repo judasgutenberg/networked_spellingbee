@@ -35,7 +35,7 @@ if(!$user) {
       $content .= newUserForm($errors);
     }  
     if($action != "startcreate" && $action != "create user"){
-      $content .= "<div class='info'>You can play complete games without being logged in.  But if you create an account, you can resume games on other devices.</div>";
+      $content .= "<div class='info'>You can play complete games without being logged in.  But if you create an account, you will be able to resume games on other devices, among other things.</div>";
       $content .= loginForm();
     }
 
@@ -64,6 +64,8 @@ if(!$user) {
  <div class="centered-div" id="top-div">
     <div id="login" ><?php echo $content; ?></div>
     <div id="message" ></div>
+    <div id="levellist" ></div>
+    <div id="stats" ></div>
     <div id="foundwordslabel" >Words You Have Found</div>
     <div id="config"><input onchange='updateFoundWords()' type='checkbox' id='sortAlphabetically'/>sort alphabetically</div>
     <div id="foundwords" ></div>
@@ -140,11 +142,11 @@ if(!$user) {
       $outerLetters = getValueBetween($src, '"outerLetters":[', ']');
       $answers = getValueBetween($src, '"answers":[', ']');
       $panagrams = getValueBetween($src, '"pangrams":[', ']');
-      echo "let answers = [" . $answers . "];" . PHP_EOL;
-      echo "let panagrams = [" . $panagrams . "];" . PHP_EOL;
-      echo "let centerLetter = \"" . $centerLetter . "\";" . PHP_EOL;
-      echo "let outerLetters = [" . $outerLetters . "];" . PHP_EOL;
-      echo "let letters = centerLetter + outerLetters.join(\"\") + \";\"" . PHP_EOL;
+      echo "  let answers = [" . $answers . "];" . PHP_EOL;
+      echo "  let panagrams = [" . $panagrams . "];" . PHP_EOL;
+      echo "  let centerLetter = \"" . $centerLetter . "\";" . PHP_EOL;
+      echo "  let outerLetters = [" . $outerLetters . "];" . PHP_EOL;
+      echo "  let letters = centerLetter + outerLetters.join(\"\") " . ";" .PHP_EOL;
   }
   ?>
 
