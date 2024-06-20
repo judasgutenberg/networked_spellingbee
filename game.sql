@@ -32,8 +32,23 @@ CREATE TABLE user_game(
   game_id INT,
   user_id INT,
   settings TEXT NULL,
-  created DATETIME
+  score INT NULL,
+  item_count INT NULL,
+  premium_count INT NULL,
+  created DATETIME,
+  modified DATETIME
 );
   
-  
-  
+CREATE TABLE message(
+  message_id INT AUTO_INCREMENT PRIMARY KEY,
+  source_user_id INT,
+  dest_user_id INT,
+  game_id INT NULL,
+  message TEXT NULL,
+   has_been_read TINYINT DEFAULT 0,
+  created DATETIME
+);
+ 
+
+   
+ 
