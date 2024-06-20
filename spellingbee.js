@@ -1,4 +1,4 @@
-let levelValues = {"Queen Bee": 1, "Genius": 0.7, "Amazing": 0.5, "Great": 0.4, "Nice": 0.25, "Solid": 0.15, "Good": 0.08, "Moving Up": 0.05, "Good start": 0.020, "Beginner": 0}
+let levelValues = {"Queen Bee": 1, "Genius": 0.7, "Amazing": 0.5, "Great": 0.4, "Nice": 0.25, "Solid": 0.15, "Good": 0.08, "Moving Up": 0.05, "Good start": 0.02, "Beginner": 0}
 
 function generateHexagons() {
   let hexagons = document.getElementsByClassName('hexagon');
@@ -68,19 +68,31 @@ function updateGameDatabase(){
       //set some globals
       gameId = data["game_id"];
       foundWords = data["found_words"];
+      if('other_scores' in data) {
+        let otherScores = data["other_scores"];
+        others(otherScores);
+      }
+      if('messages' in data) {
+        let messages = data["messages"];
+        showMessages(messages);
+      }
+      
       //console.log(foundWords);
       updateFoundWords();
+      //console.log(otherScores);
       recalculateScore();
       stats();
+      
     }
   }
 
   let data = {"answers": answers, "panagrams": panagrams, "centerLetter": centerLetter, "outerLetters": outerLetters};
-  let userData = {"found_words": foundWords};
+  console.log(score);
+  let userData = {"found_words": foundWords, "score": score, "premium_count": panagramsFound};
   const params = new URLSearchParams();
   params.append("auth", auth);
-  params.append("game_type_id", game_type_id);
-  params.append("game_id", game_id);
+  params.append("game_type_id", gameTypeId);
+  params.append("game_id", gameId);
   params.append("data", JSON.stringify(data));
   params.append("user_data", JSON.stringify(userData));
   params.append("action", "savegame");
@@ -108,6 +120,9 @@ function deleteLetter(letter){
 }
 
 function enterWord(){
+  if(currentWord == ""){
+    return;
+  }
   let message = "";
   let delay = 2000;
   let color = "#ffff99";
@@ -118,6 +133,7 @@ function enterWord(){
       message = "You found a panagram! +" + wordScore + " points!";
       color = '#ccffff';
       delay = 3000;
+      
     }
     else
     {
@@ -130,7 +146,7 @@ function enterWord(){
         color = '#33ff33';
       }
     }
-    
+    recalculateScore();
     updateGameDatabase();
   } else if (currentWord.length < 4 && currentWord.toLowerCase().indexOf(centerLetter) == -1) {
     message = "Your word was too short and didn't contain a '" + centerLetter + "'!"
@@ -170,9 +186,13 @@ function enterWord(){
 function recalculateScore() {
   let scoreDiv = document.getElementById("score");
   score = 0;
+  panagramsFound = 0;
   for(let word of foundWords){
     //console.log(word,wordPoints(word) );
     score += wordPoints(word);
+    if(isPanagram(word)) {
+      panagramsFound++;
+    }
   }
   if(totalScore > 0 ) {
     let fraction = score/totalScore;
@@ -201,6 +221,92 @@ function pointLevels(){
   document.getElementById("levellist").innerHTML = out;
 }
 
+function showMessages(messages) {
+  document.getElementById("communicationmessage").style.display = 'block';
+  let out = "";
+  if(messages.length > 0) {
+    for (let message of messages) {
+      messagesRead.push(message["message_id"]);
+      out += "<div class='messageheader'>" + message["email"] + " at  " + message["created"]  + ":</div>\n";
+      out += "<div class='messagetext'>" + message["message"] + "</div>\n";
+      destUserId = message["source_user_id"]; //if you use the text box, it's to the person who last sent you a message
+    }
+
+  }
+  document.getElementById("receivedmessage").innerHTML = out;
+
+}
+
+function others(otherScores){
+  let out = "<div class='header'>Others</div>\n";
+  out += "<table class='otherscorestable'>\n";
+  out += "<tr class='otherscoresheader'><th>who</th><th> score</th><th> word count</th><th>panagrams</th><th>level</th><th>last active</th><th>message</th></tr>\n";
+  console.log(otherScores, otherScores.length);
+  for (let other of otherScores) {
+    let fraction = other["score"]/totalScore;
+    let level = getLevel(fraction);
+    out += "<tr class='otherscores'><td>" + other["email"] + "</td><td> " +  other["score"] +  "</td><td>" + other["item_count"] + "</td><td>" + other["premium_count"] + "</td><td>" + level+ "</td><td>" + timeAgo(other["modified"]) + "</td><td><a href='javascript:composeMessage(" + other["user_id"] + ")'>send</a></td></tr>\n";
+  }
+  out += "</table>\n";
+  document.getElementById("others").innerHTML = out;
+}
+
+function timeAgo(sqlDateTime) {
+  const now = new Date();
+  const past = new Date(sqlDateTime);
+  const diffInSeconds = Math.floor((now - past) / 1000);
+  const seconds = diffInSeconds % 60;
+  const minutes = Math.floor(diffInSeconds / 60) % 60;
+  const hours = Math.floor(diffInSeconds / 3600) % 24;
+  const days = Math.floor(diffInSeconds / 86400);
+  if (days > 0) {
+      return days === 1 ? '1 day ago' : `${days} days ago`;
+  }
+  if (hours > 0) {
+      return hours === 1 ? '1 hour ago' : `${hours} hours ago`;
+  }
+  if (minutes > 0) {
+      return minutes === 1 ? '1 minute ago' : `${minutes} minutes ago`;
+  }
+  return seconds === 1 ? '1 second ago' : `${seconds} seconds ago`;
+}
+
+function composeMessage(destId){
+  document.getElementById("communicationmessage").style.display = 'block';
+  destUserId = destId;
+
+}
+
+function sendMessage(){
+  let messageContent = document.getElementById('sendmessage').value;
+  console.log("send");
+  if(auth == ""){
+    recalculateScore();
+    return;
+  }
+  let xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+      //console.log(xmlhttp.responseText);
+      document.getElementById("communicationmessage").style.display = 'none';
+      let data = JSON.parse(xmlhttp.responseText);
+    }
+  }
+  const params = new URLSearchParams();
+  params.append("auth", auth);
+  params.append("game_type_id", gameTypeId);
+  params.append("game_id", gameId);
+  params.append("message", messageContent);
+  params.append("messages_read", JSON.stringify(messagesRead));
+  params.append("dest_user_id", destUserId); //destUserId is a global
+  params.append("action", "sendmessage");
+  let url = "data.php"; 
+  //console.log(url);
+  xmlhttp.open("POST", url, true);
+  xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xmlhttp.send(params);
+  return false;
+}
 
 function stats(){
   let out = "<div class='header'>Your Word Counts by Beginning Letter</div>";
@@ -231,7 +337,7 @@ function updateFoundWords() {
   }
   //console.log(wordsToShow);
   for(let word of wordsToShow){
-    if(panagrams.indexOf(word.toLowerCase()) > -1) {
+    if(isPanagram(word)) {
       foundWordsDiv.innerHTML+= "<div class='panagram'>" + word + "</div>";
     } else {
       foundWordsDiv.innerHTML+= "<div>" + word + "</div>";
@@ -246,10 +352,17 @@ function wordPoints(word) {
   let points = word.length;
   if(word.length == 4) {
     points = 1;
-  } else if (panagrams.indexOf(word.toLowerCase()) > -1) {
+  } else if (isPanagram(word)) {
     points = points + 7;
   }
   return points;
+}
+
+function isPanagram(word){
+  if(panagrams.indexOf(word.toLowerCase()) > -1){
+    return true;
+  }
+  return false;
 }
 
 function backToPlay(){
