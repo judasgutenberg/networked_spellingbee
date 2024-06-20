@@ -42,10 +42,10 @@
         }
         
         .centered-div {
-            margin: 20px 0;
-            text-align: center;
-            font-size: 20px;
-            font-family: Arial, sans-serif;
+          margin: 20px 0;
+          text-align: center;
+          font-size: 20px;
+          font-family: Arial, sans-serif;
         }
 
         #login {
@@ -119,20 +119,82 @@
         #score{
           font-size:20px;
           position: absolute;
-          top: 10px;
-          left: 50px;
+          top: 5px;
+          left: 30px;
           justify-content: center;
           display: none;
         }
         #hexagon-container {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            display: block;
-            top: 100px;
-            left: 0px;
+          position: absolute;
+          width: 300px;
+          height: 300px;
+          display: block;
+          top: 100px;
+          left: 0px;
         }
-        
+        #others {
+          position: absolute;
+          width: 300px;
+          height: 300px;
+          display: block;
+          top: 680px;
+          left: 0px;
+      }
+      #communicationmessage {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        display: block;
+        top: 0px;
+        left: 550px;
+        display: none;
+        background-color: #cccccc;
+        z-index:100;
+        border: 1px solid #000000;
+        border-radius: 6px;
+      }
+      .messagetext{
+        padding-bottom: 4px;
+      }
+
+      .messageheader{
+        font-weight: bold;
+        font-size: 11px;
+        text-align:left;
+      }
+
+      #receivedmessage{
+        width: 280px;
+        height: 100px;
+        font-size: 11px;
+        text-align:left;
+        padding: 3px;
+      }
+      
+      .otherscorestable{
+        border-collapse: collapse;
+        border: 1px solid color:#cccccc;
+        width:500px;
+
+      }
+      table, th, td {
+        border: 1px solid;
+        border-collapse: collapse;
+        border: 1px solid #cccccc;
+      }
+      .otherscoresheader{
+        font-size:11px;
+        font-weight: bold;
+
+      }
+      .otherscores{
+        font-size:10px;
+
+      }
+      td.otherscores{
+        font-size:10px;
+
+      }
         .buttons{
           position: absolute;
           margin-top: 20px;
