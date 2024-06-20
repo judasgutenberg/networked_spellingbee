@@ -12,6 +12,7 @@ function generateHexagons() {
   for (let i = 0; i < 7; i++) {
       const hexagon = document.createElement('div');
       hexagon.className = 'hexagon';
+      
       let randomLetter = "";
       let random = 0;
       if(i<6) {
@@ -24,6 +25,7 @@ function generateHexagons() {
       else {
         randomLetter = centerLetter.toUpperCase();
       }
+      hexagon.id = 'hexagon-' + randomLetter;
       hexagon.innerHTML = randomLetter;
       hexagon.addEventListener('click', () => {
           clickLetter(randomLetter);
@@ -34,6 +36,9 @@ function generateHexagons() {
       hexagon.addEventListener('mouseout', () => {
           hexagon.style.backgroundColor = '#eeee99';
       });
+      hexagon.addEventListener('click', () => {
+        hexagon.style.backgroundColor = '#ff9900';
+    });
       container.appendChild(hexagon);
       hexagonLetters[randomLetter] = hexagon;
   }
@@ -54,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function updateGameDatabase(){
-  
   if(auth == ""){
     recalculateScore();
     return;
@@ -76,13 +80,11 @@ function updateGameDatabase(){
         let messages = data["messages"];
         showMessages(messages);
       }
-      
       //console.log(foundWords);
       updateFoundWords();
       //console.log(otherScores);
       recalculateScore();
       stats();
-      
     }
   }
 
@@ -274,7 +276,6 @@ function timeAgo(sqlDateTime) {
 function composeMessage(destId){
   document.getElementById("communicationmessage").style.display = 'block';
   destUserId = destId;
-
 }
 
 function sendMessage(){
@@ -387,7 +388,10 @@ function handleKeyPress(event) {
     const key = event.key;
     //console.log(key);
     if (hexagonLetters[key.toUpperCase()]) {
-        clickLetter(key.toUpperCase());
+        //clickLetter(key.toUpperCase());
+        let hexagon = document.getElementById('hexagon-' + key.toUpperCase());
+        hexagon.click();
+        setTimeout(()=>{hexagon.style.backgroundColor = '#eeee99'}, 200);
     } else if (buttonKeys[key]) {
         buttonKeys[key].click();
     }
