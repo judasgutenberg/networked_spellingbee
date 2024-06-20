@@ -6,3 +6,5 @@ This version allows you to log in and continue play on a different machine. Othe
 To get this working, you need to put all of this code on a server capable of serving PHP and connecting to a MySQL database.  Run game.sql on your MySQL server and set the values for your database in config.php.
 To see this working in the real world, go here: http://randomsprocket.com/spellingbee 
 There you can create a user or play the game without one.
+
+Note: this version uses caching, so you might encounter permission problems that will cause the page not to render. If so, liberalize the write permissions in the directory this code is served from. Or alter the path of cached file and liberalize the permissions that points to.
