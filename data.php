@@ -1,5 +1,7 @@
 <?php 
-//backend for games
+//ajax backend for games
+//june 19, 2024
+//gus mueller
 //////////////////////////////////////////////////////////////
 
 //ini_set('display_errors', 1);
