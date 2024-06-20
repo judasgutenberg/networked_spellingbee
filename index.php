@@ -29,18 +29,15 @@ if(!$user) {
     }
   }
 	if(gvfa("password", $_POST) != "") {
-		$content .= "<div class='genericformerror'>The credentials you entered have failed.</div>";
-	}
-  if (($table == "user" || !is_null($errors)) && $action == "startcreate" ) {
-    
-    $content .= newUserForm($errors);
-
-  } else if(gvfa("password", $_POST) != "") {
-   }
-  if($action != "startcreate" && $action != "create user"){
-    $content .= "<div class='info'>You can play complete games without being logged in.  But if you create an account, you can resume games on other devices.</div>";
-    $content .= loginForm();
-  }
+      $content .= "<div class='genericformerror'>The credentials you entered have failed.</div>";
+    }
+    if (($table == "user" || !is_null($errors)) && $action == "startcreate" ) {
+      $content .= newUserForm($errors);
+    }  
+    if($action != "startcreate" && $action != "create user"){
+      $content .= "<div class='info'>You can play complete games without being logged in.  But if you create an account, you can resume games on other devices.</div>";
+      $content .= loginForm();
+    }
 
 } else {
   if($user) {
@@ -98,11 +95,11 @@ if(!$user) {
 
   function getCachedContent($url, $cacheFile) {
       // Get current time and today's date at 4:00 AM
-      $current_time = time();
+      $currentTime = time();
       $earlyToday = strtotime('today 4:00 AM');
 
       // If it's already past 4:00 AM today, use that timestamp; otherwise, use 4:00 AM yesterday
-      if ($current_time < $earlyToday) {
+      if ($currentTime < $earlyToday) {
           $earlyToday = strtotime('yesterday 4:00 AM');
       }
       
