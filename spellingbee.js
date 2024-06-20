@@ -61,12 +61,12 @@ function updateGameDatabase(){
   xmlhttp.onreadystatechange = function() {
  
     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-      console.log(xmlhttp.responseText);
+      //console.log(xmlhttp.responseText);
       var data = JSON.parse(xmlhttp.responseText);
       //set some globals
       gameId = data["game_id"];
       foundWords = data["found_words"];
-      console.log(foundWords);
+      //console.log(foundWords);
       updateFoundWords();
       recalculateScore();
     }
@@ -119,7 +119,7 @@ function enterWord(){
     
     if(panagrams.indexOf(currentWord.toLowerCase()) > -1) {
       message = "You found a panagram! +" + wordScore + " points!";
-      color = '#eeeeff';
+      color = '#ccffff';
       delay = 3000;
     }
     else
@@ -217,13 +217,13 @@ function updateFoundWords() {
   let foundWordsDiv = document.getElementById("foundwords");
   let sortAlphabetically = document.getElementById("sortAlphabetically").checked;
   foundWordsDiv.innerHTML = "";
-  console.log(foundWords);
+  //console.log(foundWords);
   let wordsToShow = [...foundWords]
 
   if(sortAlphabetically) {
     wordsToShow = wordsToShow.sort();
   }
-  console.log(wordsToShow);
+  //console.log(wordsToShow);
   for(let word of wordsToShow){
     if(panagrams.indexOf(word.toLowerCase()) > -1) {
       foundWordsDiv.innerHTML+= "<div class='panagram'>" + word + "</div>";
