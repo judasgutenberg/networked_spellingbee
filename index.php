@@ -66,11 +66,22 @@ if(!$user) {
     <div id="message" ></div>
     <div id="levellist" ></div>
     <div id="stats" ></div>
+    <div id="others" ></div>
+    
     <div id="foundwordslabel" >Words You Have Found</div>
     <div id="config"><input onchange='updateFoundWords()' type='checkbox' id='sortAlphabetically'/>sort alphabetically</div>
     <div id="foundwords" ></div>
     <div id="score" style='border:1px solid #999999'></div>
     <div id="currentword"></div>
+    <div id="communicationmessage" >
+      <div id='receivedmessage' class='receivedmessage'></div>
+      <form>
+        <div>
+          <textarea id='sendmessage' style='width:280px;height:100px'></textarea>
+          <button onclick='return(sendMessage())'>send</button>
+        </div>
+      </form>
+    </div>
  </div>
 
 
@@ -89,8 +100,11 @@ if(!$user) {
   let score = 0;
   let level = "Nice Start";
   let totalScore = 0;
-  let game_id = 0;
-  let game_type_id = 1;
+  let gameId = 0;
+  let gameTypeId = 1;
+  let panagramsFound = 0;
+  let destUserId = 0;
+  let messagesRead = [];
   <?php 
   $url = "https://www.nytimes.com/puzzles/spelling-bee/";
   $src = getCachedContent($url, "cache.txt");
@@ -98,13 +112,14 @@ if(!$user) {
   function getCachedContent($url, $cacheFile) {
       // Get current time and today's date at 4:00 AM
       $currentTime = time();
-      $earlyToday = strtotime('today 4:00 AM');
-
+      $earlyToday = strtotime('today 8:00 AM');
+      
       // If it's already past 4:00 AM today, use that timestamp; otherwise, use 4:00 AM yesterday
       if ($currentTime < $earlyToday) {
-          $earlyToday = strtotime('yesterday 4:00 AM');
+          $earlyToday = strtotime('yesterday 8:00 AM');
+          //echo "$$$$$$$$$$$$$$$$$$";
       }
-      
+      //echo $earlyToday . " + " . filemtime($cacheFile)  . "*" . intval($earlyToday-filemtime($cacheFile)) ;
       // Check if cache file exists and was modified after 4:00 AM today
       if (file_exists($cacheFile) && filemtime($cacheFile) > $earlyToday) {
           // Return cached content
