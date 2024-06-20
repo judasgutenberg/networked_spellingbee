@@ -1,3 +1,5 @@
+let levelValues = {"Queen Bee": 1, "Genius": 0.7, "Amazing": 0.5, "Great": 0.4, "Nice": 0.25, "Solid": 0.15, "Good": 0.08, "Moving Up": 0.05, "Good start": 0.020, "Beginner": 0}
+
 function generateHexagons() {
   let hexagons = document.getElementsByClassName('hexagon');
   for(let hexagon of hexagons) {
@@ -42,11 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
   setupButtons();
   //hideStuff();
   updateGameDatabase();
+  
   document.addEventListener('keydown', handleKeyPress);
   for(let word of answers){
     totalScore += wordPoints(word);
   }
-  
+  pointLevels();
+
 });
 
 function updateGameDatabase(){
@@ -67,6 +71,7 @@ function updateGameDatabase(){
       //console.log(foundWords);
       updateFoundWords();
       recalculateScore();
+      stats();
     }
   }
 
@@ -153,6 +158,8 @@ function enterWord(){
   thisDiv.style.display = "none";
   messageDiv.style.backgroundColor  = color;
   backToPlay();
+  
+  stats();
   setTimeout(()=>{
     messageDiv.style.display = 'none';
     
@@ -169,29 +176,42 @@ function recalculateScore() {
   }
   if(totalScore > 0 ) {
     let fraction = score/totalScore;
-   
-    if (fraction >= 1) {
-      level = "Queen Bee";  
-    } else  if (fraction >= 0.70) {
-      level = "Genius";  
-    } else  if (fraction >= 0.50) {
-      level = "Amazing"; 
-    } else  if (fraction >= 0.40) {
-      level = "Great";  
-    } else  if (fraction >= 0.25) {
-      level = "Nice";
-    } else  if (fraction >= 0.15) {
-      level = "Solid";
-    } else  if (fraction >= 0.08) {
-      level = "Good";
-    } else  if (fraction >= 0.05) {
-      level = "Moving up";
-    } else if(fraction < 0.02) {
-        level = "Good start"
-    }
+    level = getLevel(fraction);
   }
   scoreDiv.innerHTML = "Score: " + score + " points; Level: " + level;
   scoreDiv.style.display = 'block';
+}
+
+
+function getLevel(fraction) {
+  for (const [key, value] of Object.entries(levelValues)) {
+      if (fraction >= value) {
+          return key;
+      }
+  }
+  return null; // In case no match is found, although with the provided levels, this should not happen
+}
+
+function pointLevels(){
+  let out = "<div class='header'>Point Levels</div>";
+  for (const [key, value] of Object.entries(levelValues)) {
+    let levelValue = Math.round(totalScore * value);
+    out += "<div class='level'>" + key + ": " + parseInt(levelValue) + "</div>";
+  }
+  document.getElementById("levellist").innerHTML = out;
+}
+
+
+function stats(){
+  let out = "<div class='header'>Your Word Counts by Beginning Letter</div>";
+  let sortedLetters = [...letters];
+  sortedLetters = sortedLetters.sort();
+  for (const letter of sortedLetters) {
+    let count = foundWords.filter(word => word.toLowerCase().startsWith(letter.toLowerCase())).length;
+    out += "<div class='level'>" + letter.toUpperCase() + ": " +  count + "</div>";
+  }
+  
+  document.getElementById("stats").innerHTML = out;
 }
 
 function shuffle(){
