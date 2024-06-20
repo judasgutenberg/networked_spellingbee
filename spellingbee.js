@@ -52,7 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
  
 function updateGameDatabase(){
+  
   if(auth == ""){
+    recalculateScore();
     return;
   }
   var xmlhttp = new XMLHttpRequest();
@@ -66,6 +68,7 @@ function updateGameDatabase(){
       foundWords = data["found_words"];
       console.log(foundWords);
       updateFoundWords();
+      recalculateScore();
     }
   }
 
@@ -107,55 +110,52 @@ function deleteLetter(letter){
 function enterWord(){
   let message = "";
   let delay = 2000;
+  let color = "#ffff99";
   if(answers.indexOf(currentWord.toLowerCase()) > -1 && foundWords.indexOf(currentWord.toLowerCase()) ==-1){
   
     foundWords.push(currentWord.toLowerCase()); 
-    let scoreDiv = document.getElementById("score");
+ 
     let wordScore = wordPoints(currentWord);
     
     if(panagrams.indexOf(currentWord.toLowerCase()) > -1) {
       message = "You found a panagram! +" + wordScore + " points!";
+      color = '#eeeeff';
       delay = 3000;
     }
     else
     {
-      message = "You found a word! +" + wordScore + " points!"; ;
-    }
-    score +=  wordScore;
-    
-    if(totalScore>0 ) {
-      let fraction = score/ totalScore;
-      if(fraction < 0.02) {
-        level = "Good start";
-      } else  if (fraction <= 0.05) {
-        level = "Moving up";
-      } else  if (fraction <= 0.08) {
-        level = "Good";
-      } else  if (fraction <= 0.15) {
-        level = "Solid";
-      } else  if (fraction <= 0.25) {
-        level = "Nice";
-      } else  if (fraction <= 0.40) {
-        level = "Great";   
-      } else  if (fraction <= 0.50) {
-        level = "Amazing"; 
-      } else  if (fraction <= 0.70) {
-        level = "Genius";  
-      } else  if (fraction <= 1) {
-        level = "Queen Bee";  
+      message = "You found a word! +" + wordScore + " points!"; 
+      if(wordScore >6){
+        color = '#ccffcc';
+      } else if(wordScore >4){
+        color = '#99ff99';
+
+      } else {
+
+        color = '#33ff33';
       }
+
+      
     }
-    scoreDiv.innerHTML = "Score: " + score + " points; Level: " + level;
+    
+
     console.log(foundWords);
     updateGameDatabase();
-  } else if (currentWord.toLowerCase().indexOf(centerLetter) == -1) {
-    message = "Your word must contain '" + centerLetter + "'!";
+  } else if (currentWord.length < 4 && currentWord.toLowerCase().indexOf(centerLetter) == -1) {
+    message = "Your word was too short and didn't contain a '" + centerLetter + "'!"
+    color = '#ff9999';
   } else if (currentWord.length < 4) {
     message = "Your word was too short!";
+    color = '#ff9999';
+  } else if (currentWord.toLowerCase().indexOf(centerLetter) == -1) {
+    message = "Your word must contain '" + centerLetter + "'!";
   } else if (foundWords.indexOf(currentWord.toLowerCase()) > -1) {
+    color = '#ff9999';
     message = "You already found that word!";
+    color = '#ffcc99';
   } else {
     message = "That's not a word!";
+    color = '#ff9999';
   }
   currentWord = "";
   document.getElementById("currentword").innerHTML = currentWord;
@@ -165,15 +165,50 @@ function enterWord(){
   updateFoundWords();
   let thisDiv = document.getElementById("currentword");
   thisDiv.style.display = "none";
+  messageDiv.style.backgroundColor  = color;
   backToPlay();
   setTimeout(()=>{
     messageDiv.style.display = 'none';
+    
   }, delay);
   return false;
 }
 
+function recalculateScore() {
+  let scoreDiv = document.getElementById("score");
+  score = 0;
+  for(let word of foundWords){
+    //console.log(word,wordPoints(word) );
+    score += wordPoints(word);
+  }
+  if(totalScore > 0 ) {
+    let fraction = score/totalScore;
+   
+    if (fraction >= 1) {
+      level = "Queen Bee";  
+    } else  if (fraction >= 0.70) {
+      level = "Genius";  
+    } else  if (fraction >= 0.50) {
+      level = "Amazing"; 
+    } else  if (fraction >= 0.40) {
+      level = "Great";  
+    } else  if (fraction >= 0.25) {
+      level = "Nice";
+    } else  if (fraction >= 0.15) {
+      level = "Solid";
+    } else  if (fraction >= 0.08) {
+      level = "Good";
+    } else  if (fraction >= 0.05) {
+      level = "Moving up";
+    } else if(fraction < 0.02) {
+        level = "Good start"
+    }
+  }
+  scoreDiv.innerHTML = "Score: " + score + " points; Level: " + level;
+  scoreDiv.style.display = 'block';
+}
+
 function shuffle(){
-  
   generateHexagons();
   return false;
 }
@@ -197,7 +232,7 @@ function updateFoundWords() {
     }
   }
   if(wordsToShow.length > 0) {
-    foundWordsDiv.style.display = block;
+    foundWordsDiv.style.display = "block";
   }
 }
 
