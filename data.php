@@ -71,7 +71,7 @@ if($_POST) {
 					}
 					if(!($userResult) || count($userGameRows)<1){
 						
-						$sql = "INSERT into user_game(game_id, user_id, settings, created) VALUES (" . $gameId . "," . $userId . ",'" . $userData . "','"  . $formatedDateTime . "');";
+						$sql = "INSERT into user_game(game_id, user_id, settings, created) VALUES (" . $gameId . "," . $userId . ",'" . mysqli_real_escape_string($conn, $userData) . "','"  . $formatedDateTime . "');";
 						
 						$otherResult = mysqli_query($conn, $sql);
 
@@ -81,7 +81,6 @@ if($_POST) {
 							
 							$otherResult = mysqli_query($conn, $sql);
 						}
-
 					}
 					//echo $sql;
 					$out = ["game_id"=> $row["game_id"] , "found_words" => $foundWords];
@@ -91,7 +90,7 @@ if($_POST) {
 		} 
 		if(!$foundAGame){
 			$sql = "INSERT into game(name, game_type_id, game_hash, description, settings, created, game_date) VALUES ('Spelling Bee " . $formatedDateTime . "', " . $gameTypeId . ",'" . $hash
-				. "',NULL,'" . $data . "','" . $formatedDateTime . "','" . $formatedDateTime . "')";
+				. "',NULL,'" . mysqli_real_escape_string($conn, $data) . "','" . $formatedDateTime . "','" . $formatedDateTime . "')";
 			$result = mysqli_query($conn, $sql);
 			//echo $sql;
 			$error = mysqli_error($conn);
@@ -100,11 +99,6 @@ if($_POST) {
 
 			$out = ["game_id"=> $gameId , "found_words" => []];
 		}
-
-
 	}
-
-
-
 }
 die(json_encode($out));
