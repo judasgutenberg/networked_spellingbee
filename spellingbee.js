@@ -58,8 +58,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-function updateGameDatabase(){
+function updateGameDatabase(justPoll){
   if(auth == ""){
+    //if we don't have a user, then let's store the game in the browser
+    if(foundWords.length < 1) {
+      let jsonFoundWords = localStorage.getItem("foundWords");
+      if(jsonFoundWords != ""  && jsonFoundWords != null){
+        //console.log(jsonFoundWords);
+        foundWords = JSON.parse(jsonFoundWords);
+        updateFoundWords();
+      }
+    } else {
+      localStorage.setItem("foundWords", JSON.stringify(foundWords));
+    }
     recalculateScore();
     return;
   }
@@ -70,34 +81,44 @@ function updateGameDatabase(){
       //console.log(xmlhttp.responseText);
       let data = JSON.parse(xmlhttp.responseText);
       //set some globals
-      gameId = data["game_id"];
-      foundWords = data["found_words"];
-      if('other_scores' in data) {
-        let otherScores = data["other_scores"];
-        others(otherScores);
-      }
       if('messages' in data) {
         let messages = data["messages"];
         showMessages(messages);
       }
-      //console.log(foundWords);
-      updateFoundWords();
-      //console.log(otherScores);
-      recalculateScore();
-      stats();
+      if('game_id' in data){
+        gameId = data["game_id"];
+      }
+      if('other_scores' in data) {
+        let otherScores = data["other_scores"];
+        others(otherScores);
+      }
+      if(!justPoll){
+        foundWords = data["found_words"];
+        //console.log(foundWords);
+        updateFoundWords();
+        //console.log(otherScores);
+        recalculateScore();
+        stats();
+      }
+      setTimeout(()=>{updateGameDatabase(true);},3000);//this makes the game poll the backend for messages and score changes in other games
     }
   }
-
-  let data = {"answers": answers, "panagrams": panagrams, "centerLetter": centerLetter, "outerLetters": outerLetters};
-  console.log(score);
-  let userData = {"found_words": foundWords, "score": score, "premium_count": panagramsFound};
   const params = new URLSearchParams();
+  if(!justPoll){
+    let data = {"answers": answers, "panagrams": panagrams, "centerLetter": centerLetter, "outerLetters": outerLetters};
+    let userData = {"found_words": foundWords, "score": score, "premium_count": panagramsFound};
+    params.append("data", JSON.stringify(data));
+    params.append("user_data", JSON.stringify(userData));
+  }
   params.append("auth", auth);
   params.append("game_type_id", gameTypeId);
   params.append("game_id", gameId);
-  params.append("data", JSON.stringify(data));
-  params.append("user_data", JSON.stringify(userData));
-  params.append("action", "savegame");
+  if(justPoll){
+    //console.log("polling");
+    params.append("action", "poll");
+  } else {
+    params.append("action", "savegame");
+  }
   let url = "data.php"; 
   //console.log(url);
   xmlhttp.open("POST", url, true);
@@ -233,21 +254,20 @@ function showMessages(messages) {
       out += "<div class='messagetext'>" + message["message"] + "</div>\n";
       destUserId = message["source_user_id"]; //if you use the text box, it's to the person who last sent you a message
     }
-
   }
   document.getElementById("receivedmessage").innerHTML = out;
 
 }
 
 function others(otherScores){
-  let out = "<div class='header'>Others</div>\n";
+  let out = "<div class='header'>Others Playing This Game</div>\n";
   out += "<table class='otherscorestable'>\n";
   out += "<tr class='otherscoresheader'><th>who</th><th> score</th><th> word count</th><th>panagrams</th><th>level</th><th>last active</th><th>message</th></tr>\n";
-  console.log(otherScores, otherScores.length);
+  //console.log(otherScores, otherScores.length);
   for (let other of otherScores) {
     let fraction = other["score"]/totalScore;
     let level = getLevel(fraction);
-    out += "<tr class='otherscores'><td>" + other["email"] + "</td><td> " +  other["score"] +  "</td><td>" + other["item_count"] + "</td><td>" + other["premium_count"] + "</td><td>" + level+ "</td><td>" + timeAgo(other["modified"]) + "</td><td><a href='javascript:composeMessage(" + other["user_id"] + ")'>send</a></td></tr>\n";
+    out += "<tr class='otherscores'><td>" + other["email"] + "</td><td> " +  other["score"] +  "</td><td>" + other["item_count"] + "</td><td>" + other["premium_count"] + "</td><td>" + level+ "</td><td>" + timeAgo(other["modified"]) + "</td><td><a class='basicbutton' href='javascript:composeMessage(" + other["user_id"] + ")'>send</a></td></tr>\n";
   }
   out += "</table>\n";
   document.getElementById("others").innerHTML = out;
@@ -280,7 +300,7 @@ function composeMessage(destId){
 
 function sendMessage(){
   let messageContent = document.getElementById('sendmessage').value;
-  console.log("send");
+  document.getElementById('sendmessage').value = "";
   if(auth == ""){
     recalculateScore();
     return;
@@ -305,20 +325,67 @@ function sendMessage(){
   //console.log(url);
   xmlhttp.open("POST", url, true);
   xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  xmlhttp.send(params);
+  if(messageContent != "") {
+    xmlhttp.send(params);
+  } else {
+    document.getElementById("communicationmessage").style.display = 'none';
+  }
   return false;
 }
 
 function stats(){
   let out = "<div class='header'>Your Word Counts by Beginning Letter</div>";
+  let longest = answers.reduce((longest, currentWord) => {
+    return currentWord.length > longest.length ? currentWord : longest;}, "");
+  let lengthOfLongestWord = longest.length;
   let sortedLetters = [...letters];
   sortedLetters = sortedLetters.sort();
+  let header = "<tr><td></td>";
+  let noheader = true;
   for (const letter of sortedLetters) {
-    let count = foundWords.filter(word => word.toLowerCase().startsWith(letter.toLowerCase())).length;
-    out += "<div class='level'>" + letter.toUpperCase() + ": " +  count + "</div>";
+
+    out += "<tr><td>" + letter.toUpperCase() + "</td>";
+    count = 0;
+    let total = 0;
+    for(let i=4; i<=lengthOfLongestWord; i++) {
+      if(noheader){
+        header += "<td>" + i + "</td>";
+      }
+      let count = foundWords
+        .filter(word => word.toLowerCase().startsWith(letter.toLowerCase()))
+        .filter(word => word.length === i)
+        .length;
+      out += "<td>" + count + "</td>";
+      total += count;
+    }
+    out += "<td>" + total+ "</td></tr>";
+    noheader = false;
   }
-  
-  document.getElementById("stats").innerHTML = out;
+  header += "<td>&Sigma;</td></tr>";
+  out = "<table>" + header + out + "</table>";
+  let pairs = foundWords.sort()
+    .filter(word => word.length >= 2) // Ensure words have at least 2 characters
+    .map(word => word.substring(0, 2).toUpperCase()); 
+  let uniquePairs = [...new Set(pairs)];
+
+  noheader = true;
+  let out2 = "<div class='header'>Your Word Counts by Beginning Two Letters</div><div>";
+  let oldFirstLetter = "";
+  for (const pair of uniquePairs) {
+    let firstLetter = pair[0];
+    if(oldFirstLetter!= firstLetter && oldFirstLetter != ""){
+      out2 += "</div><div>" ;
+    }
+    out2 +=  "&nbsp;" + pair.toUpperCase();
+      let count = foundWords
+        .filter(word => word.toLowerCase().startsWith(pair.toLowerCase()))
+        .length;
+      out2 += ":" + count ;
+
+      oldFirstLetter = firstLetter;
+  }
+  out2 += "</div>";
+  document.getElementById("stats").innerHTML = out + out2;
 }
 
 function shuffle(){
@@ -327,8 +394,10 @@ function shuffle(){
 }
 
 function updateFoundWords() {
-  let foundWordsDiv = document.getElementById("foundwords");
+  let foundWordsDiv = document.getElementById("foundwords2");
   let sortAlphabetically = document.getElementById("sortAlphabetically").checked;
+  foundWordsDiv.innerHTML = "";
+  foundWordsDiv = document.getElementById("foundwords1");
   foundWordsDiv.innerHTML = "";
   //console.log(foundWords);
   let wordsToShow = [...foundWords]
@@ -337,15 +406,22 @@ function updateFoundWords() {
     wordsToShow = wordsToShow.sort();
   }
   //console.log(wordsToShow);
+  let outCount = 0;
   for(let word of wordsToShow){
     if(isPanagram(word)) {
       foundWordsDiv.innerHTML+= "<div class='panagram'>" + word + "</div>";
     } else {
       foundWordsDiv.innerHTML+= "<div>" + word + "</div>";
     }
+    outCount++;
+    if(outCount > parseInt(answers.length/2)){
+      foundWordsDiv = document.getElementById("foundwords2");
+    } else {
+      foundWordsDiv = document.getElementById("foundwords1");
+    }
   }
   if(wordsToShow.length > 0) {
-    foundWordsDiv.style.display = "block";
+    //foundWordsDiv.style.display = "block";
   }
 }
 
