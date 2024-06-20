@@ -44,7 +44,7 @@ if(!$user) {
 
 } else {
   if($user) {
-    $content .= "<div class='loggedin'>You are logged in as <b>" . $user["email"] . "</b><div class='basicbutton'><a href=\"?action=logout\">logout</a></div></div>\n";
+    $content .= "<div class='loggedin'>You are logged in as <b>" . $user["email"] . "</b>   <div class='basicbutton'><a href=\"?action=logout\">logout</a></div></div>\n";
     $encryptedUser = encryptLongString($user["user_id"], $encryptionPassword);
 	}
 	else
@@ -94,7 +94,30 @@ if(!$user) {
   let game_type_id = 1;
   <?php 
   $url = "https://www.nytimes.com/puzzles/spelling-bee/";
-  $src = file_get_contents($url);
+  $src = getCachedContent($url, "cache.txt");
+
+  function getCachedContent($url, $cacheFile) {
+      // Get current time and today's date at 4:00 AM
+      $current_time = time();
+      $earlyToday = strtotime('today 4:00 AM');
+
+      // If it's already past 4:00 AM today, use that timestamp; otherwise, use 4:00 AM yesterday
+      if ($current_time < $earlyToday) {
+          $earlyToday = strtotime('yesterday 4:00 AM');
+      }
+      
+      // Check if cache file exists and was modified after 4:00 AM today
+      if (file_exists($cacheFile) && filemtime($cacheFile) > $earlyToday) {
+          // Return cached content
+          return file_get_contents($cacheFile);
+      } else {
+          // Fetch new content and update cache file
+          $content = file_get_contents($url);
+          file_put_contents($cacheFile, $content);
+ 
+          return $content;
+      }
+  }
 
   function getValueBetween($haystack, $startStr, $endStr) {
       $startPos = strpos($haystack, $startStr);
