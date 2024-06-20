@@ -28,11 +28,34 @@ if(!is_numeric($userId)){
 }
 $foundAGame = false;
 if($_POST) {
-	if($action == "savegame"){
+	if ($action == "sendmessage") {
+		$message = gvfw("message");
+		$messagesRead = json_decode(gvfw("messages_read"));
+		//var_dump($messagesRead);
+		$destUserId = gvfw("dest_user_id");
+		$sql = "INSERT INTO message (message, created, source_user_id, dest_user_id, game_id) VALUES ('" .  mysqli_real_escape_string($conn, $message) . "','" . $formatedDateTime . "'," . $userId . "," . $destUserId . "," . $gameId  .");";
+		//die($sql);
+		$result = mysqli_query($conn, $sql);
+		$error = mysqli_error($conn);
+		if(count($messagesRead) > 0){
+
+			$sql = "UPDATE message SET has_been_read = 1 WHERE message_id IN (" . implode(",", $messagesRead ) . ")  AND dest_user_id=" . intval($userId);
+			//echo $sql;
+			$result = mysqli_query($conn, $sql);
+			$error = mysqli_error($conn);
+		}
+	} else if($action == "savegame"){
 		$latestWords = [];
 		//var_dump($userData);
+		$itemCount = 0;
+		$score = 0;
 		if($userData) {
-			$latestWords = json_decode($userData, true)["found_words"];
+			$userDataObject = json_decode($userData, true);
+			$latestWords =  gvfa("found_words", $userDataObject);
+			$itemCount = count($latestWords);
+			$score = gvfa("score", $userDataObject);
+			$premiumCount = gvfa("premium_count", $userDataObject);
+			//die("score: " . $score);
 		}
 		//i distinguish individual games by taking a hash of their data
 		$sql = "SELECT * FROM game WHERE game_hash = '" . mysqli_real_escape_string($conn,$hash) . "' AND game_type_id=" . intval($gameTypeId) . ";";
@@ -61,6 +84,7 @@ if($_POST) {
 						if($userGameRows && count($userGameRows) > 0){
 							$userGameRow = $userGameRows[0];
 							$foundUserSettings = json_decode($userGameRow["settings"], true);
+							
 							if(array_key_exists("found_words", $foundUserSettings)) {
 								if(count($latestWords) > 0){
 									$foundWords = $latestWords;
@@ -72,15 +96,16 @@ if($_POST) {
 					}
 					if(!($userResult) || count($userGameRows)<1){
 						
-						$sql = "INSERT into user_game(game_id, user_id, settings, created) 
-								VALUES (" . $gameId . "," . $userId . ",'" . mysqli_real_escape_string($conn, $userData) . "','"  . $formatedDateTime . "');";
-						$otherResult = mysqli_query($conn, $sql);
+						$sql = "INSERT into user_game(game_id, user_id, settings, item_count, score, premium_count, created, modified) 
+								VALUES (" . $gameId . "," . $userId . ",'" . mysqli_real_escape_string($conn, $userData) . "'," . $itemCount . ",".  intval($score) . "," . intval($premiumCount) . ",'"  . $formatedDateTime . "','"  . $formatedDateTime . "');";
+						$otherResult = mysqli_query($conn, $sql); 
 						$error = mysqli_error($conn);
 
 					} else {
 						if(count($latestWords) > 0) {
-							$sql = "UPDATE user_game SET settings = '" . mysqli_real_escape_string($conn, $userData) . "' 
+							$sql = "UPDATE user_game SET settings = '" . mysqli_real_escape_string($conn, $userData) . "', modified ='" . $formatedDateTime . "', score = " . intval($score) . ", premium_count = " . intval($premiumCount) . ", item_count=" . intval($itemCount) . "
 									WHERE user_id=" . intval($userId) . " AND game_id= " . intval($gameId);
+							//echo $sql;
 							$otherResult = mysqli_query($conn, $sql);
 							$error = mysqli_error($conn);
 						}
@@ -101,6 +126,22 @@ if($_POST) {
 
 			$out = ["game_id"=> $gameId , "found_words" => [], "error" => $error];
 		}
+	}
+	if($gameId  && $userId) {
+		$sql = "SELECT score, item_count, premium_count, ug.user_id, email, modified FROM user_game ug JOIN user u ON ug.user_id=u.user_id WHERE game_id=" . intval($gameId) . " AND ug.user_id<>" . intval($userId);
+		//die($sql);
+		$gameResult = mysqli_query($conn, $sql);
+		$otherGameRecords = mysqli_fetch_all($gameResult, MYSQLI_ASSOC);
+		if($otherGameRecords && count($otherGameRecords)>0) {
+			$out["other_scores"] = $otherGameRecords;
+		}
+		$sql = "SELECT message_id, message, m.created, source_user_id, email FROM message m JOIN user u ON m.dest_user_id=u.user_id WHERE has_been_read = 0 AND game_id=" . intval($gameId) . " AND u.user_id=" . intval($userId);
+		//die($sql);
+		$messageResult = mysqli_query($conn, $sql);
+		$messageRecords = mysqli_fetch_all($messageResult, MYSQLI_ASSOC);
+		if($messageRecords && count($messageRecords)>0) {
+			$out["messages"] = $messageRecords;
+		}  
 	}
 }
 die(json_encode($out));
