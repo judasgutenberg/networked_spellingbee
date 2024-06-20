@@ -10,4 +10,6 @@ To see this working in the real world, go here: http://randomsprocket.com/spelli
 
 There you can create a user or play the game without one.
 
+If others are playing the same game as you are, you can see their live scores and even send them messages.  
+
 Note: this version caches data from the NYT to a file, so you might encounter permission problems that will cause the page not to render. If so, liberalize the write permissions in the directory this code is served from. Or alter the path of cached file and liberalize the permissions that points to.
