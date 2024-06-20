@@ -49,20 +49,18 @@ document.addEventListener('DOMContentLoaded', () => {
   
 });
 
-
- 
 function updateGameDatabase(){
   
   if(auth == ""){
     recalculateScore();
     return;
   }
-  var xmlhttp = new XMLHttpRequest();
+  let xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
  
     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
       //console.log(xmlhttp.responseText);
-      var data = JSON.parse(xmlhttp.responseText);
+      let data = JSON.parse(xmlhttp.responseText);
       //set some globals
       gameId = data["game_id"];
       foundWords = data["found_words"];
@@ -75,7 +73,6 @@ function updateGameDatabase(){
   let data = {"answers": answers, "panagrams": panagrams, "centerLetter": centerLetter, "outerLetters": outerLetters};
   let userData = {"found_words": foundWords};
   const params = new URLSearchParams();
-  
   params.append("auth", auth);
   params.append("game_type_id", game_type_id);
   params.append("game_id", game_id);
@@ -97,7 +94,6 @@ function clickLetter(letter){
   
 }
 
-
 function deleteLetter(letter){
   if(currentWord != "") {
     currentWord = currentWord.substring(0, currentWord.length-1);
@@ -106,17 +102,13 @@ function deleteLetter(letter){
   return false;
 }
 
-
 function enterWord(){
   let message = "";
   let delay = 2000;
   let color = "#ffff99";
   if(answers.indexOf(currentWord.toLowerCase()) > -1 && foundWords.indexOf(currentWord.toLowerCase()) ==-1){
-  
     foundWords.push(currentWord.toLowerCase()); 
- 
     let wordScore = wordPoints(currentWord);
-    
     if(panagrams.indexOf(currentWord.toLowerCase()) > -1) {
       message = "You found a panagram! +" + wordScore + " points!";
       color = '#ccffff';
@@ -129,17 +121,11 @@ function enterWord(){
         color = '#ccffcc';
       } else if(wordScore >4){
         color = '#99ff99';
-
       } else {
-
         color = '#33ff33';
       }
-
-      
     }
     
-
-    console.log(foundWords);
     updateGameDatabase();
   } else if (currentWord.length < 4 && currentWord.toLowerCase().indexOf(centerLetter) == -1) {
     message = "Your word was too short and didn't contain a '" + centerLetter + "'!"
@@ -235,7 +221,6 @@ function updateFoundWords() {
     foundWordsDiv.style.display = "block";
   }
 }
-
 
 function wordPoints(word) {
   let points = word.length;
