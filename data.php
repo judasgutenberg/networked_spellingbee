@@ -32,8 +32,8 @@ if($_POST) {
 		if($userData) {
 			$latestWords = json_decode($userData, true)["found_words"];
 		}
-		//var_dump($latestWords);
-		$sql = "SELECT * FROM game WHERE game_hash = '" . $hash . "' AND game_type_id=" . intval($gameTypeId) . ";";
+		//i distinguish individual games by taking a hash of their data
+		$sql = "SELECT * FROM game WHERE game_hash = '" . mysqli_real_escape_string($conn,$hash) . "' AND game_type_id=" . intval($gameTypeId) . ";";
 		//die($sql);
 		$result = mysqli_query($conn, $sql);
 		if($result) {
