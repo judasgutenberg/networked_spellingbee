@@ -77,11 +77,10 @@ function newUserForm($error = NULL) {
     'error' => gvfa('password2', $error)
 	   ]
 	);
-  return genericForm($formData, "create user");
+  $out = genericForm($formData, "create user");
+  $out.= "<div style='padding-top:10px'><a class='basicbutton' href='?action=login'>Go back to login</a></div>";
+  return $out;
 }
-
- 
- 
 
 function generateSubFormFromJson($parentKey, $jsonString, $template) {
   $templateArray = (array)json_decode($template);
@@ -1019,7 +1018,6 @@ function deleteLink($table, $pkName) {
   $out = "<a onclick='return confirm(\"Are you sure you want to delete this " . $table . "?\")' href='?table=" . $table . "&action=delete&" . $pkName . "=<" . $pkName . "/>&hashed_entities=<hashed_entities/>'>Delete</a>";
   return $out;
 }
-
 
 function filterStringForSqlEntities($input) {
   // Replace characters that are not letters, numbers, dashes, or underscores with an empty string
