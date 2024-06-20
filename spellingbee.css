@@ -29,12 +29,12 @@
           top: 33px;
           left: 50px;
           border: 1px solid #000000;
-          background-color: #eeffff;
           font-size: 20px;
           font-weight: bold;
           font-family: Arial, sans-serif;
           border-radius: 6px;
           display: none;
+          z-index:90;
         }
         .panagram{
           font-weight: bold;
@@ -56,6 +56,31 @@
           font-size:12px;
           z-index: 12;
         }
+        #levellist {
+          position: absolute;
+          top:150px;
+          left:550px;
+          width: 100px;
+          font-size:12px;
+          z-index: 10;
+          text-align: left;
+        }
+
+        #stats {
+          position: absolute;
+          top: 350px;
+          left:550px;
+          width: 100px;
+          font-size:12px;
+          z-index: 10;
+          text-align: left;
+        }
+
+        .header{
+          font-size:14px;
+          font-weight: bold;
+        }
+
         #foundwordslabel{
           position: absolute;
           top:0px;
@@ -66,11 +91,13 @@
           position: absolute;
           top:50px;
           left:400px;
-          width:100px;
+          width:80px;
           font-size:11px;
           justify-content: left;
           border:1px solid #999999;
           border-radius: 6px;
+          text-align: left;
+          padding: 4px;
         }
         #config{
           position: absolute;
