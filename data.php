@@ -55,14 +55,13 @@ if($_POST) {
 					$sql = "SELECT * FROM user_game WHERE user_id = " . intval($userId) . " AND game_id= " . intval($gameId);
 					//die($sql);
 					$userResult = mysqli_query($conn, $sql);
+					$error = mysqli_error($conn);
 					if($userResult) {
 						$userGameRows = mysqli_fetch_all($userResult, MYSQLI_ASSOC);
 						if($userGameRows && count($userGameRows) > 0){
 							$userGameRow = $userGameRows[0];
 							$foundUserSettings = json_decode($userGameRow["settings"], true);
 							if(array_key_exists("found_words", $foundUserSettings)) {
-	 
-
 								if(count($latestWords) > 0){
 									$foundWords = $latestWords;
 								} else {
@@ -73,20 +72,21 @@ if($_POST) {
 					}
 					if(!($userResult) || count($userGameRows)<1){
 						
-						$sql = "INSERT into user_game(game_id, user_id, settings, created) VALUES (" . $gameId . "," . $userId . ",'" . mysqli_real_escape_string($conn, $userData) . "','"  . $formatedDateTime . "');";
-						
+						$sql = "INSERT into user_game(game_id, user_id, settings, created) 
+								VALUES (" . $gameId . "," . $userId . ",'" . mysqli_real_escape_string($conn, $userData) . "','"  . $formatedDateTime . "');";
 						$otherResult = mysqli_query($conn, $sql);
+						$error = mysqli_error($conn);
 
 					} else {
 						if(count($latestWords) > 0) {
-							$sql = "UPDATE user_game SET settings = '" . $userData . "' WHERE user_id=" . intval($userId) . " AND game_id= " . intval($gameId);
-							
+							$sql = "UPDATE user_game SET settings = '" . mysqli_real_escape_string($conn, $userData) . "' 
+									WHERE user_id=" . intval($userId) . " AND game_id= " . intval($gameId);
 							$otherResult = mysqli_query($conn, $sql);
+							$error = mysqli_error($conn);
 						}
 					}
 					//echo $sql;
-					$out = ["game_id"=> $row["game_id"] , "found_words" => $foundWords];
-					
+					$out = ["game_id"=> $row["game_id"] , "found_words" => $foundWords, "error" => $error];
 				}
 			}
 		} 
@@ -99,7 +99,7 @@ if($_POST) {
 			//echo $error;
 			$gameId = mysqli_insert_id($conn);
 
-			$out = ["game_id"=> $gameId , "found_words" => []];
+			$out = ["game_id"=> $gameId , "found_words" => [], "error" => $error];
 		}
 	}
 }
