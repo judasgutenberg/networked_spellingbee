@@ -250,7 +250,7 @@ function showMessages(messages) {
   if(messages.length > 0) {
     for (let message of messages) {
       messagesRead.push(message["message_id"]);
-      out += "<div class='messageheader'>" + message["email"] + " at  " + message["created"]  + ":</div>\n";
+      out += "<div class='messageheader'>" + message["email"] + " <span class='messagetimedescription'>" + timeAgo(message["created"])  + "</span></div>\n";
       out += "<div class='messagetext'>" + message["message"] + "</div>\n";
       destUserId = message["source_user_id"]; //if you use the text box, it's to the person who last sent you a message
     }
@@ -383,7 +383,6 @@ function stats(){
     .filter(word => word.length >= 2) // Ensure words have at least 2 characters
     .map(word => word.substring(0, 2).toUpperCase()); 
   let uniquePairs = [...new Set(pairs)];
-
   noheader = true;
   let out2 = "<div class='header'>Your Word Counts by Beginning Two Letters</div><div>";
   let oldFirstLetter = "";
@@ -420,6 +419,8 @@ function updateFoundWords() {
     wordsToShow = wordsToShow.sort();
   }
   let outCount = 0;
+  let columnCount1 = 0;
+  let columnCount2 = 0;
   for(let word of wordsToShow){
     if(isPanagram(word)) {
       foundWordsDiv.innerHTML+= "<div class='panagram'>" + word + "</div>";
@@ -429,9 +430,19 @@ function updateFoundWords() {
     outCount++;
     if(outCount > parseInt(answers.length/2)){
       foundWordsDiv = document.getElementById("foundwords2");
+      columnCount2++;
     } else {
       foundWordsDiv = document.getElementById("foundwords1");
+      columnCount1++;
     }
+  }
+  if(columnCount2 == 0 ){
+    foundWordsDiv = document.getElementById("foundwords2");
+    foundWordsDiv.style.display = 'none';
+  }
+  if(columnCount1 == 0 ){
+    foundWordsDiv = document.getElementById("foundwords1");
+    foundWordsDiv.style.display = 'none';
   }
   if(wordsToShow.length > 0) {
     //foundWordsDiv.style.display = "block";
@@ -479,8 +490,10 @@ function handleKeyPress(event) {
     if (hexagonLetters[key.toUpperCase()]) {
         //clickLetter(key.toUpperCase());
         let hexagon = document.getElementById('hexagon-' + key.toUpperCase());
-        hexagon.click();
-        setTimeout(()=>{hexagon.style.backgroundColor = '#eeee99'}, 200);
+        if(allowKeyboardInput) {
+          hexagon.click();
+          setTimeout(()=>{hexagon.style.backgroundColor = '#eeee99'}, 200);
+        }
     } else if (buttonKeys[key]) {
         buttonKeys[key].click();
     }
