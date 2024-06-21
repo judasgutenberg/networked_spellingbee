@@ -70,14 +70,14 @@ if(!$user) {
     
     <div id="foundwordslabel" >Words You Have Found</div>
     <div id="config"><input onchange='updateFoundWords()' type='checkbox' id='sortAlphabetically'/>sort alphabetically</div>
-    <div id="foundwords" ></div>
+    <div id="foundwords" ><div id="foundwords1" ></div><div id="foundwords2" ></div></div>
     <div id="score" style='border:1px solid #999999'></div>
     <div id="currentword"></div>
     <div id="communicationmessage" >
       <div id='receivedmessage' class='receivedmessage'></div>
       <form>
         <div>
-          <textarea id='sendmessage' style='width:280px;height:100px'></textarea>
+          <textarea onfocus='allowKeyboardInput = 0' onblur='allowKeyboardInput = 1' id='sendmessage' style='width:280px;height:100px'></textarea>
           <button onclick='return(sendMessage())'>send</button>
         </div>
       </form>
@@ -104,6 +104,7 @@ if(!$user) {
   let gameTypeId = 1;
   let panagramsFound = 0;
   let destUserId = 0;
+  let allowKeyboardInput = 1;
   let messagesRead = [];
   <?php 
   $url = "https://www.nytimes.com/puzzles/spelling-bee/";
