@@ -428,7 +428,7 @@ function updateFoundWords() {
       foundWordsDiv.innerHTML+= "<div>" + word + "</div>";
     }
     outCount++;
-    if(outCount >= parseInt(answers.length/2)){
+    if(outCount > parseInt(answers.length/2)){
       foundWordsDiv = document.getElementById("foundwords2");
       columnCount2++;
     } else {
