@@ -342,12 +342,14 @@ function stats(){
   sortedLetters = sortedLetters.sort();
   let header = "<tr><td></td>";
   let noheader = true;
+  let columnCounts = {};
   for (const letter of sortedLetters) {
     let row = "";
     row += "<tr><td>" + letter.toUpperCase() + "</td>";
     count = 0;
     let total = 0;
     for(let i=4; i<=lengthOfLongestWord; i++) {
+
       if(noheader){
         header += "<td>" + i + "</td>";
       }
@@ -357,6 +359,11 @@ function stats(){
         .length;
         row += "<td>" + count + "</td>";
       total += count;
+      if(!columnCounts[i]){
+        columnCounts[i] =  count;
+      } else {
+        columnCounts[i] += count;
+      }
     }
     row += "<td>" + total+ "</td></tr>";
     if(total > 0){
@@ -364,9 +371,15 @@ function stats(){
     }
     noheader = false;
   }
+  out +="<tr><td>&Sigma;</td>";
+  for(let i=4; i<=lengthOfLongestWord; i++){
+    out += "<td>" + columnCounts[i] + "</td>";
+  }
+  out += "<td>" + foundWords.length + "</td></tr>"
   header += "<td>&Sigma;</td></tr>";
   out = "<table>" + header + out + "</table>";
-  let pairs = foundWords.sort()
+  let sortedWords = [...foundWords]; 
+  let pairs = sortedWords.sort()
     .filter(word => word.length >= 2) // Ensure words have at least 2 characters
     .map(word => word.substring(0, 2).toUpperCase()); 
   let uniquePairs = [...new Set(pairs)];
@@ -402,13 +415,10 @@ function updateFoundWords() {
   foundWordsDiv.innerHTML = "";
   foundWordsDiv = document.getElementById("foundwords1");
   foundWordsDiv.innerHTML = "";
-  //console.log(foundWords);
-  let wordsToShow = [...foundWords]
-
+  let wordsToShow = JSON.parse(JSON.stringify(foundWords)); 
   if(sortAlphabetically) {
     wordsToShow = wordsToShow.sort();
   }
-  //console.log(wordsToShow);
   let outCount = 0;
   for(let word of wordsToShow){
     if(isPanagram(word)) {
