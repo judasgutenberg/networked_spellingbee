@@ -343,8 +343,8 @@ function stats(){
   let header = "<tr><td></td>";
   let noheader = true;
   for (const letter of sortedLetters) {
-
-    out += "<tr><td>" + letter.toUpperCase() + "</td>";
+    let row = "";
+    row += "<tr><td>" + letter.toUpperCase() + "</td>";
     count = 0;
     let total = 0;
     for(let i=4; i<=lengthOfLongestWord; i++) {
@@ -355,10 +355,13 @@ function stats(){
         .filter(word => word.toLowerCase().startsWith(letter.toLowerCase()))
         .filter(word => word.length === i)
         .length;
-      out += "<td>" + count + "</td>";
+        row += "<td>" + count + "</td>";
       total += count;
     }
-    out += "<td>" + total+ "</td></tr>";
+    row += "<td>" + total+ "</td></tr>";
+    if(total > 0){
+      out += row;
+    }
     noheader = false;
   }
   header += "<td>&Sigma;</td></tr>";
