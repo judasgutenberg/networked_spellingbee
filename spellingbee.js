@@ -60,16 +60,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function updateGameDatabase(justPoll){
   if(auth == ""){
+    let nowDate = new Date(); 
+    let time = nowDate.getTime();
+    time = time - (time % 86400000);
     //if we don't have a user, then let's store the game in the browser
     if(foundWords.length < 1) {
-      let jsonFoundWords = localStorage.getItem("foundWords");
+      let jsonFoundWords = localStorage.getItem("foundWords" + time);
       if(jsonFoundWords != ""  && jsonFoundWords != null){
         //console.log(jsonFoundWords);
         foundWords = JSON.parse(jsonFoundWords);
         updateFoundWords();
       }
     } else {
-      localStorage.setItem("foundWords", JSON.stringify(foundWords));
+      localStorage.setItem("foundWords" + time, JSON.stringify(foundWords));
     }
     recalculateScore();
     return;
