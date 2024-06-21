@@ -422,11 +422,7 @@ function updateFoundWords() {
   let columnCount1 = 0;
   let columnCount2 = 0;
   for(let word of wordsToShow){
-    if(isPanagram(word)) {
-      foundWordsDiv.innerHTML+= "<div class='panagram'>" + word + "</div>";
-    } else {
-      foundWordsDiv.innerHTML+= "<div>" + word + "</div>";
-    }
+
     outCount++;
     if(outCount > parseInt(answers.length/2)){
       foundWordsDiv = document.getElementById("foundwords2");
@@ -434,6 +430,11 @@ function updateFoundWords() {
     } else {
       foundWordsDiv = document.getElementById("foundwords1");
       columnCount1++;
+    }
+    if(isPanagram(word)) {
+      foundWordsDiv.innerHTML+= "<div class='panagram'>" + word + "</div>";
+    } else {
+      foundWordsDiv.innerHTML+= "<div>" + word + "</div>";
     }
   }
   if(columnCount2 == 0 ){
