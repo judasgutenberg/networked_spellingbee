@@ -48,15 +48,20 @@ document.addEventListener('DOMContentLoaded', () => {
   generateHexagons();
   setupButtons();
   //hideStuff();
+  calculateTotalPossibleScore();
   updateGameDatabase();
   
   document.addEventListener('keydown', handleKeyPress);
-  for(let word of answers){
-    totalScore += wordPoints(word);
-  }
+  
   pointLevels();
 
 });
+
+function calculateTotalPossibleScore() {
+  for(let word of answers){
+    totalScore += wordPoints(word);
+  }
+}
 
 function updateGameDatabase(justPoll){
   if(auth == ""){
@@ -69,12 +74,15 @@ function updateGameDatabase(justPoll){
       if(jsonFoundWords != ""  && jsonFoundWords != null){
         //console.log(jsonFoundWords);
         foundWords = JSON.parse(jsonFoundWords);
-        updateFoundWords();
+        //updateFoundWords();
+        //recalculateScore();
       }
     } else {
       localStorage.setItem("foundWords" + time, JSON.stringify(foundWords));
     }
+    updateFoundWords();
     recalculateScore();
+    
     return;
   }
   let xmlhttp = new XMLHttpRequest();
@@ -213,6 +221,7 @@ function recalculateScore() {
   let scoreDiv = document.getElementById("score");
   score = 0;
   panagramsFound = 0;
+ 
   for(let word of foundWords){
     //console.log(word,wordPoints(word) );
     score += wordPoints(word);
@@ -220,6 +229,7 @@ function recalculateScore() {
       panagramsFound++;
     }
   }
+ 
   if(totalScore > 0 ) {
     let fraction = score/totalScore;
     level = getLevel(fraction);
@@ -412,12 +422,14 @@ function shuffle(){
 }
 
 function updateFoundWords() {
+  //it looks better if we put them in two columns
   let foundWordsDiv = document.getElementById("foundwords2");
   let sortAlphabetically = document.getElementById("sortAlphabetically").checked;
   foundWordsDiv.innerHTML = "";
   foundWordsDiv = document.getElementById("foundwords1");
   foundWordsDiv.innerHTML = "";
-  let wordsToShow = JSON.parse(JSON.stringify(foundWords)); 
+  let wordsToShow = [...foundWords];
+  
   if(sortAlphabetically) {
     wordsToShow = wordsToShow.sort();
   }
@@ -425,7 +437,7 @@ function updateFoundWords() {
   let columnCount1 = 0;
   let columnCount2 = 0;
   for(let word of wordsToShow){
-
+    //console.log(word);
     outCount++;
     if(outCount > parseInt(answers.length/2)){
       foundWordsDiv = document.getElementById("foundwords2");
@@ -440,17 +452,15 @@ function updateFoundWords() {
       foundWordsDiv.innerHTML+= "<div>" + word + "</div>";
     }
   }
-  if(columnCount2 == 0 ){
-    foundWordsDiv = document.getElementById("foundwords2");
-    foundWordsDiv.style.display = 'none';
+  for(let i=1; i<3; i++) {
+    foundWordsDiv = document.getElementById("foundwords" + i);
+    if(foundWordsDiv.children.length==0){
+      foundWordsDiv.style.display = 'none';
+    } else {
+      foundWordsDiv.style.display = 'block';
+    }
   }
-  if(columnCount1 == 0 ){
-    foundWordsDiv = document.getElementById("foundwords1");
-    foundWordsDiv.style.display = 'none';
-  }
-  if(wordsToShow.length > 0) {
-    //foundWordsDiv.style.display = "block";
-  }
+  
 }
 
 function wordPoints(word) {
