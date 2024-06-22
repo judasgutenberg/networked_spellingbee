@@ -230,7 +230,7 @@ function esotericTests(word){
       "pattern": "[^aeiou]{4,}"
       }
   ]
-  for(let test in tests) {
+  for(let test of tests) {
     let testPattern = new RegExp(test["pattern"]);
     if(testPattern.test(word.toLowerCase())){
       return test["error"];
