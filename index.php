@@ -32,10 +32,12 @@ if(!$user) {
       $content .= "<div class='genericformerror'>The credentials you entered have failed.</div>";
     }
     if (($table == "user" || !is_null($errors)) && $action == "startcreate" ) {
+
+      $content .= "<div class='header'>Creating an Account</div>";
       $content .= newUserForm($errors);
     }  
     if($action != "startcreate" && $action != "create user"){
-      $content .= "<div class='info'>You can play complete games without being logged in.  But if you create an account, you will be able to resume games on other devices, among other things.</div>";
+      $content .= "<div class='info'>You can play complete games without an account.  Creating an account gives you more features.</div>";
       $content .= loginForm();
     }
 
