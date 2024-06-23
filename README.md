@@ -5,10 +5,10 @@ This version allows you to log in and continue play on a different machine.
 
 ![alt text](spellingbee_screengrab.jpg?raw=true)
 
-To get this working, you need to put all of this code on a server capable of serving PHP and connecting to a MySQL database.  Run game.sql on your MySQL server and set the values for your database in config.php.
+To get this working, you need to put all of this code on a server capable of serving PHP and connecting to a MySQL database.  Run game.sql on your MySQL server and set the values for your database in config.php. 
 To see this working in the real world, go here: http://randomsprocket.com/spellingbee. 
 
-There you can create a user or play the game without one.  If you play without a login, it saves your game state in your browser so it can resume if the page is refreshed or you close the window and then come back.
+There you can create a user (there's no email confirmation!) or play the game without one.  If you play without creating a login, it saves your game state in your browser so it can resume if the page is refreshed or you close the window and then come back.
 
 If others are playing the same game as you are and you are both logged in, you can see their live scores and even send them messages.  
 
