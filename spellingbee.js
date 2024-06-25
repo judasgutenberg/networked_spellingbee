@@ -241,7 +241,7 @@ function esotericTests(word){
 }
 
 function randomAdjective(){
-  let words="fucking goddamn motherfucking shitty cocksucking buttfucking stupid dumbass crappy tiresome idiotic moronic fucked-up";
+  let words="fucking goddamn motherfucking";
   let wordArray = words.split(" ");
   return wordArray[parseInt(Math.random() * wordArray.length)];
 }
@@ -258,13 +258,26 @@ function recalculateScore() {
       panagramsFound++;
     }
   }
- 
+  let ordinal = 0;
   if(totalScore > 0 ) {
     let fraction = score/totalScore;
     level = getLevel(fraction);
+    ordinal = getLevelOrdinal(fraction);
   }
   scoreDiv.innerHTML = "Score: " + score + " points; Level: " + level;
   scoreDiv.style.display = 'block';
+  document.body.style.backgroundImage = "url('./bees/" + ordinal + ".jpg')";
+}
+
+function getLevelOrdinal(fraction) {
+  let out = 0;
+  for (const [key, value] of Object.entries(levelValues)) {
+      if (fraction >= value) {
+          return out;
+      }
+      out++;
+  }
+  return null; // In case no match is found, although with the provided levels, this should not happen
 }
 
 
