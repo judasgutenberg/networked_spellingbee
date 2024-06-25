@@ -131,10 +131,14 @@
         font-size:12px;
         z-index: 10;
         text-align: left;
+        background-color: #dddd99;
+        border: 1px solid  #ffffff;
+        border-radius: 6px;
       }
 
       #stats {
         position: absolute;
+        padding: 4px;
         top: 290px;
         left:550px;
         width: 100px;
@@ -157,6 +161,7 @@
         top:10px;
         left:340px;
         font-size:14px;
+        color:#ffffff;
       }
 
       #foundwords{
@@ -189,10 +194,12 @@
         padding: 4px;
         background-color: #f0f099;
       }
+
       #config{
         position: absolute;
         top:25px;
         left:340px;
+        color: #ffffff;
         font-size:12px;
       }
 
@@ -338,7 +345,6 @@
         
       }
       
-
       .hexagon:before,
       .hexagon:after {
           content: "";
