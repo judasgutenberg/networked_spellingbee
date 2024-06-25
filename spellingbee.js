@@ -31,13 +31,19 @@ function generateHexagons() {
           clickLetter(randomLetter);
       });
       hexagon.addEventListener('mouseover', () => {
-          hexagon.style.backgroundColor = '#ffff77';
+          hexagon.style.backgroundColor = '#ff9900';
+          hexagon.style.color = '#ffffff';
+          hexagon.style.fontWeight = 'bold';
       });
       hexagon.addEventListener('mouseout', () => {
           hexagon.style.backgroundColor = '#eeee99';
+          hexagon.style.color = '#000000';
+          hexagon.style.fontWeight = 'bold';
       });
       hexagon.addEventListener('click', () => {
         hexagon.style.backgroundColor = '#ff9900';
+        hexagon.style.color = '#000000';
+        hexagon.style.fontWeight = 'bold';
     });
       container.appendChild(hexagon);
       hexagonLetters[randomLetter] = hexagon;
