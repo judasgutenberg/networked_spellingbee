@@ -82,7 +82,7 @@ function updateGameDatabase(justPoll){
     }
     updateFoundWords();
     recalculateScore();
-    
+    stats();
     return;
   }
   let xmlhttp = new XMLHttpRequest();
