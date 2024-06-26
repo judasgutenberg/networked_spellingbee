@@ -565,15 +565,15 @@ function handleKeyPress(event) {
     const key = event.key;
     //console.log(key);
     if (hexagonLetters[key.toUpperCase()]) {
-        //clickLetter(key.toUpperCase());
-        
-        let hexagon = document.getElementById('hexagon-' + key.toUpperCase());
+        //clickLetter(key.toUpperCase());  
+      let hexagon = document.getElementById('hexagon-' + key.toUpperCase());
+      if(allowKeyboardInput) {
         storedBgColor = hexagon.style.backgroundColor;
         storedColor = hexagon.style.color;
-        if(allowKeyboardInput) {
-          hexagon.click();
-          setTimeout(()=>{hexagon.style.backgroundColor = storedBgColor; hexagon.style.color = storedColor}, 200);
-        }
+        allowKeyboardInput = false;
+        hexagon.click();
+        setTimeout(()=>{allowKeyboardInput = true;hexagon.style.backgroundColor = storedBgColor; hexagon.style.color = storedColor;}, 100);
+      }
     } else if (buttonKeys[key]) {
         buttonKeys[key].click();
     }
