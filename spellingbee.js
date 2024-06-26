@@ -1,4 +1,6 @@
 let levelValues = {"Queen Bee": 1, "Genius": 0.7, "Amazing": 0.5, "Great": 0.4, "Nice": 0.25, "Solid": 0.15, "Good": 0.08, "Moving Up": 0.05, "Good start": 0.02, "Beginner": 0}
+let storedColor = "#ffffff";
+let storedBgColor = "#ffffff";
 
 function generateHexagons() {
   let hexagons = document.getElementsByClassName('hexagon');
@@ -7,7 +9,6 @@ function generateHexagons() {
   }
   const container = document.getElementById('hexagon-container');
   container.innerHTML = "";
-
   let lettersUsed = [];
   for (let i = 0; i < 7; i++) {
       const hexagon = document.createElement('div');
@@ -30,19 +31,33 @@ function generateHexagons() {
       hexagon.addEventListener('click', () => {
           clickLetter(randomLetter);
       });
+      let usualBackgroundColor = '#eeee99';
+      let mouseOverBackgroundColor = '#ff9900'
+      let textColor = "#000000";
+      let mouseOverTextColor = "#ffffff";
+      if(i==6){
+        usualBackgroundColor = '#ffffff';
+        mouseOverBackgroundColor = '#ffff00'
+        textColor = "#ff6666";
+        mouseOverTextColor = "#000000";
+      }
+      hexagon.style.backgroundColor = usualBackgroundColor;
+      hexagon.style.color = textColor;
       hexagon.addEventListener('mouseover', () => {
-          hexagon.style.backgroundColor = '#ff9900';
-          hexagon.style.color = '#ffffff';
+          hexagon.style.backgroundColor = mouseOverBackgroundColor;
+          hexagon.style.color = mouseOverTextColor;
           hexagon.style.fontWeight = 'bold';
       });
       hexagon.addEventListener('mouseout', () => {
-          hexagon.style.backgroundColor = '#eeee99';
-          hexagon.style.color = '#000000';
+          hexagon.style.backgroundColor = usualBackgroundColor;
+          hexagon.style.color = textColor;
           hexagon.style.fontWeight = 'bold';
       });
       hexagon.addEventListener('click', () => {
-        hexagon.style.backgroundColor = '#ff9900';
-        hexagon.style.color = '#000000';
+        storedBgColor = hexagon.style.backgroundColor;
+        storedColor = hexagon.style.color;
+        hexagon.style.backgroundColor = mouseOverBackgroundColor;
+        hexagon.style.color = textColor;
         hexagon.style.fontWeight = 'bold';
     });
       container.appendChild(hexagon);
@@ -189,7 +204,7 @@ function enterWord(){
     recalculateScore();
     updateGameDatabase();
   } else if (message=esotericTests(currentWord)){
-    color = '#ff0000';
+    color = '#ff6633';
   } else if (currentWord.length < 4 && currentWord.toLowerCase().indexOf(centerLetter) == -1) {
     message = "Your " + randomAdjective() + " word was too " + randomAdjective() + " short and didn't contain a '" + centerLetter + "'!"
     color = '#ff9999';
@@ -247,7 +262,7 @@ function esotericTests(word){
 }
 
 function randomAdjective(){
-  let words="fucking goddamn motherfucking";
+  let words="fucking goddamn motherfucking real bona&nbsp;fide genuine";
   let wordArray = words.split(" ");
   return wordArray[parseInt(Math.random() * wordArray.length)];
 }
@@ -551,10 +566,13 @@ function handleKeyPress(event) {
     //console.log(key);
     if (hexagonLetters[key.toUpperCase()]) {
         //clickLetter(key.toUpperCase());
+        
         let hexagon = document.getElementById('hexagon-' + key.toUpperCase());
+        storedBgColor = hexagon.style.backgroundColor;
+        storedColor = hexagon.style.color;
         if(allowKeyboardInput) {
           hexagon.click();
-          setTimeout(()=>{hexagon.style.backgroundColor = '#eeee99'}, 200);
+          setTimeout(()=>{hexagon.style.backgroundColor = storedBgColor; hexagon.style.color = storedColor}, 200);
         }
     } else if (buttonKeys[key]) {
         buttonKeys[key].click();
