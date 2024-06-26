@@ -125,6 +125,7 @@
       }
       #levellist {
         position: absolute;
+        padding: 4px;
         top:120px;
         left:550px;
         width: 100px;
@@ -204,13 +205,14 @@
       }
 
       #currentword{
-        display: none;
         font-size:20px;
         position: absolute;
         top: 60px;
         left: 100px;
         justify-content: center;
-        border:1px solid #999999
+        border:1px solid #ff0000;
+        border-radius: 6px;
+        background-color: #ffee66;
         display: none;
       }
 
@@ -328,6 +330,7 @@
         top: 100px;
         left: 0px;
       }
+
       .hexagon {
         position: absolute;
         width: 110px;
@@ -342,7 +345,11 @@
         font-weight: bold;
         font-family: Arial, sans-serif;
         cursor: pointer;
-        
+        transition: box-shadow .3s;
+      }
+
+      .hexagon:hover{
+        box-shadow: #222222 0 0 0 2px, rgba(255, 255, 255, 0.8) 0 0 0 4px;
       }
       
       .hexagon:before,
@@ -372,3 +379,8 @@
       .hexagon:nth-child(5) { top: 150px; left: 30px; }
       .hexagon:nth-child(6) { top: 50px; left: 30px; }
       .hexagon:nth-child(7) { top: 100px; left: 120px; }
+
+ 
+
+ 
+      
