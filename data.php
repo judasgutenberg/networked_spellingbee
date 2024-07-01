@@ -124,7 +124,13 @@ if($_POST) {
 			//echo $error;
 			$gameId = mysqli_insert_id($conn);
 
-			$out = ["game_id"=> $gameId , "found_words" => [], "error" => $error];
+			//also need to save a user_game
+			$sql = "INSERT into user_game(game_id, user_id, settings, item_count, score, premium_count, created, modified) 
+			VALUES (" . $gameId . "," . $userId . ",'" . mysqli_real_escape_string($conn, $userData) . "'," . $itemCount . ",".  intval($score) . "," . intval($premiumCount) . ",'"  . $formatedDateTime . "','"  . $formatedDateTime . "');";
+			$otherResult = mysqli_query($conn, $sql); 
+			$error = mysqli_error($conn);
+
+			$out = ["game_id"=> $gameId , "found_words" => $latestWords, "error" => $error];
 		}
 	}
 	if($gameId  && $userId) {
