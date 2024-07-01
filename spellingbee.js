@@ -178,6 +178,7 @@ function enterWord(){
   if(currentWord == ""){
     return;
   }
+  let panagramFound = false;
   let message = "";
   let delay = 2000;
   let color = "#ffff99";
@@ -186,6 +187,9 @@ function enterWord(){
     let wordScore = wordPoints(currentWord);
     if(panagrams.indexOf(currentWord.toLowerCase()) > -1) {
       message = "You found a panagram! +" + wordScore + " points!";
+
+
+      panagramFound = true;
       color = '#ccffff';
       delay = 3000;
       
@@ -201,7 +205,7 @@ function enterWord(){
         color = '#33ff33';
       }
     }
-    recalculateScore();
+    recalculateScore(panagramFound);
     updateGameDatabase();
   } else if (message=esotericTests(currentWord)){
     color = '#ff6633';
@@ -262,12 +266,12 @@ function esotericTests(word){
 }
 
 function randomAdjective(){
-  let words="fucking goddamn motherfucking real bona&nbsp;fide genuine";
+  let words="fucking goddamn motherfucking real";
   let wordArray = words.split(" ");
   return wordArray[parseInt(Math.random() * wordArray.length)];
 }
 
-function recalculateScore() {
+function recalculateScore(panagramFound) {
   let scoreDiv = document.getElementById("score");
   score = 0;
   panagramsFound = 0;
@@ -282,8 +286,16 @@ function recalculateScore() {
   let ordinal = 0;
   if(totalScore > 0 ) {
     let fraction = score/totalScore;
+    ordinal = getLevelOrdinal(fraction); 
+    console.log(fraction, ordinal);
+    if(ordinal == 9) {
+      queenBeeParty(10);
+    }
+    if (panagramFound){
+      panagramParty(10, ordinal);
+    }
     level = getLevel(fraction);
-    ordinal = getLevelOrdinal(fraction);
+    
   }
   scoreDiv.innerHTML = "Score: " + score + " points; Level: " + level;
   scoreDiv.style.display = 'block';
@@ -291,12 +303,12 @@ function recalculateScore() {
 }
 
 function getLevelOrdinal(fraction) {
-  let out = 0;
+  let out = 9;
   for (const [key, value] of Object.entries(levelValues)) {
       if (fraction >= value) {
           return out;
       }
-      out++;
+      out--;
   }
   return null; // In case no match is found, although with the provided levels, this should not happen
 }
@@ -591,5 +603,29 @@ function setupButtons() {
   });
 }
 
+function panagramParty(timesLeft, ordinal){
+  console.log(ordinal);
+  if(timesLeft > 0){
+    document.body.style.backgroundImage = "url('./bees/" + timesLeft + ".jpg')";
+    document.body.style.backgroundColor = '#000000'
+    setTimeout(()=>{panagramParty(timesLeft -1, ordinal)}, 100);
+  } else {
 
+    document.body.style.backgroundImage = "url('./bees/" + ordinal + ".jpg')";
+  }
+}
+
+function queenBeeParty(timesLeft){
+  if(timesLeft > 0){
+    document.body.style.backgroundImage = "";
+    if(timesLeft/2 == parseInt(timesLeft/2)) {
+      document.body.style.backgroundColor = '#ff0000'
+    } else {
+      document.body.style.backgroundColor = '#000000'
+    }
+    setTimeout(()=>{queenBeeParty(timesLeft -1)}, 100);
+  } else {
+    document.body.style.backgroundImage = "url('./bees/9.jpg')";
+  }
+}
 
