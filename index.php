@@ -1,28 +1,32 @@
 <?php 
+$line = date('Y-m-d H:i:s') . " - " . $_SERVER['REMOTE_ADDR'];
+file_put_contents('visitors.log', $line . PHP_EOL, FILE_APPEND);
+if(array_key_exists('HTTP_REFERER',  $_SERVER)) {
+  $line = date('Y-m-d H:i:s') . " - " . $_SERVER['HTTP_REFERER'];
+  file_put_contents('referer.log', $line . PHP_EOL, FILE_APPEND);
+}
+
+
 include("config.php");
 include("site_functions.php");
-
 $conn = mysqli_connect($servername, $username, $password, $database);
 $user = logIn();
 $table = strtolower(filterStringForSqlEntities(gvfw('table', "device"))); 
 $errors = "";
 $content = "";
 $action = gvfw("action");
+
+
 if ($action == "login") {
 	loginUser();
 } else if ($action == "logout") {
 	logOut();
 	header("Location: ?action=login");
-	die();
 }
  
 if(!$user) {
-  //die(!$user . "+"  . $action  . "+" . intval(beginswith(strtolower($action), "create")))  ;
   if(beginswith(strtolower($action), "create")) {
-    //echo "USER CREATED";
     $errors = createUser();
-    //var_dump($errors);
-    //die("what");
     if($errors == ""){
       //die("ww");
       header("Location: ?action=login");
@@ -32,7 +36,6 @@ if(!$user) {
       $content .= "<div class='genericformerror'>The credentials you entered have failed.</div>";
     }
     if (($table == "user" || !is_null($errors)) && $action == "startcreate" ) {
-
       $content .= "<div class='header'>Creating an Account</div>";
       $content .= newUserForm($errors);
     }  
@@ -46,11 +49,6 @@ if(!$user) {
     $content .= "<div class='loggedin'>You are logged in as <b>" . $user["email"] . "</b>   <div class='basicbutton'><a href=\"?action=logout\">logout</a></div></div>\n";
     $encryptedUser = encryptLongString($user["user_id"], $encryptionPassword);
 	}
-	else
-	{
-    //$out .= "<div class='loggedin'>You are logged out.  </div>\n";
-	} 
-
 }
 ?>
 <!DOCTYPE html>
@@ -66,10 +64,11 @@ if(!$user) {
  <div class="centered-div" id="top-div">
     <div id="login" ><?php echo $content; ?></div>
     <div id="message" ></div>
+    <div id="yesterdayanswers" onclick="this.style.display='none'"></div>
+    <div id="links" ><a href='javascript:yesterday()'>yesterday's answers</a></div>
     <div id="levellist" ></div>
     <div id="stats" ></div>
     <div id="others" ></div>
-    
     <div id="foundwordslabel" >Words You Have Found</div>
     <div id="config"><input onchange='updateFoundWords()' type='checkbox' id='sortAlphabetically'/>sort alphabetically</div>
     <div id="foundwords" ><div id="foundwords1" ></div><div id="foundwords2" ></div></div>
@@ -116,11 +115,9 @@ if(!$user) {
       // Get current time and today's date at 4:00 AM
       $currentTime = time();
       $earlyToday = strtotime('today 8:00 AM');
-      
       // If it's already past 4:00 AM today, use that timestamp; otherwise, use 4:00 AM yesterday
       if ($currentTime < $earlyToday) {
           $earlyToday = strtotime('yesterday 8:00 AM');
-          //echo "$$$$$$$$$$$$$$$$$$";
       }
       //echo $earlyToday . " + " . filemtime($cacheFile)  . "*" . intval($earlyToday-filemtime($cacheFile)) ;
       // Check if cache file exists and was modified after 4:00 AM today
@@ -131,7 +128,6 @@ if(!$user) {
           // Fetch new content and update cache file
           $content = file_get_contents($url);
           file_put_contents($cacheFile, $content);
- 
           return $content;
       }
   }
