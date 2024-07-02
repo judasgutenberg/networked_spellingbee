@@ -421,6 +421,43 @@ function sendMessage(){
   return false;
 }
 
+
+function yesterday() {
+  console.log("yesterday");
+  let xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+      let yesterdayAnswers = document.getElementById('yesterdayanswers');
+      yesterdayAnswers.style.display = 'block';
+      let data = JSON.parse(xmlhttp.responseText);
+      let answers = data["answers"];
+      let foundWords =  data["found_words"];
+      yesterdayAnswers.innerHTML = "<div class='header'>Yesterday's Game</div>";
+      yesterdayAnswers.innerHTML += "<div class='header' style='text-decoration:underline'><i style='color:red'>" + data["centerLetter"]+ "</i>" + data["outerLetters"].join("") + "</div>";
+      for(let word of answers){
+        if(foundWords.indexOf(word) > -1){
+          yesterdayAnswers.innerHTML += "<div class='foundyesterday'>" + word + "</div>"; 
+        } else {
+          yesterdayAnswers.innerHTML += "<div class='notfoundyesterday'>" + word + "</div>";
+        }
+
+      }
+      console.log(data);
+    }
+  }
+  const params = new URLSearchParams();
+  params.append("auth", auth);
+  params.append("game_type_id", gameTypeId);
+  params.append("game_id", gameId -1);
+  params.append("action", "getanswers");
+  let url = "data.php"; 
+  //console.log(url);
+  xmlhttp.open("POST", url, true);
+  xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xmlhttp.send(params);
+
+}
+
 function stats(){
   let out = "<div class='header'>Your Word Counts by Beginning Letter</div>";
   let longest = answers.reduce((longest, currentWord) => {
