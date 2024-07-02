@@ -279,6 +279,7 @@
         background-color:#ffffee;
         border-radius: 5px;
         display: none;
+        border:1px solid #999999
       }
 
       #others {

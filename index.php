@@ -76,7 +76,7 @@ if(!$user) {
     <div id="foundwordslabel" >Words You Have Found</div>
     <div id="config"><input onchange='updateFoundWords()' type='checkbox' id='sortAlphabetically'/>sort alphabetically</div>
     <div id="foundwords" ><div id="foundwords1" ></div><div id="foundwords2" ></div></div>
-    <div id="score" style='border:1px solid #999999'></div>
+    <div id="score" class='score'></div>
     <div id="currentword"></div>
     <div id="communicationmessage" >
       <div id='receivedmessage' class='receivedmessage'></div>
