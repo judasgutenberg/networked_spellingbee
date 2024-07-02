@@ -65,7 +65,11 @@ if(!$user) {
     <div id="login" ><?php echo $content; ?></div>
     <div id="message" ></div>
     <div id="yesterdayanswers" onclick="this.style.display='none'"></div>
-    <div id="links" ><a href='javascript:yesterday()'>yesterday's answers</a><br/><a href='javascript:showHints()'>show hints</a></div>
+    <div id="links" >
+      <a href='javascript:yesterday()'>yesterday's answers</a><br/>
+      <a href='javascript:showHints()'>show hints</a><br/>
+      <a href='https://github.com/judasgutenberg/networked_spellingbee' target='_new'>source code</a><br/>
+  </div>
     <div id="levellist" ></div>
     <div id="stats" ></div>
     <div id="hints"  onclick="this.style.display='none'"></div>
