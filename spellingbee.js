@@ -428,7 +428,7 @@ function showHints() {
   hints.style.display = 'block';
 }
 
-function yesterday() {
+function yesterday() { //show the words you didn't get yesterday, assuming you played
   if(auth == ""){
     alert("This feature only works for logged-in users.");
     return;
@@ -451,7 +451,7 @@ function yesterday() {
         }
 
       }
-      console.log(data);
+      //console.log(data);
     }
   }
   const params = new URLSearchParams();
