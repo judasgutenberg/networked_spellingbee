@@ -112,6 +112,11 @@ if(!$user) {
   let destUserId = 0;
   let allowKeyboardInput = 1;
   let messagesRead = [];
+  let answers = [];
+  let panagrams = [];
+  let letters = [];
+  let centerLetter = "";
+  let outerLetters = [];
   <?php 
     if($user){
       echo "let auth = '" . $encryptedUser . "';". PHP_EOL;
