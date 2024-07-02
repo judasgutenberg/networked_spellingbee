@@ -64,12 +64,11 @@ if(!$user) {
  <div class="centered-div" id="top-div">
     <div id="login" ><?php echo $content; ?></div>
     <div id="message" ></div>
-    <?php
-    if($user) {?>
     <div id="yesterdayanswers" onclick="this.style.display='none'"></div>
-    <div id="links" ><a href='javascript:yesterday()'>yesterday's answers</a></div>
+    <div id="links" ><a href='javascript:yesterday()'>yesterday's answers</a><br/><a href='javascript:showHints()'>show hints</a></div>
     <div id="levellist" ></div>
     <div id="stats" ></div>
+    <div id="hints"  onclick="this.style.display='none'"></div>
     <div id="others" ></div>
     <div id="foundwordslabel" >Words You Have Found</div>
     <div id="config"><input onchange='updateFoundWords()' type='checkbox' id='sortAlphabetically'/>sort alphabetically</div>

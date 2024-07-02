@@ -74,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateGameDatabase();
   
   document.addEventListener('keydown', handleKeyPress);
+  stats(answers, "hints");
   
   pointLevels();
   updateGameDatabase(true);
@@ -104,7 +105,8 @@ function updateGameDatabase(justPoll){
     }
     updateFoundWords();
     recalculateScore();
-    stats();
+    stats(foundWords, "stats");
+    stats(answers, "hints");
     return;
   }
   let xmlhttp = new XMLHttpRequest();
@@ -131,7 +133,7 @@ function updateGameDatabase(justPoll){
         updateFoundWords();
         //console.log(otherScores);
         recalculateScore();
-        stats();
+        stats(foundWords, "stats");
       }
       setTimeout(()=>{if(justPoll){updateGameDatabase(true);}},3000);//this makes the game poll the backend for messages and score changes in other games
     }
@@ -237,7 +239,7 @@ function enterWord(){
   messageDiv.style.backgroundColor  = color;
   backToPlay();
   
-  stats();
+  stats(foundWords, "stats");
   setTimeout(()=>{
     messageDiv.style.display = 'none';
     
@@ -421,7 +423,10 @@ function sendMessage(){
   }
   return false;
 }
-
+function showHints() {
+  let hints = document.getElementById('hints');
+  hints.style.display = 'block';
+}
 
 function yesterday() {
   if(auth == ""){
@@ -462,8 +467,14 @@ function yesterday() {
 
 }
 
-function stats(){
-  let out = "<div class='header'>Your Word Counts by Beginning Letter</div>";
+function stats(wordList, div){
+  let out = "<div class='header'>";
+  if(div != "hints"){
+    out += "Your Word Counts by Beginning Letter";
+  } else {
+    out += "Word Counts by Beginning Letter";
+  }
+  out += "</div>";
   let longest = answers.reduce((longest, currentWord) => {
     return currentWord.length > longest.length ? currentWord : longest;}, "");
   let lengthOfLongestWord = longest.length;
@@ -482,7 +493,7 @@ function stats(){
       if(noheader){
         header += "<td>" + i + "</td>";
       }
-      let count = foundWords
+      let count = wordList
         .filter(word => word.toLowerCase().startsWith(letter.toLowerCase()))
         .filter(word => word.length === i)
         .length;
@@ -504,16 +515,26 @@ function stats(){
   for(let i=4; i<=lengthOfLongestWord; i++){
     out += "<td>" + columnCounts[i] + "</td>";
   }
-  out += "<td>" + foundWords.length + "</td></tr>"
+  out += "<td>" + wordList.length + "</td></tr>"
   header += "<td>&Sigma;</td></tr>";
   out = "<table>" + header + out + "</table>";
-  let sortedWords = [...foundWords]; 
+  let sortedWords = [...wordList]; 
+ 
+  console.log(sortedWords);
+ 
   let pairs = sortedWords.sort()
     .filter(word => word.length >= 2) // Ensure words have at least 2 characters
     .map(word => word.substring(0, 2).toUpperCase()); 
   let uniquePairs = [...new Set(pairs)];
   noheader = true;
-  let out2 = "<div class='header'>Your Word Counts by Beginning Two Letters</div><div>";
+  let out2 = "<div class='header'>";
+  if(div != "hints"){
+    out2 += "Your Word Counts by Beginning Two Letters";
+  } else {
+    out2 += "Word Counts by Beginning Two Letters";
+  }
+  out2 += "</div>";
+ 
   let oldFirstLetter = "";
   for (const pair of uniquePairs) {
     let firstLetter = pair[0];
@@ -521,7 +542,7 @@ function stats(){
       out2 += "</div><div>" ;
     }
     out2 +=  "&nbsp;" + pair.toUpperCase();
-      let count = foundWords
+      let count = wordList
         .filter(word => word.toLowerCase().startsWith(pair.toLowerCase()))
         .length;
       out2 += ":" + count ;
@@ -529,7 +550,7 @@ function stats(){
       oldFirstLetter = firstLetter;
   }
   out2 += "</div>";
-  document.getElementById("stats").innerHTML = out + out2;
+  document.getElementById(div).innerHTML = out + out2;
 }
 
 function shuffle(){
