@@ -5,8 +5,6 @@ if(array_key_exists('HTTP_REFERER',  $_SERVER)) {
   $line = date('Y-m-d H:i:s') . " - " . $_SERVER['HTTP_REFERER'];
   file_put_contents('referer.log', $line . PHP_EOL, FILE_APPEND);
 }
-
-
 include("config.php");
 include("site_functions.php");
 $conn = mysqli_connect($servername, $username, $password, $database);
@@ -15,7 +13,6 @@ $table = strtolower(filterStringForSqlEntities(gvfw('table', "device")));
 $errors = "";
 $content = "";
 $action = gvfw("action");
-
 
 if ($action == "login") {
 	loginUser();
@@ -62,14 +59,16 @@ if(!$user) {
 <body>
 
  <div class="centered-div" id="top-div">
-    <div id="login" ><?php echo $content; ?></div>
+    <div id="login" >
+          <?php echo $content; ?>
+    </div>
     <div id="message" ></div>
     <div id="yesterdayanswers" onclick="this.style.display='none'"></div>
     <div id="links" >
       <a href='javascript:yesterday()'>yesterday's answers</a><br/>
       <a href='javascript:showHints()'>show hints</a><br/>
       <a href='https://github.com/judasgutenberg/networked_spellingbee' target='_new'>source code</a><br/>
-  </div>
+    </div>
     <div id="levellist" ></div>
     <div id="stats" ></div>
     <div id="hints"  onclick="this.style.display='none'"></div>
@@ -89,8 +88,6 @@ if(!$user) {
       </form>
     </div>
  </div>
-
-
 <div id="hexagon-container"></div>
   <div class="centered-div" id="top-div">
   <div class='buttons'>
