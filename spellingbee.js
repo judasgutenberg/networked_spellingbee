@@ -519,9 +519,6 @@ function stats(wordList, div){
   header += "<td>&Sigma;</td></tr>";
   out = "<table>" + header + out + "</table>";
   let sortedWords = [...wordList]; 
- 
-  console.log(sortedWords);
- 
   let pairs = sortedWords.sort()
     .filter(word => word.length >= 2) // Ensure words have at least 2 characters
     .map(word => word.substring(0, 2).toUpperCase()); 
