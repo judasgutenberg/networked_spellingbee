@@ -441,13 +441,21 @@ function yesterday() { //show the words you didn't get yesterday, assuming you p
       let data = JSON.parse(xmlhttp.responseText);
       let answers = data["answers"];
       let foundWords =  data["found_words"];
+      let panagrams = data["panagrams"];
       yesterdayAnswers.innerHTML = "<div class='header'>Yesterday's Game</div>";
       yesterdayAnswers.innerHTML += "<div class='header' style='text-decoration:underline'><i style='color:red'>" + data["centerLetter"]+ "</i>" + data["outerLetters"].join("") + "</div>";
       for(let word of answers){
+        let pgIndicationBegin = "";
+        let pgIndicationEnd = "";
+        if(panagrams.indexOf(word) > -1){
+          pgIndicationBegin = "<div class='panagram'>";
+          pgIndicationEnd = "</div>";
+
+        }
         if(foundWords.indexOf(word) > -1){
-          yesterdayAnswers.innerHTML += "<div class='foundyesterday'>" + word + "</div>"; 
+          yesterdayAnswers.innerHTML += "<div class='foundyesterday'>" + pgIndicationBegin +  word +  pgIndicationEnd + "</div>"; 
         } else {
-          yesterdayAnswers.innerHTML += "<div class='notfoundyesterday'>" + word + "</div>";
+          yesterdayAnswers.innerHTML += "<div class='notfoundyesterday'>" + pgIndicationBegin +  word +  pgIndicationEnd + "</div>";
         }
 
       }

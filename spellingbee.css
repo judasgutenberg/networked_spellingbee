@@ -118,7 +118,8 @@
 
       .notfoundyesterday{
         text-decoration:none;
-        color: red;
+        font-style: italic;
+        background-color: #cccccc;
       }
 
       #yesterdayanswers
