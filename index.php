@@ -96,30 +96,11 @@ if(!$user) {
     <button data-key=" " onclick='return(shuffle())' >shuffle</button>
   </div>
 <script>
-  const hexagonLetters = {};
-  const buttonKeys = {};
-  let currentWord = "";
-  let foundWords = [];
-  let score = 0;
-  let level = "Nice Start";
-  let totalScore = 0;
-  let gameId = 0;
-  let gameTypeId = 1;
-  let panagramsFound = 0;
-  let destUserId = 0;
-  let allowKeyboardInput = 1;
-  let messagesRead = [];
-  let answers = [];
-  let panagrams = [];
-  let letters = [];
-  let centerLetter = "";
-  let outerLetters = [];
   <?php 
     if($user){
       echo "let auth = '" . $encryptedUser . "';". PHP_EOL;
     } else {
       echo "let auth = '';". PHP_EOL;
-  
     }
     ?>
 </script>
