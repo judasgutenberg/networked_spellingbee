@@ -133,7 +133,36 @@ if($_POST) {
 			$out = ["game_id"=> $gameId , "found_words" => $latestWords, "error" => $error];
 		}
 	}
-	if($gameId  && $userId) {
+	if($action == "getanswers") {
+		$sql = "SELECT * FROM game WHERE game_id = " . intval($gameId);
+		$gameResult = mysqli_query($conn, $sql);
+		$error = mysqli_error($conn);
+		$gameRecords = mysqli_fetch_all($gameResult, MYSQLI_ASSOC);
+		if($gameRecords && count($gameRecords)>0) {
+			$gameRecord = $gameRecords[0];
+			$settings = json_decode($gameRecord["settings"], true);
+			$answers = $settings["answers"];
+			$panagrams = $settings["panagrams"];
+			$centerLetter = $settings["centerLetter"];
+			$outerLetters = $settings["outerLetters"];
+		}
+		$sql = "SELECT * FROM user_game WHERE game_id = " . intval($gameId) . " AND user_id = " . intval($userId);
+		$userResult = mysqli_query($conn, $sql);
+		$error = mysqli_error($conn);
+		$userRecords = mysqli_fetch_all($userResult, MYSQLI_ASSOC);
+		if($userRecords && count($userRecords)>0) {
+			$userRecord = $userRecords[0];
+			$score = $userRecord["score"];
+			$itemCount = $userRecord["item_count"];
+			$premiumCount = $userRecord["premium_count"];
+			$userSettings = json_decode($userRecord["settings"], true);
+			$foundWords = $userSettings["found_words"];
+			$out =  ["game_id"=> $gameId , "found_words" => $foundWords, "score"=>$score, 
+				"answers"=> $answers, "panagrams"=> $panagrams, "centerLetter" => $centerLetter, "outerLetters" => $outerLetters,
+				"item_count"=>$itemCount, "premium_count"=> $premiumCount, "error" => $error
+			];
+		}
+	} else if($gameId  && $userId) {
 		$sql = "SELECT score, item_count, premium_count, ug.user_id, email, modified FROM user_game ug JOIN user u ON ug.user_id=u.user_id WHERE game_id=" . intval($gameId) . " AND ug.user_id<>" . intval($userId);
 		//die($sql);
 		$gameResult = mysqli_query($conn, $sql);
