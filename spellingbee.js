@@ -423,7 +423,10 @@ function sendMessage(){
 
 
 function yesterday() {
-  console.log("yesterday");
+  if(auth == ""){
+    alert("This feature only works for logged-in users.");
+    return;
+  }
   let xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {

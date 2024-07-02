@@ -64,6 +64,8 @@ if(!$user) {
  <div class="centered-div" id="top-div">
     <div id="login" ><?php echo $content; ?></div>
     <div id="message" ></div>
+    <?php
+    if($user) {?>
     <div id="yesterdayanswers" onclick="this.style.display='none'"></div>
     <div id="links" ><a href='javascript:yesterday()'>yesterday's answers</a></div>
     <div id="levellist" ></div>
