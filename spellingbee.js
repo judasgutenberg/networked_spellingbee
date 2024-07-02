@@ -2,6 +2,7 @@ let levelValues = {"Queen Bee": 1, "Genius": 0.7, "Amazing": 0.5, "Great": 0.4, 
 let storedColor = "#ffffff";
 let storedBgColor = "#ffffff";
 
+
 function generateHexagons() {
   let hexagons = document.getElementsByClassName('hexagon');
   for(let hexagon of hexagons) {
@@ -75,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', handleKeyPress);
   
   pointLevels();
-
+  updateGameDatabase(true);
 });
 
 function calculateTotalPossibleScore() {
@@ -132,7 +133,7 @@ function updateGameDatabase(justPoll){
         recalculateScore();
         stats();
       }
-      setTimeout(()=>{updateGameDatabase(true);},3000);//this makes the game poll the backend for messages and score changes in other games
+      setTimeout(()=>{if(justPoll){updateGameDatabase(true);}},3000);//this makes the game poll the backend for messages and score changes in other games
     }
   }
   const params = new URLSearchParams();
@@ -624,7 +625,7 @@ function handleKeyPress(event) {
         storedColor = hexagon.style.color;
         allowKeyboardInput = false;
         hexagon.click();
-        setTimeout(()=>{allowKeyboardInput = true;hexagon.style.backgroundColor = storedBgColor; hexagon.style.color = storedColor;}, 100);
+        setTimeout(()=>{allowKeyboardInput = true;hexagon.style.backgroundColor = storedBgColor; hexagon.style.color = storedColor;}, 40);
       }
     } else if (buttonKeys[key]) {
         buttonKeys[key].click();
