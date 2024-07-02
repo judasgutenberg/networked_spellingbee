@@ -112,6 +112,31 @@
         font-family: Arial, sans-serif;
       }
 
+      .foundyesterday{
+        text-decoration:line-through;
+      }
+
+      .notfoundyesterday{
+        text-decoration:none;
+        color: red;
+      }
+
+      #yesterdayanswers
+      {
+        position: absolute;
+        top:10px;
+        padding: 5px;
+        left:10px;
+        width: 150px;
+        font-size:12px;
+        z-index: 13;
+        text-align: left;
+        background-color: #ffffee;
+        border: 1px solid  #000000;
+        border-radius: 5px;
+        display: none;
+      }
+
       #login {
         position: absolute;
         top:0px;
@@ -122,6 +147,19 @@
         background-color: #ffffee;
         border: 1px solid  #000000;
         border-radius: 5px;
+      }
+      #links {
+        position: absolute;
+        padding: 4px;
+        top:80px;
+        left:550px;
+        width: 120px;
+        font-size:12px;
+        z-index: 10;
+        text-align: left;
+        background-color:#ffffc0;
+        border: 1px solid  #ffffff;
+        border-radius: 6px;
       }
       #levellist {
         position: absolute;
