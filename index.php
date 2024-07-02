@@ -113,62 +113,13 @@ if(!$user) {
   let allowKeyboardInput = 1;
   let messagesRead = [];
   <?php 
-  $url = "https://www.nytimes.com/puzzles/spelling-bee/";
-  $src = getCachedContent($url, "cache.txt");
-
-  function getCachedContent($url, $cacheFile) {
-      // Get current time and today's date at 4:00 AM
-      $currentTime = time();
-      $earlyToday = strtotime('today 8:00 AM');
-      // If it's already past 4:00 AM today, use that timestamp; otherwise, use 4:00 AM yesterday
-      if ($currentTime < $earlyToday) {
-          $earlyToday = strtotime('yesterday 8:00 AM');
-      }
-      //echo $earlyToday . " + " . filemtime($cacheFile)  . "*" . intval($earlyToday-filemtime($cacheFile)) ;
-      // Check if cache file exists and was modified after 4:00 AM today
-      if (file_exists($cacheFile) && filemtime($cacheFile) > $earlyToday) {
-          // Return cached content
-          return file_get_contents($cacheFile);
-      } else {
-          // Fetch new content and update cache file
-          $content = file_get_contents($url);
-          file_put_contents($cacheFile, $content);
-          return $content;
-      }
-  }
-
-  function getValueBetween($haystack, $startStr, $endStr) {
-      $startPos = strpos($haystack, $startStr);
-      if ($startPos !== false) {
-          $endPos = strpos($haystack, $endStr, $startPos + strlen($startStr));
-          if ($endPos !== false) {
-              return substr($haystack, $startPos + strlen($startStr), $endPos - $startPos - strlen($startStr));
-          } else {
-              return "";
-          }
-      } else {
-          return "";
-      }
-  }
-  if($user){
-    echo "let auth = '" . $encryptedUser . "';". PHP_EOL;
-  } else {
-    echo "let auth = '';". PHP_EOL;
-
-  }
-  if (strlen($src) > 0) {
-      $centerLetter = getValueBetween($src, '"centerLetter":"', '"');
-      $outerLetters = getValueBetween($src, '"outerLetters":[', ']');
-      $answers = getValueBetween($src, '"answers":[', ']');
-      $panagrams = getValueBetween($src, '"pangrams":[', ']');
-      echo "  let answers = [" . $answers . "];" . PHP_EOL;
-      echo "  let panagrams = [" . $panagrams . "];" . PHP_EOL;
-      echo "  let centerLetter = \"" . $centerLetter . "\";" . PHP_EOL;
-      echo "  let outerLetters = [" . $outerLetters . "];" . PHP_EOL;
-      echo "  let letters = centerLetter + outerLetters.join(\"\") " . ";" .PHP_EOL;
-  }
-  ?>
-
+    if($user){
+      echo "let auth = '" . $encryptedUser . "';". PHP_EOL;
+    } else {
+      echo "let auth = '';". PHP_EOL;
+  
+    }
+    ?>
 </script>
 </body>
 </html>

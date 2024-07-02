@@ -66,24 +66,64 @@ function generateHexagons() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  generateHexagons();
-  setupButtons();
-  //hideStuff();
-  calculateTotalPossibleScore();
-  updateGameDatabase();
-  
-  document.addEventListener('keydown', handleKeyPress);
-  stats(answers, "hints");
-  
-  pointLevels();
-  updateGameDatabase(true);
+document.addEventListener('DOMContentLoaded', async () => {
+  try{
+    await getGameDataFromNYT();
+    generateHexagons();
+    setupButtons();
+    //hideStuff();
+    calculateTotalPossibleScore();
+    updateGameDatabase();
+    
+    document.addEventListener('keydown', handleKeyPress);
+    stats(answers, "hints");
+    
+    pointLevels();
+    updateGameDatabase(true);
+  } catch (error){
+    console.log("oops!");
+  }
 });
 
 function calculateTotalPossibleScore() {
   for(let word of answers){
     totalScore += wordPoints(word);
   }
+}
+
+function deobfuscateWords(obfuscatedWords) {
+  return obfuscatedWords.map(word => atob(word));
+}
+
+
+function getGameDataFromNYT() {
+  return new Promise((resolve, reject) => {
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+      if (xmlhttp.readyState === XMLHttpRequest.DONE) {
+        if (xmlhttp.status === 200) {
+          let data;
+          try {
+            data = JSON.parse(xmlhttp.responseText);
+          } catch (error) {
+            return reject(error);
+          }
+          // Set the globals
+          letters = data["letters"];
+          centerLetter = data["centerLetter"][0];
+          outerLetters = data["outerLetters"];
+          panagrams = deobfuscateWords(data["panagrams"]);
+          answers = deobfuscateWords(data["answers"]);
+          resolve();  // Resolve the promise once data is set
+        } else {
+          reject(new Error(`Failed to fetch data: ${xmlhttp.statusText}`));
+        }
+      }
+    };
+    let url = "data.php";
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+  });
 }
 
 function updateGameDatabase(justPoll){
@@ -423,6 +463,7 @@ function sendMessage(){
   }
   return false;
 }
+
 function showHints() {
   let hints = document.getElementById('hints');
   hints.style.display = 'block';
