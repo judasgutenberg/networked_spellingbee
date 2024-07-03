@@ -8,8 +8,9 @@ This version allows you to log in and continue play on a different machine.
 To get this working, you need to put all of this code on a server capable of serving PHP and connecting to a MySQL database.  Run game.sql on your MySQL server and set the values for your database in config.php. 
 To see this working in the real world, go here: http://randomsprocket.com/spellingbee. 
 
-There you can create a user (there's no email confirmation!) or play the game without one.  If you play without creating a login, it saves your game state in your browser so it can resume if the page is refreshed or you close the window and then come back.
-The game even includes the state of play you've reached in the two grids on the New York Times "hints" page (and it can show those hints as well if you choose to see them), helping you quickly zero in on the traits of the words remaining (if you like to "cheat" that way).  To add some visual interest, there are large images of various bees with flowers in the background that change with every change of level while playing the game (sort of like in the classic version of Tetris).  There are also some seizure-inducing visuals when you achieve particularly notable things.
+There you can create a user (there's no email confirmation!) or play the game without one.  If you play without creating a login, it saves your game state in your browser so it can resume if the page is refreshed or you close the window and then come back.  Without a login, though, you cannot see yesterday's answers, see the state of other players' games, or send messages.
+
+The game includes the state of play you've reached in the two grids on the New York Times "hints" page (and it can show those hints as well if you choose to see them), helping you quickly zero in on the traits of the words remaining (if you like to "cheat" that way).  To add some visual interest, there are large images of various bees with flowers in the background that change with every change of level while playing the game (sort of like in the classic version of Tetris).  There are also some seizure-inducing visuals when you achieve particularly notable things.
 
 If others are playing the same game as you are and you are both logged in, you can see their live scores and even send them messages.  
 
