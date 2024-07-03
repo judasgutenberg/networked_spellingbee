@@ -755,3 +755,25 @@ function queenBeeParty(timesLeft){
   }
 }
 
+function formSubmitTasks() {
+  if(onSubmitManyToManyItems){
+    for(const item of onSubmitManyToManyItems){
+      if(document.getElementById("dest_" + item)){
+        for(const option of document.getElementById("dest_" + item).options) {
+          //values.push(option.value);
+          option.selected = true;
+          console.log(option);
+        }
+      }
+    }
+  }
+}
+
+function startWaiting(message){
+   
+}
+
+function stopWaiting(){
+   
+  
+}

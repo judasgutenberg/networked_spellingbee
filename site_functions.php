@@ -45,12 +45,12 @@ function logOut() {
  
 function loginForm() {
   $out = "";
-  $out .= "<form method='post' name='loginform' id='loginform'>\n";
+  $out .= "<div class='userform'><form method='post' name='loginform' id='loginform'>\n";
   $out .= "<strong>Login here:</strong>  email: <input name='email' type='text'>\n";
-  $out .= "password: <input name='password' type='password'>\n";
-  $out .= "<input name='action' value='login' type='submit'>\n";
-  $out .= "<div> or  <div class='basicbutton'><a href=\"?table=user&action=startcreate\">Create Account</a></div></div>\n";
-  $out .= "</form>\n";
+  $out .= "password: <input name='password' type='password' style='width:100px'>\n";
+  $out .= "<button name='action' value='login' type='submit'>login</button>\n";
+  $out .= "<div style='margin-top:6px'> or  <div class='basicbutton'><a href=\"?table=user&action=startcreate\">create account</a></div></div>\n";
+  $out .= "</form></div>\n";
   return $out;
 }
  
@@ -59,6 +59,7 @@ function newUserForm($error = NULL) {
   [
     'label' => 'email',
     'name' => 'email',
+    'width' => 100,
     'value' => gvfa("email", $_POST), 
     'error' => gvfa('email', $error)
   ],
@@ -66,6 +67,7 @@ function newUserForm($error = NULL) {
     'title' => 'password',
     'name' => 'password',
     'type' => 'password',
+    'width' => 100,
     'value' => gvfa("password", $_POST), 
     'error' => gvfa('error', $error)
   ],
@@ -73,12 +75,13 @@ function newUserForm($error = NULL) {
     'label' => 'password (again)',
     'name' => 'password2',
     'type' => 'password',
+    'width' => 100,
     'value' => gvfa("password2", $_POST),
     'error' => gvfa('password2', $error)
 	   ]
 	);
   $out = genericForm($formData, "create user");
-  $out.= "<div style='padding-top:10px'><a class='basicbutton' href='?action=login'>Go back to login</a></div>";
+  $out.= "<div style='padding-top:10px;text-align:right'><a class='basicbutton' href='?action=login'>return to login</a></div>";
   return $out;
 }
 
@@ -430,7 +433,7 @@ function genericForm($data, $submitLabel, $waitingMesasage = "Saving...") { //$d
     }
     $columnCount++;
 	}
-	$out .= "<div class='genericformelementlabel'><input name='action' id='action' value='" .  $submitLabel. "' type='submit'/></div>\n";
+	$out .= "<div class='genericformelementlabel'><input class='basicbutton' type='submit' name='action' id='action' value='" . $submitLabel . "'/></div>\n";
   $out .= "<input  name='_data' value=\"" . htmlspecialchars(json_encode($data)) . "\" type='hidden'/>";
   
 	$out .= "</div>\n";

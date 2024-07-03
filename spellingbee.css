@@ -140,6 +140,7 @@
 
       #login {
         position: absolute;
+        padding: 10px;
         top:0px;
         left:550px;
         width: 300px;
