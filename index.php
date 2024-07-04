@@ -92,9 +92,9 @@ if(!$user) {
 <div id="hexagon-container"></div>
   <div class="centered-div" id="top-div">
   <div class='buttons'>
-    <button data-key="Backspace" onclick='return(deleteLetter())' >delete</button>
-    <button data-key="Enter" onclick='return(enterWord())' >enter</button>
-    <button data-key=" " onclick='return(shuffle())' >shuffle</button>
+    <button class='largebutton' data-key="Backspace" onclick='return(deleteLetter())' >delete</button>
+    <button class='largebutton' data-key="Enter" onclick='return(enterWord())' >enter</button>
+    <button class='largebutton' data-key=" " onclick='return(shuffle())' >shuffle</button>
   </div>
 <script>
   <?php 
