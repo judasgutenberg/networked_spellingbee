@@ -399,7 +399,7 @@ function showMessages(messages) {
   if(messages.length > 0) {
     for (let message of messages) {
       messagesRead.push(message["message_id"]);
-      out += "<div class='messageheader'>" + message["email"] + " <span class='messagetimedescription'>" + timeAgo(message["created"])  + "</span></div>\n";
+      out += "<div class='messageheader'>" + message["source_email"] + " <span class='messagetimedescription'>" + timeAgo(message["created"])  + "</span></div>\n";
       out += "<div class='messagetext'>" + message["message"] + "</div>\n";
       destUserId = message["source_user_id"]; //if you use the text box, it's to the person who last sent you a message
     }

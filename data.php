@@ -173,7 +173,7 @@ if($_POST) {
 			if($otherGameRecords && count($otherGameRecords)>0) {
 				$out["other_scores"] = $otherGameRecords;
 			}
-			$sql = "SELECT message_id, message, m.created, source_user_id, email FROM message m JOIN user u ON m.dest_user_id=u.user_id WHERE has_been_read = 0 AND game_id=" . intval($gameId) . " AND u.user_id=" . intval($userId);
+			$sql = "SELECT message_id, message, m.created, m.source_user_id, u.email as dest_email, u2.email as source_email FROM message m JOIN user u ON m.dest_user_id=u.user_id JOIN user u2 ON m.source_user_id=u2.user_id WHERE has_been_read = 0 AND game_id=" . intval($gameId) . " AND dest_user_id=" . intval($userId);
 			//die($sql);
 			$messageResult = mysqli_query($conn, $sql);
 			$messageRecords = mysqli_fetch_all($messageResult, MYSQLI_ASSOC);
