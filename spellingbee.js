@@ -772,7 +772,7 @@ function formSubmitTasks() {
 
 function panagramHints() {
   let out = "";
-  out =+ "Panagrams: " + panagrams.length + ;
+  out += "Panagrams: " + panagrams.length.toString();
   let perfect = 0;
   for(panagram of panagrams){
     if(panagram.length == 7) {
