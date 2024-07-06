@@ -614,7 +614,10 @@ function stats(wordList, div){
       oldFirstLetter = firstLetter;
   }
   out2 += "</div>";
-  let panagramHintInfo = panagramHints();
+  let panagramHintInfo = ""
+  if(div == "hints"){
+    panagramHintInfo = panagramHints();
+  }
   document.getElementById(div).innerHTML = out + out2 + panagramHintInfo;
 }
 
