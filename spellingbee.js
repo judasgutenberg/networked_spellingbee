@@ -614,7 +614,8 @@ function stats(wordList, div){
       oldFirstLetter = firstLetter;
   }
   out2 += "</div>";
-  document.getElementById(div).innerHTML = out + out2;
+  let panagramHintInfo = panagramHints();
+  document.getElementById(div).innerHTML = out + out2 + panagramHintInfo;
 }
 
 function shuffle(){
@@ -767,6 +768,21 @@ function formSubmitTasks() {
       }
     }
   }
+}
+
+function panagramHints() {
+  let out = "";
+  out =+ "Panagrams: " + panagrams.length + ;
+  let perfect = 0;
+  for(panagram of panagrams){
+    if(panagram.length == 7) {
+      perfect++;
+    }
+  }
+  if(perfect > 0){
+      out += " (" + perfect + " perfect)";
+  }
+  return out;
 }
 
 function startWaiting(message){
