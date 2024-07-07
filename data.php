@@ -195,10 +195,11 @@ if($_POST) {
 			"letters" => $centerLetter . implode("", str_getcsv($outerLetters)),
 			"outerLetters" => str_getcsv($outerLetters),
 			"centerLetter" => str_getcsv($centerLetter),
-			"answers" => obfuscateWords(str_getcsv($answers)),
-			"panagrams" => obfuscateWords(str_getcsv($panagrams))
+			"answers" => str_getcsv($answers),
+			"panagrams" => str_getcsv($panagrams)
 		];
 	}
+	die(base64_encode(json_encode($out)));
 }
 die(json_encode($out));
 
@@ -206,7 +207,6 @@ function obfuscateWords($words) {
     $obfuscatedWords = array_map('base64_encode', $words);
     return $obfuscatedWords;
 }
-
 
 function getCachedContent($url, $cacheFile) {
 	// Get current time and today's date at 4:00 AM

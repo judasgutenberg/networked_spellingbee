@@ -114,6 +114,10 @@ function deobfuscateWords(obfuscatedWords) {
 }
 
 
+function deobfuscate(phrase) {
+  return atob(phrase);
+}
+
 function getGameDataFromNYT() {
   return new Promise((resolve, reject) => {
     let xmlhttp = new XMLHttpRequest();
@@ -122,7 +126,7 @@ function getGameDataFromNYT() {
         if (xmlhttp.status === 200) {
           let data;
           try {
-            data = JSON.parse(xmlhttp.responseText);
+            data = JSON.parse(deobfuscate(xmlhttp.responseText));
           } catch (error) {
             return reject(error);
           }
@@ -130,8 +134,8 @@ function getGameDataFromNYT() {
           letters = data["letters"];
           centerLetter = data["centerLetter"][0];
           outerLetters = data["outerLetters"];
-          panagrams = deobfuscateWords(data["panagrams"]);
-          answers = deobfuscateWords(data["answers"]);
+          panagrams = data["panagrams"];
+          answers = data["answers"];
           resolve();  // Resolve the promise once data is set
         } else {
           reject(new Error(`Failed to fetch data: ${xmlhttp.statusText}`));
