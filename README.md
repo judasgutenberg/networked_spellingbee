@@ -1,7 +1,7 @@
 # networked_spellingbee
 This open source Spelling Bee allows you to play the day's New York Times Spelling Bee without a New York Times account.  How is this possible?  All the information to play the game is on the "demo" page that NYT serves to people without accounts.  I take that data and spin up a game!
 
-This version allows you to log in and continue play on a different machine. 
+This version allows you to log in, see the progress of others playing the same installation of the game, and continue play on a different machine. 
 
 ![alt text](spellingbee_screengrab.jpg?raw=true)
 
