@@ -469,12 +469,21 @@ function others(otherScores){
     let fraction = other["score"]/totalScore;
     let level = getLevel(fraction);
     out += "<tr class='otherscores'><td>" + other["email"] + "</td>";
-    out += "<td> " +  other["score"] +  "</td><td>" + other["item_count"] + "</td><td>" + other["premium_count"] + "</td>";
+    out += "<td> " +  other["score"] +  "</td>";
+    out += "<td>";
+    if(totalScore/score  == 1) { //you only get this if you're a queen bee
+      out += "<a class='basicbutton' href='javascript:otherFoundWords(" + other["user_id"] + ")'>";
+    }
+    out +=  other["item_count"] 
+    if(totalScore/score  == 1) { //you only get this if you're a queen bee
+      out += "</a>";
+    }
+    out += "</td>";
+    out += "<td>" + other["premium_count"] + "</td>";
     out += "<td>" + level+ "</td><td>" + timeAgo(other["modified"]) + "</td>";
     out += "<td><a class='basicbutton' href='javascript:composeMessage(" + other["user_id"] + ")'>send</a></td>";
-    if(totalScore/score  == 1) { //you only get this if you're a queen bee
-     out += "<td><a class='basicbutton' href='javascript:otherFoundWords(" + other["user_id"] + ")'>found words</a></td>";
-    }
+    
+ 
     out += "</tr>\n";
   }
   out += "</table>\n";
