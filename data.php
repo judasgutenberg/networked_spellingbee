@@ -27,6 +27,8 @@ $hash = md5($data);
 $gameId = gvfw("game_id");
 $gameTypeId = gvfw("game_type_id");
 $foundAGame = false;
+$otherUserId = gvfw("other_user_id");
+
 if($_POST) {
 	if(!is_numeric($userId)){
 		$out = ["error"=> "Failed authentication"];
@@ -141,6 +143,7 @@ if($_POST) {
 			$gameResult = mysqli_query($conn, $sql);
 			$error = mysqli_error($conn);
 			$gameRecords = mysqli_fetch_all($gameResult, MYSQLI_ASSOC);
+			$email = "unknownuser";
 			if($gameRecords && count($gameRecords)>0) {
 				$gameRecord = $gameRecords[0];
 				$settings = json_decode($gameRecord["settings"], true);
@@ -149,7 +152,22 @@ if($_POST) {
 				$centerLetter = $settings["centerLetter"];
 				$outerLetters = $settings["outerLetters"];
 			}
-			$sql = "SELECT * FROM user_game WHERE game_id = " . intval($gameId) . " AND user_id = " . intval($userId);
+			if($otherUserId > 0) {
+        $sql = "SELECT * FROM user WHERE  user_id = " . intval($otherUserId);
+        $userResult = mysqli_query($conn, $sql);
+        $error = mysqli_error($conn);
+        $userRecords = mysqli_fetch_all($userResult, MYSQLI_ASSOC);
+        if($userRecords && count($userRecords)>0) {
+          $userRecord = $userRecords[0];
+          $email = $userRecord ["email"];
+				}
+        
+        $sql = "SELECT * FROM user_game WHERE game_id = " . intval($gameId) . " AND user_id = " . intval($otherUserId);
+        
+			} else {
+        $sql = "SELECT * FROM user_game WHERE game_id = " . intval($gameId) . " AND user_id = " . intval($userId);
+			}
+			
 			$userResult = mysqli_query($conn, $sql);
 			$error = mysqli_error($conn);
 			$userRecords = mysqli_fetch_all($userResult, MYSQLI_ASSOC);
@@ -160,7 +178,7 @@ if($_POST) {
 				$premiumCount = $userRecord["premium_count"];
 				$userSettings = json_decode($userRecord["settings"], true);
 				$foundWords = $userSettings["found_words"];
-				$out =  ["game_id"=> $gameId , "found_words" => $foundWords, "score"=>$score, 
+				$out =  ["email" => $email, "game_id"=> $gameId , "found_words" => $foundWords, "score"=>$score, 
 					"answers"=> $answers, "panagrams"=> $panagrams, "centerLetter" => $centerLetter, "outerLetters" => $outerLetters,
 					"item_count"=>$itemCount, "premium_count"=> $premiumCount, "error" => $error
 				];

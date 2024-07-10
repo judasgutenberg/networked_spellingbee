@@ -412,6 +412,54 @@ function showMessages(messages) {
 
 }
 
+function otherFoundWords(userId) {
+  if(auth == ""){
+    alert("This feature only works for logged-in users.");
+    return;
+  }
+  let xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange = function() {
+  if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+    let yesterdayAnswers = document.getElementById('yesterdayanswers');
+    yesterdayAnswers.style.display = 'block';
+    let data = JSON.parse(xmlhttp.responseText);
+    let answers = data["answers"];
+    let foundWords =  data["found_words"];
+    let panagrams = data["panagrams"];
+    yesterdayAnswers.innerHTML = "<div class='header'>"  + data["email"]; + "'s Game</div>";
+    yesterdayAnswers.innerHTML += "<div class='header' style='text-decoration:underline'><i style='color:red'>" + data["centerLetter"]+ "</i>" + data["outerLetters"].join("") + "</div>";
+    for(let word of answers){
+      let pgIndicationBegin = "";
+      let pgIndicationEnd = "";
+      if(panagrams.indexOf(word) > -1){
+        pgIndicationBegin = "<div class='panagram'>";
+        pgIndicationEnd = "</div>";
+
+      }
+      if(foundWords.indexOf(word) > -1){
+        yesterdayAnswers.innerHTML += "<div class='foundyesterday'>" + pgIndicationBegin +  word +  pgIndicationEnd + "</div>"; 
+      } else {
+        yesterdayAnswers.innerHTML += "<div class='notfoundyesterday'>" + pgIndicationBegin +  word +  pgIndicationEnd + "</div>";
+      }
+
+    }
+    //console.log(data);
+  }
+
+}
+  const params = new URLSearchParams();
+  params.append("auth", auth);
+  params.append("other_user_id", userId);
+  params.append("game_type_id", gameTypeId);
+  params.append("game_id", gameId);
+  params.append("action", "getanswers");
+  let url = "data.php"; 
+  //console.log(url);
+  xmlhttp.open("POST", url, true);
+  xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xmlhttp.send(params);
+}
+
 function others(otherScores){
   let out = "<div class='header'>Others Playing This Game</div>\n";
   out += "<table class='otherscorestable'>\n";
@@ -420,7 +468,14 @@ function others(otherScores){
   for (let other of otherScores) {
     let fraction = other["score"]/totalScore;
     let level = getLevel(fraction);
-    out += "<tr class='otherscores'><td>" + other["email"] + "</td><td> " +  other["score"] +  "</td><td>" + other["item_count"] + "</td><td>" + other["premium_count"] + "</td><td>" + level+ "</td><td>" + timeAgo(other["modified"]) + "</td><td><a class='basicbutton' href='javascript:composeMessage(" + other["user_id"] + ")'>send</a></td></tr>\n";
+    out += "<tr class='otherscores'><td>" + other["email"] + "</td>";
+    out += "<td> " +  other["score"] +  "</td><td>" + other["item_count"] + "</td><td>" + other["premium_count"] + "</td>";
+    out += "<td>" + level+ "</td><td>" + timeAgo(other["modified"]) + "</td>";
+    out += "<td><a class='basicbutton' href='javascript:composeMessage(" + other["user_id"] + ")'>send</a></td>";
+    if(totalScore/score  == 1) { //you only get this if you're a queen bee
+     out += "<td><a class='basicbutton' href='javascript:otherFoundWords(" + other["user_id"] + ")'>found words</a></td>";
+    }
+    out += "</tr>\n";
   }
   out += "</table>\n";
   document.getElementById("others").innerHTML = out;
