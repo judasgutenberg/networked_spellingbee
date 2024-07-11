@@ -774,18 +774,20 @@ function hideStuff() {
 function handleKeyPress(event) {
     const key = event.key;
     //console.log(key);
-    if (hexagonLetters[key.toUpperCase()]) {
-        //clickLetter(key.toUpperCase());  
-      let hexagon = document.getElementById('hexagon-' + key.toUpperCase());
-      if(allowKeyboardInput) {
-        storedBgColor = hexagon.style.backgroundColor;
-        storedColor = hexagon.style.color;
-        allowKeyboardInput = false;
-        hexagon.click();
-        setTimeout(()=>{allowKeyboardInput = true;hexagon.style.backgroundColor = storedBgColor; hexagon.style.color = storedColor;}, 40);
+    if(key) {
+      if (hexagonLetters[key.toUpperCase()]) {
+          //clickLetter(key.toUpperCase());  
+        let hexagon = document.getElementById('hexagon-' + key.toUpperCase());
+        if(allowKeyboardInput) {
+          storedBgColor = hexagon.style.backgroundColor;
+          storedColor = hexagon.style.color;
+          allowKeyboardInput = false;
+          hexagon.click();
+          setTimeout(()=>{allowKeyboardInput = true;hexagon.style.backgroundColor = storedBgColor; hexagon.style.color = storedColor;}, 40);
+        }
+      } else if (buttonKeys[key]) {
+          buttonKeys[key].click();
       }
-    } else if (buttonKeys[key]) {
-        buttonKeys[key].click();
     }
 }
 
