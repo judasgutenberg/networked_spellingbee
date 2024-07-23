@@ -30,6 +30,26 @@ $foundAGame = false;
 $otherUserId = gvfw("other_user_id");
 
 if($_POST) {
+	if ($action == "logplay") {
+		if(!is_numeric($userId)){
+			$userId = 0;
+		}
+		$optionText = gvfw("option_text");
+		$optionId = gvfw("option_id");
+		if(!$optionId) {
+			$optionId = "NULL";
+		}
+		if(!$optionText) {
+			$optionText = "NULL";
+		} else {
+			$optionText = "'" . str_replace("'","", $optionText) . "'";
+		}
+		$wasValid = gvfw("was_valid");
+		$sql = "INSERT INTO play_log(user_id, game_id, option_text, option_id, was_valid, recorded) VALUES(" . intval($userId) . "," . $gameId . "," .  $optionText . "," .$optionId . "," . $wasValid . ",'" . $formatedDateTime . "')";
+		$result = mysqli_query($conn, $sql);
+		$error = mysqli_error($conn);
+		$out["error"] = $error;
+	}
 	if(!is_numeric($userId)){
 		$out = ["error"=> "Failed authentication"];
 	} else {

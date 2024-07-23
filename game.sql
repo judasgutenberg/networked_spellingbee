@@ -50,5 +50,16 @@ CREATE TABLE message(
 );
  
 
+ CREATE TABLE play_log(
+  play_log_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  game_id INT,
+  option_text VARCHAR(50) NULL,
+  option_id INT NULL,
+  was_valid TINYINT DEFAULT 0,
+  recorded DATETIME
+);
+ 
+ 
    
  

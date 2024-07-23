@@ -148,6 +148,35 @@ function getGameDataFromNYT() {
   });
 }
 
+function logPlay(wasValid){
+  let xmlhttp = new XMLHttpRequest();
+  // Check if the browser is online before making the request
+  if (!navigator.onLine) {
+    console.warn("No internet connection for word logging. Update aborted.");
+    return;
+  }
+  const params = new URLSearchParams();
+ 
+  params.append("auth", auth);
+  params.append("game_type_id", gameTypeId);
+  params.append("game_id", gameId);
+  params.append("option_text", currentWord);
+  if(wasValid) {
+    params.append("was_valid", 1);
+  } else {
+    params.append("was_valid", 0);
+  }
+  
+  params.append("action", "logplay");
+ 
+  let url = "data.php"; 
+  //console.log(url);
+  xmlhttp.open("POST", url, true);
+  xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xmlhttp.send(params);
+}
+
+
 function updateGameDatabase(justPoll){
   if(auth == ""){
     let nowDate = new Date(); 
@@ -251,6 +280,7 @@ function enterWord(){
   if(currentWord == ""){
     return;
   }
+  
   let panagramFound = false;
   let message = "";
   let delay = 2000;
@@ -280,23 +310,30 @@ function enterWord(){
     }
     recalculateScore(panagramFound);
     updateGameDatabase();
+    logPlay(true);
   } else if (message=esotericTests(currentWord)){
     color = '#ff6633';
+    logPlay(false);
   } else if (currentWord.length < 4 && currentWord.toLowerCase().indexOf(centerLetter) == -1) {
     message = "Your " + randomAdjective() + " word was too " + randomAdjective() + " short and didn't contain a '" + centerLetter + "'!"
     color = '#ff9999';
+    logPlay(false);
   } else if (currentWord.length < 4) {
     message = "Your " + randomAdjective() + " word was too short!";
     color = '#ff9999';
+    logPlay(false);
   } else if (currentWord.toLowerCase().indexOf(centerLetter) == -1) {
     message = "Your word must contain '" + centerLetter + "'!";
-  } else if (foundWords.indexOf(currentWord.toLowerCase()) > -1) {
     color = '#ff9999';
+    logPlay(false);
+  } else if (foundWords.indexOf(currentWord.toLowerCase()) > -1) {
     message = "You already found that " + randomAdjective() + " word!";
     color = '#ffcc99';
+    logPlay(false);
   } else {
     message = "That's not a " + randomAdjective() + " word!";
     color = '#ff9999';
+    logPlay(false)
   }
   currentWord = "";
   document.getElementById("currentword").innerHTML = currentWord;
