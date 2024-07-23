@@ -171,6 +171,14 @@ function updateGameDatabase(justPoll){
     stats(answers, "hints");
     return;
   }
+
+  // Check if the browser is online before making the request
+  if (!navigator.onLine) {
+    console.warn("No internet connection. Update aborted.");
+    return;
+  }
+
+
   let xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
  
