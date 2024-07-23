@@ -154,7 +154,7 @@
         position: absolute;
         padding: 4px;
         top:120px;
-        left:690px;
+        left:710px;
         width: 120px;
         font-size:12px;
         z-index: 10;
@@ -168,7 +168,7 @@
         padding: 4px;
         top:120px;
         left:550px;
-        width: 120px;
+        width: 140px;
         font-size:12px;
         z-index: 10;
         text-align: left;
@@ -182,7 +182,7 @@
         padding: 4px;
         top: 300px;
         left:550px;
-        width: 120px;
+        width: 140px;
         font-size:12px;
         z-index: 10;
         text-align: left;
@@ -195,7 +195,7 @@
         position: absolute;
         padding: 4px;
         top: 300px;
-        left:690px;
+        left:710px;
         width: 200px;
         font-size:12px;
         z-index: 10;
