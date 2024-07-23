@@ -35,17 +35,17 @@ if($_POST) {
 			$userId = 0;
 		}
 		$optionText = gvfw("option_text");
-		$optionId = gvfw("option_id");
+		$optionId = intval(gvfw("option_id"));
 		if(!$optionId) {
 			$optionId = "NULL";
 		}
 		if(!$optionText) {
 			$optionText = "NULL";
 		} else {
-			$optionText = "'" . str_replace("'","", $optionText) . "'";
+			$optionText = "'" . mysqli_real_escape_string($conn,  $optionText) . "'";
 		}
 		$wasValid = gvfw("was_valid");
-		$sql = "INSERT INTO play_log(user_id, game_id, option_text, option_id, was_valid, recorded) VALUES(" . intval($userId) . "," . $gameId . "," .  $optionText . "," .$optionId . "," . $wasValid . ",'" . $formatedDateTime . "')";
+		$sql = "INSERT INTO play_log(user_id, game_id, option_text, option_id, was_valid, recorded) VALUES(" . intval($userId) . "," . intval($gameId) . "," .  $optionText . "," .$optionId . "," . intval($wasValid) . ",'" . $formatedDateTime . "')";
 		$result = mysqli_query($conn, $sql);
 		$error = mysqli_error($conn);
 		$out["error"] = $error;
