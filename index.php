@@ -72,6 +72,7 @@ if(!$user) {
       <a href='javascript:showLevels()'>show levels</a><br/>
       <a href='javascript:showStats()'>show your stats</a><br/>
       <a href='javascript:showOthers()'>show others</a><br/>
+      <br/><br/>
       <a href='https://github.com/judasgutenberg/networked_spellingbee' target='_new'>source code</a><br/>
     </div>
     <div id="levellist"  onclick="this.style.display='none'"></div>
