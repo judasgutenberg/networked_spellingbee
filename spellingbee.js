@@ -600,6 +600,21 @@ function showHints() {
   hints.style.display = 'block';
 }
 
+function showStats() {
+  let hints = document.getElementById('stats');
+  hints.style.display = 'block';
+}
+
+function showLevels() {
+  let hints = document.getElementById('levellist');
+  hints.style.display = 'block';
+}
+
+function showOthers() {
+  let hints = document.getElementById('others');
+  hints.style.display = 'block';
+}
+
 function yesterday() { //show the words you didn't get yesterday, assuming you played
   if(auth == ""){
     alert("This feature only works for logged-in users.");

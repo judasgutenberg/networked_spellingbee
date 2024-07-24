@@ -175,6 +175,7 @@
         background-color: #dddd99;
         border: 1px solid  #ffffff;
         border-radius: 6px;
+        display: none;
       }
 
       #stats {
@@ -189,6 +190,7 @@
         border:1px solid #ffff00;
         border-radius: 6px;
         background-color:#ffffc0;
+        display: none;
       }
 
       #hints {
@@ -291,6 +293,7 @@
         background-color: #ffffff;
         border:1px solid #ffff00;
         border-radius: 6px;
+        display: none;
       }
 
       #communicationmessage {

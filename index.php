@@ -69,12 +69,15 @@ if(!$user) {
     <div id="links" >
       <a href='javascript:yesterday()'>yesterday's answers</a><br/>
       <a href='javascript:showHints()'>show hints</a><br/>
+      <a href='javascript:showLevels()'>show levels</a><br/>
+      <a href='javascript:showStats()'>show your stats</a><br/>
+      <a href='javascript:showOthers()'>show others</a><br/>
       <a href='https://github.com/judasgutenberg/networked_spellingbee' target='_new'>source code</a><br/>
     </div>
-    <div id="levellist" ></div>
-    <div id="stats" ></div>
+    <div id="levellist"  onclick="this.style.display='none'"></div>
+    <div id="stats"  onclick="this.style.display='none'"></div>
     <div id="hints"  onclick="this.style.display='none'"></div>
-    <div id="others" ></div>
+    <div id="others"></div>
     <div id="foundwordslabel" >Words You Have Found</div>
     <div id="config"><input onchange='updateFoundWords()' type='checkbox' id='sortAlphabetically'/>sort alphabetically</div>
     <div id="foundwords" ><div id="foundwords1" ></div><div id="foundwords2" ></div></div>
