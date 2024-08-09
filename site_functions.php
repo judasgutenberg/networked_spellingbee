@@ -1,7 +1,5 @@
 <?php 
 
- 
-
 function doesUserHaveRole($user, $role) {
   if($role == "") {
     return true;
@@ -13,10 +11,6 @@ function doesUserHaveRole($user, $role) {
   }
   return false;
 }
-
- 
-
- 
  
 function logIn() {
   Global $encryptionPassword;
@@ -36,7 +30,6 @@ function logIn() {
   }
 }
  
-
 function logOut() {
 	Global $cookiename;
 	setcookie($cookiename, "");
@@ -83,178 +76,6 @@ function newUserForm($error = NULL) {
   $out = genericForm($formData, "create user");
   $out.= "<div style='padding-top:10px;text-align:right'><a class='basicbutton' href='?action=login'>return to login</a></div>";
   return $out;
-}
-
-function generateSubFormFromJson($parentKey, $jsonString, $template) {
-  $templateArray = (array)json_decode($template);
-  //var_dump($templateArray);
-  // Decode the JSON string
-  $data = (array)json_decode($jsonString, true);
-  if($templateArray && false){
-    $keysToAdd = array_diff_key($data, $templateArray);
-  
-    $data = $data + $keysToAdd;
-  }
-  // Start building the form
-  // Generate form elements recursively
-  return generateFormElements($parentKey, $data);
-}
-
-function generateFormElements($parentKey, $data) {
-  $formElements = '<div class="genericform">';
-  foreach ($data as $key => $value) {
-      //$formElements .= '<div>';
-      // Create a label based on the key
-      $formElements .= '<div class="genericformelementlabel" for="' . $key . '">' . camelCaseToWords($key) . '</div>';
-      if (is_array($value)) {
-          // Recursively generate form elements for arrays
-          $formElements .= generateFormElements($key, $value);
-      } else {
-          // Create an input field for non-array values
-          $formElements .= '<div class="genericformelementinput"><input style="width:200px"  type="text" name="' . $parentKey . "|" . $key . '" id="' . $key . '" value="' . htmlspecialchars($value) . '"></div>';
-      }
-      //$formElements .= '</div>';
-  }
-  $formElements .= '</div>';
-  return $formElements;
-}
-
-//also returns pk by reference
-function schemaArrayFromSchema($table, &$pk){
-  Global $conn;
-  $sql = "EXPLAIN " . $table;
-  $result = mysqli_query($conn, $sql);
-  $headerData = [];
-  if($result) {
- 
-	  $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    
-    foreach($rows as $row) {
-      $fieldName = $row["Field"];
-      $type = "string";
-      if($row["Key"] == "PRI"){
-        $pk = $fieldName;
-        $type = "hidden";
-      }
-      if($row["Type"] == "tinyint(4)" ){
-        $type = "bool";
-      }
-      if(beginswith($row["Type"] , "int") || beginswith($row["Type"] , "decim")|| beginswith($row["Type"] , "float")  ){
-        $type = "number";
-      }
-      if($fieldName != "user_id") {
-        $record = ["label" => $fieldName, "name" => $fieldName, "type" => $type ];
-        if($type == "bool" || $type == "number" ){
-          $record["liveChangeable"] = true;
-        }
-        $headerData[] = $record;
-      }
-      
-    }
-  }
-  return $headerData;
-}
-
-function genericEntityList($userId, $table) {
-  Global $conn;
-  $headerData = schemaArrayFromSchema($table, $pk);
-  $additionalValueQueryString = "";
-  foreach($_REQUEST as $key=>$value){ //slurp up values passed in
-    if(endsWith($key, "_id")){
-      $additionalValueQueryString .= "&" . $key . "=" . urlencode($value);
-    }
-  }
-  $out = "<div class='listtools'><div class='basicbutton'><a href='?table=" . $table . "&action=startcreate" . $additionalValueQueryString . "'>Create</a></div> a new " . $table . "<//div>\n";
-  $thisDataSql = "SELECT * FROM " . $table . " WHERE user_id=" . intval($userId);
-  $deviceId = gvfw("device_id");
-  if($deviceId && $table== "device_feature" ){
-    $thisDataSql .= " AND device_id=" . intval($deviceId);
-  }
-  $thisDataResult = mysqli_query($conn, $thisDataSql);
-  if($thisDataResult) {
-    $thisDataRows = mysqli_fetch_all($thisDataResult, MYSQLI_ASSOC); 
-    $toolsTemplate = "<a href='?table=" . $table . "&" . $table . "_id=<" . $table . "_id/>'>Edit Info</a>";
-    $toolsTemplate .= " | " . deleteLink($table, $table. "_id" ); 
-    //if($table == "device") {
-      //$toolsTemplate .= " | <a href='?table=device_feature&device_id=<" . $table . "_id/>'>Device Features</a>";
-
-    //}
-   
-    $out .= genericTable($thisDataRows, $headerData, $toolsTemplate, null, $table, $pk);
-    return $out;
-  }
-}
-
-function genericEntityForm($userId, $table, $errors){
-  Global $conn;
-  $data = schemaArrayFromSchema($table, $pk);
-  $pkValue =  gvfa($pk, $_GET);
-  $thisDataSql = "SELECT * FROM " . $table . " WHERE " . $pk . " = '" . $pkValue . "' AND user_id=" . intval($userId);
-
-  $thisDataResult = mysqli_query($conn, $thisDataSql);
-  if($thisDataResult) {
-    $thisDataRows = mysqli_fetch_all($thisDataResult, MYSQLI_ASSOC);
-    if($thisDataRows && count($thisDataRows) > 0) {
-      $data = updateDataWithRows($data, $thisDataRows[0]);
-    }
-    
-
-    return genericForm($data, "Save " . $table, "Saving...");
-  }
-}
-
- 
-function genericEntitySave($userId, $table) {
-  Global $conn;
-  //$data = schemaArrayFromSchema($table, $pk);
-  $pk = $table . "_id";
-  $data = $_POST;
-  unset($data['action']);
-  unset($data[$pk]);
-  unset($data['created']);
-  $data["user_id"] = $userId;
-  $sql = insertUpdateSql($conn, $table, array($pk => gvfw($table . '_id')), $data);
-  //echo $sql;
-  //die();
-
-
-  if (mysqli_multi_query($conn, $sql)) {
-    do {
-      // Store first result set
-      if ($result = mysqli_store_result($conn)) {
-        while ($row = mysqli_fetch_row($result)) {
-          printf("%s\n", $row[0]);
-        }
-        mysqli_free_result($result);
-      }
-      // if there are more result-sets, the print a divider
-      if (mysqli_more_results($conn)) {
-        printf("-------------\n");
-      }
-       //Prepare next result set
-    } while (mysqli_next_result($conn));
-  }
-
-
-  $id = mysqli_insert_id($conn);
-  header("Location: ?table=" . $table);
-}
-
-function updateDataWithRows($data, $thisDataRows) {
-  // Iterate over each row in $thisDataRows
-  foreach ($thisDataRows as $key => $value) {
-      // Iterate over each associative array in $data
-      foreach ($data as &$item) {
-          // Check if the "name" key in the current item matches the key in $thisDataRows
-          if (isset($item['name']) && $item['name'] == $key) {
-              // Set the "value" of the current item to the value in $thisDataRows
-              $item['value'] = $value;
-              // Break out of the inner loop since we found a match
-              break;
-          }
-      }
-  }
-  return $data;
 }
 
 function genericForm($data, $submitLabel, $waitingMesasage = "Saving...") { //$data also includes any errors
@@ -443,47 +264,6 @@ function genericForm($data, $submitLabel, $waitingMesasage = "Saving...") { //$d
 	return $out;
 }
 
-function assembledJsonData($template, $parentName, $sourceData){
-  //var_dump($template);
-  //echo gettype($sourceData);
-  //echo $sourceData["config|excludeNumbers"] . "^";
-  foreach($template  as $key => $value){
-
-    if (is_array($value)) {
-      $out[$key] = assembledJsonData($template[$key], $key, $sourceData);
-    } else {
-      $out[$key] = $sourceData[$parentName . "|" .  $key];
-    }
-  }
-  return $out;
-}
-
-function reassembleFormJson($formData, $sourceData){
-  //echo gettype($sourceData);
-  foreach($formData as &$datum) {
-    $datum = (array)$datum;
-    $label = gvfa("label", $datum);
-		$value = str_replace("\\\\", "\\", gvfa("value", $datum)); 
-		$name = gvfa("name", $datum); 
-		$type = strtolower(gvfa("type", $datum)); 
-    $values =gvfa("values", $datum); 
-		$error = gvfa("error", $datum); 
-    if($type == "json"){
-      if($datum["template"]) {
-        $out = json_encode(assembledJsonData(json_decode($datum["template"]), $name,  $sourceData));
-
-        return $out;
-        //foreach($formData["template"]  as $key => $value){
-
-        
-      }
-    }
-  }
-  die();
-}
-
-
-
 function getUserById($id) {
   Global $conn;
   $sql = "SELECT * FROM `user` WHERE user_id = " . intval($id);
@@ -539,131 +319,6 @@ function loginUser($source = NULL) {
     //header("location: .");
   //}
 }
- 
-
-function genericTable($rows, $headerData = NULL, $toolsTemplate = NULL, $searchData = null, $tableName = "", $primaryKeyName = "", $autoRefreshSql = null) { //aka genericList
-  Global $encryptionPassword;
-  if($headerData == NULL  && $rows  && $rows[0]) {
-    $headerData = [];
-    foreach(array_keys($rows[0]) as &$key) {
-      array_push($headerData, array("label"=>$key, "name"=>$key));
-    }
-  }
- ;
-  $out = "";
-  if($searchData) {
-    $out .=  "<form>\n";
-    $out .=  "<input type='hidden' id='action' name='action' value='" . $searchData["action"] . "' />\n";
-    $out .=  "<input type='hidden' name='table' value='" . $searchData["table"] . "' />\n";
-    //"extraData" => array("word_list_id"=>$wordListId)
-    if($searchData["extraData"]){
-      foreach($searchData["extraData"] as $key=>$value){
-        $out .=  "<input type='hidden' name='" . htmlspecialchars($key) . "' value='" . htmlspecialchars($value). "' />\n";
-      }
-      
-    }
-    $out .= " Search: <input value='" . htmlspecialchars(gvfw($searchData["searchTerm"])) . "' id='" . $searchData["searchTerm"] . "' name='" . $searchData["searchTerm"] . "' onkeyup=\"" . str_replace("<id/>", "document.getElementById('" . $searchData["searchTerm"] . "').value", $searchData["onkeyup"] ). "\"></form>"; 
-
-  }
-  $out .= "<div class='list' id='list'>\n";
-
-  $out .="<div class='listheader'>\n";
-  $cellNumber = 0;
-  foreach($headerData as &$headerCell) {
-  	$out.= "<span class='headerlink' onclick='sortTable(" . $cellNumber . ")'>" . $headerCell['label'] . "</span>\n";
-    $cellNumber++;
-  }
-  if($toolsTemplate) {
-  
-    $out .= "<span></span>\n";
-  }
-  $out .= "</div>\n";
-  //$out .= "<div class='listbody' id='listbody'>\n";
-  for($rowCount = 0; $rowCount< count($rows); $rowCount++) {
-    $row = $rows[$rowCount]; 
-    $out .= "<div class='listrow'>\n";
-    foreach($headerData as &$headerItem) {
-      //var_dump($headerItem);
-      $name = gvfa("name", $headerItem);
-      $label = gvfa("label", $headerItem);
-      $function = gvfa("function", $headerItem);
-      if (array_key_exists("type", $headerItem)){
-        $type = $headerItem["type"];
-      } else {
-        $type = "text";
-      }
-      if (array_key_exists("template", $headerItem)){  //useful for having links outside the toolsTemplate section. we can ignore toolsTemplate in some situations
-        $template = $headerItem["template"];
-      } else {
-        $template = "";
-      }
-      $out .= "<span>";
-      $checkedString = " ";
-      $value = $row[$name];
-      if($function){ //allows us to have columns with values that are calculated from PHP
-      
-        $function =  tokenReplace($function, $row, $tableName) . ";"; 
-        //echo $function . "<P>";
-        try{
-          eval('$value = ' . $function);
-        }
-        catch(Exception  $err){
-          //echo $err;
-
-        }
-      }
-      if (gvfa("liveChangeable", $headerItem)) {
-        if($row[$name] == 1){
-          $checkedString = " checked ";
-          
-        }
-
-        if(($type == "color"  || $type == "text"  || $type == "number" || $type == "string") &&  $primaryKeyName != $name){
-          $hashedEntities =  crypt($name . $tableName .$primaryKeyName  . $row[$primaryKeyName] , $encryptionPassword);
-          $out .= "<input onchange='genericListActionBackend(\"" . $name . "\",  this.value ,\"" . $tableName  . "\",\"" . $primaryKeyName  . "\",\"" . $row[$primaryKeyName] . "\",\""  . $hashedEntities . "\")' value='" . $value . "'  name='" . $name . "' type='" . $type . "' />\n";
-        } else if(($type == "checkbox" || $type == "bool")  &&  $primaryKeyName != $name) {
-          $hashedEntities =  crypt($name . $tableName .$primaryKeyName  . $row[$primaryKeyName] , $encryptionPassword);
-          $out .= "<input onchange='genericListActionBackend(\"" . $name . "\",this.checked,\"" . $tableName  . "\",\"" . $primaryKeyName  . "\",\"" . $row[$primaryKeyName] . "\",\""  . $hashedEntities . "\")' name='" . $name . "' type='checkbox' value='1' " . $checkedString . "/>\n";
-        } else {
-          $out .= $row[$name];
-        }
-      } else {
-        if($template != "") {
-          $out .=  "<a href=\"" . tokenReplace($template, $row, $tableName) . "\">" . htmlspecialchars($value) . "</a>";
-        } else {
-          $out .=  htmlspecialchars($value);
-        }
-        
-      }
-      $out .= "</span>\n";
-    }
-    if($toolsTemplate) {
-      
-      $out .= "<span>" . tokenReplace($toolsTemplate,  $row, $tableName) . "</span>\n";
-    }
-    $out .= "</div>\n";
-  }
-  //$out .= "</div>\n";
-  $out .= "</div>\n";
-  if($autoRefreshSql) {
-    $encryptedSql = encryptLongString($autoRefreshSql, $encryptionPassword);
-    $out .= "<script>autoUpdate('" . $encryptedSql . "','" . addslashes(json_encode($headerData)) . "','list');</script>";
-
-  }
-  return $out;
-}
-
-function tokenReplace($template, $data,  $tableName = "", $strDelimiterBegin = "<", $strDelimiterEnd = "/>"){
-  Global $encryptionPassword;
-  foreach($data as $key => $value) {
-    $template = str_replace($strDelimiterBegin . $key . $strDelimiterEnd, $value, $template);
-  }
-  if($tableName!= "") {
-    $hashedEntities = crypt($tableName . $tableName . "_id" . $data[$tableName . "_id"], $encryptionPassword);
-    $template = str_replace($strDelimiterBegin . "hashed_entities" . $strDelimiterEnd, $hashedEntities, $template);
-  }
-  return $template;
-}
 
 function gvfw($name, $fail = false){ //get value from wherever
   $out = gvfa($name, $_REQUEST, $fail);
@@ -709,9 +364,8 @@ function createUser(){
   	$errors["password2"] = "Passwords must be identical and have a value";
   }
   if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-	$errors["email"] = "Invalid email format";
+	  $errors["email"] = "Invalid email format";
   }
-
   if(is_null($errors)) {
   	$encryptedPassword =  crypt($password, $encryptionPassword);
     $userList = userList();
@@ -747,279 +401,38 @@ function userList(){
   }
   return $rows;
 }
- 
-
-function genericSelect($id, $name, $defaultValue, $data, $event = "", $handler= "") {
-	$out = "";
-	$out .= "<select name='" . $name. "' id='" . $id . "' " . $event . "=\"" . $handler . "\">\n";
-  $out .= "<option/>";
-	foreach($data as $datum) {
-		$value = gvfa("value", $datum);
-		$text = gvfa("text", $datum);
-    if(!$text) { //if the array is just a list of scalar values:
-      $value = $datum;
-      $text = $datum;
-    }
-		$selected = "";
-		if($defaultValue == $value) {
-			$selected = " selected='true'";
-		}
-		$out.= "<option " . $selected . " value=\"" . $value . "\">";
-		$out.= $text;
-		$out.= "</option>";
-	}
-	$out.= "</select>";
-	return $out;
-}
- 
-
-function stringToAscii($input) {
-  $asciiCodes = [];
-  $length = strlen($input);
-
-  for ($i = 0; $i < $length; $i++) {
-      echo $input[$i]  . " " . ord($input[$i]) . "<br>";
-  }
-
-  return $asciiCodes;
-}
-
-function eliminateExtraLinefeeds($input) {
-  // Convert all line endings to Unix style (LF)inputinsertUpdateSql
-  $input = str_replace("\r", "\n", $input);
-  //$input = str_replace(chr(10), "X", $input);
-  //$input = str_replace(["\r\n", "\r"], "\n", $input);
-  //$input = str_replace(["\n\r", "\r"], "\n", $input);
-  // Replace consecutive linefeeds with a maximum of two in a row
-  $input = preg_replace("/\n{3,}/", "\n\n", $input);
-  return $input;
-}
-
-function insertUpdateSql($conn, $tableName, $primaryKey, $data) {
-  //this function is a serious mess and makes assumptions about your naming convention, but it can do amazing things, including add records to mapping tables to create many-to-many relationships
-  //var_dump($_POST);
-  $sql = "";
-  $laterSql = "";
-  $_dataRaw = gvfa("_data", $data); 
-  $whereClauseString = "<whereclause/>";
-  if($_dataRaw){
-    $_data = json_decode($_dataRaw, true);
-    $_data[] = array("name"=>"user_id", "type"=>"hidden");
-  }
-  // Check if a primary key is provided
-  $sanitizedKeys = [];
-  $dataToScan = $_data;
-  $date = new DateTime("now", new DateTimeZone('America/New_York'));//obviously, you would use your timezone, not necessarily mine
-  $formatedDateTime =  $date->format('Y-m-d H:i:s'); 
-  if(!$_data){
-    $dataToScan = $data;
-    die();//don't worry about this case
-  }
-  $isInsert = true;
-  if (!empty($primaryKey) && implode(",", array_values($primaryKey)) != "") {
-    $isInsert = false;
-  }
-  foreach ($dataToScan as $datum) {
-    $column = $datum["name"];
-    $type =  strtolower(gvfa("type", $datum, ""));
-    $value = gvfa($column, $data, "");
-    if($column  != "_data"  && !array_key_exists($column, $primaryKey)) {
-      //echo  $column . "=" . $value . ", " . $type . "<BR>";
-      $skip = false;
-      if($type == "many-to-many") {
-        if ($isInsert) {
-          $skip  = true;
-        }
-      } else if($type == "time" && $value == "") {
-        $skip  = true;
-
-
-      } else if($column == "last_known_device_modified" || $column == "created" || $column == "modified") {
-
-
-        $sanitized = "'" . $formatedDateTime . "'";
-      } else if ($column == "expired"){
-        $skip = true;
-      } else if(($type == "bool"  || $type == "checkbox") && !$value){
-        $sanitized = '0';
-      } else if (beginsWith($type, "number") && !$value) {
-        $sanitized = 'NULL';
-      } else {
-        $sanitized = "'" . mysqli_real_escape_string($conn, $value) . "'";
-      }
-      if(!$skip ){
-        $sanitizedData[] = $sanitized;
-        //echo $column . "<BR>";
-        //echo  $column . "=" . $sanitized . ", " . $type . "<BR>";
-        $sanitizedKeys[] = $column;
-      }
-    }
-  }
- 
-  if (!$isInsert) {
-      // Update the existing record
-      $sanitizedData = [];
-      $updateFields = [];
-      //$sanitizedKeys = [];
-      foreach ($dataToScan as $datum) {
-        $column = $datum["name"];
-        $type =  strtolower(gvfa("type", $datum, ""));
-        $value = gvfa($column, $data, "");
-
-        //echo  $column . "=" . $value . ", " . $type . "<BR>";
-        if($type == "many-to-many") {
-          $mappingTable = gvfa("mapping_table", $datum);
-          $countingColumn = gvfa("counting_column", $datum);
-          $laterSql .= "\nDELETE FROM " . $mappingTable . " WHERE user_id='".  $data["user_id"] .  "' AND <whereclause/>;";
-          $count = 1;
-          $extraM2MColumns = "";
-          $extraM2MValues = "";
-          if($value){
-            foreach($value as $valueItem){
-              if($countingColumn) {
-                $extraM2MColumns = ", " .$countingColumn;
-                $extraM2MValues = ", " . $count;
-              }
-              $laterSql .= "\nINSERT INTO " . $mappingTable . "(user_id, " . implode(",", array_keys($primaryKey)) . "," . $column . ",created" . $extraM2MColumns  . ") VALUES('" . $data["user_id"] . "','" . implode("','", array_values($primaryKey)) . "','" . $valueItem . "','" .  $formatedDateTime . "'" . $extraM2MValues . ");\n";
-              $count++;
-            }
-          }
-        } else if($column == "expired"  && $value == ""){
-        } else if($type == "time" && $value == "") {
- 
-
-
-        } else if ($column != "created" && $column != "_data" && array_key_exists($column, $primaryKey) == false) {
-          if(($type == "bool"  || $type == "checkbox") && !$value){
-            $sanitized = '0';
-          } else if (beginsWith($type, "number") && !$value) {
-            $sanitized = 'NULL';
-          } else {
-            $sanitized = "'" . mysqli_real_escape_string($conn, $value) . "'";
-          }
-
-          $updateFields[] = "`$column` =  $sanitized";
-        }
-      }
-
-      $updateFieldsString = implode(', ', $updateFields);
-
-      $whereClause = [];
-      foreach ($primaryKey as $key => $value) {
-          $whereClause[] = "`$key` = '$value'";
-      }
-
-      $whereClauseString = implode(' AND ', $whereClause);
-      
-      $sql .= "UPDATE `$tableName` SET $updateFieldsString WHERE $whereClauseString;";
-  } else {
-      // Insert a new record
-      $columns = "`" . implode('`, `', $sanitizedKeys) . "`";
-      $values = implode(", ", $sanitizedData);
-      
-      $sql .= "INSERT INTO `$tableName` ($columns) VALUES ($values);";
-  }
-  $laterSql = str_replace("<whereclause/>", $whereClauseString, $laterSql);
-  //die($sql . $laterSql );
-  return $sql . $laterSql ;
-}
-
-function blendColors($color1, $color2) {
-  // Convert hex colors to RGB
-  $rgb1 = sscanf($color1, "#%02x%02x%02x");
-  $rgb2 = sscanf($color2, "#%02x%02x%02x");
-
-  // Blend the colors
-  $result = "#";
-  for ($i = 0; $i < 3; $i++) {
-      $blended = ($rgb1[$i] + $rgb2[$i]) / 2;
-      $result .= str_pad(dechex($blended), 2, '0', STR_PAD_LEFT);
-  }
-  return $result;
-}
 
  
 function encryptLongString($plaintext, $password) {
-    // Generate a random initialization vector
-    $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
-    
-    // Encrypt the plaintext using AES-256-CBC algorithm
-    $ciphertext = openssl_encrypt($plaintext, 'aes-256-cbc', $password, 0, $iv);
- 
-    $iv = str_pad($iv, 16, "\0");
-    // Encode the ciphertext and IV as base64 strings
-    $ivBase64 = base64_encode($iv);
-    $ciphertextBase64 = base64_encode($ciphertext);
-    
-    // Concatenate IV and ciphertext with a separator
-    return $ivBase64 . ':' . $ciphertextBase64;
+  // Generate a random initialization vector
+  $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+  
+  // Encrypt the plaintext using AES-256-CBC algorithm
+  $ciphertext = openssl_encrypt($plaintext, 'aes-256-cbc', $password, 0, $iv);
+
+  $iv = str_pad($iv, 16, "\0");
+  // Encode the ciphertext and IV as base64 strings
+  $ivBase64 = base64_encode($iv);
+  $ciphertextBase64 = base64_encode($ciphertext);
+  
+  // Concatenate IV and ciphertext with a separator
+  return $ivBase64 . ':' . $ciphertextBase64;
 }
 
 function decryptLongString($encryptedData, $password) {
-    // Split the IV and ciphertext from the encrypted data
-    list($ivBase64, $ciphertextBase64) = explode(':', $encryptedData, 2);
-    
-    // Decode the IV and ciphertext from base64 strings
-    $iv = base64_decode($ivBase64);
-    $ciphertext = base64_decode($ciphertextBase64);
-    $iv = str_pad($iv, 16, "\0");
-    //echo($iv . "|" . strlen($iv));
-    // Decrypt the ciphertext using AES-256-CBC algorithm
-    $plaintext = openssl_decrypt($ciphertext, 'aes-256-cbc', $password, 0, $iv);
-    
-    // Return the decrypted plaintext
-    return $plaintext;
-}
-
-function isValidPHP($code) {
-  // Wrap the code with PHP tags if they are not already present
-  if (strpos($code, '<?php') === false) {
-      $code = '<?php ' . $code;
-  }
+  // Split the IV and ciphertext from the encrypted data
+  list($ivBase64, $ciphertextBase64) = explode(':', $encryptedData, 2);
   
-  // Use token_get_all to tokenize the PHP code
-  $tokens = token_get_all($code);
+  // Decode the IV and ciphertext from base64 strings
+  $iv = base64_decode($ivBase64);
+  $ciphertext = base64_decode($ciphertextBase64);
+  $iv = str_pad($iv, 16, "\0");
+  //echo($iv . "|" . strlen($iv));
+  // Decrypt the ciphertext using AES-256-CBC algorithm
+  $plaintext = openssl_decrypt($ciphertext, 'aes-256-cbc', $password, 0, $iv);
   
-  // Remove the first token if it's T_OPEN_TAG, to allow parsing in a block
-  if ($tokens[0][0] === T_OPEN_TAG) {
-      array_shift($tokens);
-  }
-  
-  // Rebuild the code without the opening PHP tag
-  $codeWithoutTags = '';
-  foreach ($tokens as $token) {
-      if (is_array($token)) {
-          $codeWithoutTags .= $token[1];
-      } else {
-          $codeWithoutTags .= $token;
-      }
-  }
-
-  // Use linting to check if the code is valid
-  $tempFile = tempnam(sys_get_temp_dir(), 'php');
-  file_put_contents($tempFile, '<?php ' . $codeWithoutTags);
-  $result = shell_exec('php -l ' . escapeshellarg($tempFile));
-  unlink($tempFile);
-
-  return strpos($result, 'No syntax errors detected') !== false;
-}
-
-function getColumns($tableName) {
-  Global $conn;
-  $sql = "SHOW COLUMNS FROM " . filterStringForSqlEntities($tableName) . ";"; //watch out for sql injection!
-  $result = mysqli_query($conn, $sql);
- 
-  if($result) {
-    $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    //var_dump($rows);
-    $columnNames = array_column($rows, 'Field');
-    return $columnNames;
-  }
-}
-
-function deleteLink($table, $pkName) {
-  $out = "<a onclick='return confirm(\"Are you sure you want to delete this " . $table . "?\")' href='?table=" . $table . "&action=delete&" . $pkName . "=<" . $pkName . "/>&hashed_entities=<hashed_entities/>'>Delete</a>";
-  return $out;
+  // Return the decrypted plaintext
+  return $plaintext;
 }
 
 function filterStringForSqlEntities($input) {

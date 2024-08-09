@@ -9,7 +9,7 @@ include("config.php");
 include("site_functions.php");
 $conn = mysqli_connect($servername, $username, $password, $database);
 $user = logIn();
-$table = strtolower(filterStringForSqlEntities(gvfw('table', "device"))); 
+$table = strtolower(filterStringForSqlEntities(gvfw('table', "user"))); 
 $errors = "";
 $content = "";
 $action = gvfw("action");
