@@ -56,22 +56,18 @@ if($_POST) {
 		if ($action == "sendmessage") {
 			$message = gvfw("message");
 			$messagesRead = json_decode(gvfw("messages_read"));
-			//var_dump($messagesRead);
 			$destUserId = gvfw("dest_user_id");
 			$sql = "INSERT INTO message (message, created, source_user_id, dest_user_id, game_id) VALUES ('" .  mysqli_real_escape_string($conn, $message) . "','" . $formatedDateTime . "'," . $userId . "," . $destUserId . "," . $gameId  .");";
-			//die($sql);
 			$result = mysqli_query($conn, $sql);
 			$error = mysqli_error($conn);
 			if(count($messagesRead) > 0){
 
 				$sql = "UPDATE message SET has_been_read = 1 WHERE message_id IN (" . implode(",", $messagesRead ) . ")  AND dest_user_id=" . intval($userId);
-				//echo $sql;
 				$result = mysqli_query($conn, $sql);
 				$error = mysqli_error($conn);
 			}
 		} else if($action == "savegame"){
 			$latestWords = [];
-			//var_dump($userData);
 			$itemCount = 0;
 			$score = 0;
 			if($userData) {
@@ -80,7 +76,6 @@ if($_POST) {
 				$itemCount = count($latestWords);
 				$score = gvfa("score", $userDataObject);
 				$premiumCount = gvfa("premium_count", $userDataObject);
-				//die("score: " . $score);
 			}
 			//i distinguish individual games by taking a hash of their data
 			$sql = "SELECT * FROM game WHERE game_hash = '" . mysqli_real_escape_string($conn,$hash) . "' AND game_type_id=" . intval($gameTypeId) . ";";
@@ -94,11 +89,6 @@ if($_POST) {
 					$foundWords = [];
 					if($row) {
 						$settings = json_decode($row["settings"], true);
-						/* //this won't happen:
-						if(array_key_exists("found_words", $settings)) {
-							$foundWords = $settings["found_words"];
-						}
-						*/
 						$gameId = $row["game_id"];
 						$sql = "SELECT * FROM user_game WHERE user_id = " . intval($userId) . " AND game_id= " . intval($gameId);
 						//die($sql);
@@ -130,12 +120,10 @@ if($_POST) {
 							if(count($latestWords) > 0) {
 								$sql = "UPDATE user_game SET settings = '" . mysqli_real_escape_string($conn, $userData) . "', modified ='" . $formatedDateTime . "', score = " . intval($score) . ", premium_count = " . intval($premiumCount) . ", item_count=" . intval($itemCount) . "
 										WHERE user_id=" . intval($userId) . " AND game_id= " . intval($gameId);
-								//echo $sql;
 								$otherResult = mysqli_query($conn, $sql);
 								$error = mysqli_error($conn);
 							}
 						}
-						//echo $sql;
 						$out = ["game_id"=> $row["game_id"] , "found_words" => $foundWords, "error" => $error];
 					}
 				}
@@ -144,11 +132,8 @@ if($_POST) {
 				$sql = "INSERT into game(name, game_type_id, game_hash, description, settings, created, game_date) VALUES ('Spelling Bee " . $formatedDateTime . "', " . $gameTypeId . ",'" . $hash
 					. "',NULL,'" . mysqli_real_escape_string($conn, $data) . "','" . $formatedDateTime . "','" . $formatedDateTime . "')";
 				$result = mysqli_query($conn, $sql);
-				//echo $sql;
 				$error = mysqli_error($conn);
-				//echo $error;
 				$gameId = mysqli_insert_id($conn);
-
 				//also need to save a user_game
 				$sql = "INSERT into user_game(game_id, user_id, settings, item_count, score, premium_count, created, modified) 
 				VALUES (" . $gameId . "," . $userId . ",'" . mysqli_real_escape_string($conn, $userData) . "'," . $itemCount . ",".  intval($score) . "," . intval($premiumCount) . ",'"  . $formatedDateTime . "','"  . $formatedDateTime . "');";
@@ -212,14 +197,12 @@ if($_POST) {
 				$out["other_scores"] = $otherGameRecords;
 			}
 			$sql = "SELECT message_id, message, m.created, m.source_user_id, u.email as dest_email, u2.email as source_email FROM message m JOIN user u ON m.dest_user_id=u.user_id JOIN user u2 ON m.source_user_id=u2.user_id WHERE has_been_read = 0 AND game_id=" . intval($gameId) . " AND dest_user_id=" . intval($userId);
-			//die($sql);
 			$messageResult = mysqli_query($conn, $sql);
 			$messageRecords = mysqli_fetch_all($messageResult, MYSQLI_ASSOC);
 			if($messageRecords && count($messageRecords)>0) {
 				$out["messages"] = $messageRecords;
 			}  
 		}
-
 	} 
 } else { //otherwise just give me the day's data from the New Yawk Times!
 	$url = "https://www.nytimes.com/puzzles/spelling-bee/";
@@ -254,13 +237,10 @@ function getCachedContent($url, $cacheFile) {
 	if ($currentTime < $earlyToday) {
 		$earlyToday = strtotime('yesterday 8:00 AM');
 	}
-	//echo $earlyToday . " + " . filemtime($cacheFile)  . "*" . intval($earlyToday-filemtime($cacheFile)) ;
 	// Check if cache file exists and was modified after 4:00 AM today
 	if (file_exists($cacheFile) && filemtime($cacheFile) > $earlyToday) {
-		// Return cached content
 		return file_get_contents($cacheFile);
 	} else {
-		// Fetch new content and update cache file
 		$content = file_get_contents($url);
 		file_put_contents($cacheFile, $content);
 		return $content;
