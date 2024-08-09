@@ -18,12 +18,10 @@ function logIn() {
   if(!isset($_COOKIE[$cookiename])) {
     return false;
   } else {
-  
    $cookieValue = $_COOKIE[$cookiename];
    $email = openssl_decrypt($cookieValue, "AES-128-CTR", $encryptionPassword);
    if(strpos($email, "@") > 0){
       return getUser($email);
-      
    } else {
       return  false;
    }
@@ -90,11 +88,9 @@ function genericForm($data, $submitLabel, $waitingMesasage = "Saving...") { //$d
 		$name = gvfa("name", $datum); 
 		$type = strtolower(gvfa("type", $datum)); 
     $width = 200;
-    
     if(endsWith($name, "_id") && $columnCount == 0  && ($type == "" || $type == "number")) { //make first column read-only if it's an _id
       $type = "read_only";
     }
- 
     if(gvfa("width", $datum)){
       $width = gvfa("width", $datum);
     }
@@ -130,107 +126,6 @@ function genericForm($data, $submitLabel, $waitingMesasage = "Saving...") { //$d
           $out .= generateSubFormFromJson($name, $template, $template);
 
         }
-    
-      } else if($type == 'select') {
-
-        $out .= "<select  name='" . $name . "' />";
-        if(is_string($values)) {
-          $out .= "<option value='0'>none</option>";
-          //echo $values;
-          $result = mysqli_query($conn, $values); //REALLY NEED TO SANITIZE $values since it contains RAW SQL!!!
-          $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
-          foreach($rows as $row){
-            $selected = "";
-            if(!$value){
-              $value = gvfw($name);
-            }
-            if($row[$name] == $value) {
-              $selected = " selected='selected' ";
-
-            }
-            $out .= "<option " . $selected . " value='". $row[$name] . "'>" . $row["text"]  . "</option/>\n";
-
-          }
-          
-
-        } else if(is_array($values)){
-          $out .= "<option value=''>none</option>";
-          foreach($values as &$optionValue) {
-            $selected = "";
-            if($value == $optionValue){
-              $selected = "selected";
-
-            }
-            $out .= "<option ". $selected . ">" . $optionValue . "</option/>\n";
-          }
-        }
-        $out .= "</select>";
-      } else if ($type == "many-to-many") {
-        //echo $values;
-        $result = mysqli_query($conn, $values); //REALLY NEED TO SANITIZE $values since it contains RAW SQL!!!
-        $rows = null;
-        $itemTool = gvfa("item_tool", $datum);
-        $itemToolString = "";
-        if($itemTool){
-          $itemToolString = " onmouseup='" . $itemTool . "(this)' ";
-        }
-        if($result) {
-          $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        }
-        $out .= "<div class='destinationitems'>\n";
-        $out .= "attached:<br/>";
-        if($height == ""){
-          $height = 5;
-        }
-        $out .= "<select multiple='multiple' name='" . $name . "[]' id='dest_" . $name . "' size='" . intval($height) . "'/>";
-        if($rows) {
-          foreach($rows as $row){
-            $selected = "";
-            if(!$value){
-              $value = gvfw($name);
-            }
-            if($row[$name] == $value) {
-              $selected = " selected='selected' ";
-
-            }
-
-            if($row["has"] ){
-              $out .= "<option " . $itemToolString . $selected . " value='". $row[$name] . "'>" . $row["text"]  . "</option/>\n";
-            }
-
-          }
-        }
-        $out .= "</select>";
-        $onSubmitManyToManyItems[] = $name;
-        $out .= "</div>\n"; 
-        $out .= "<div class='manytomanytools'>\n";
-        $out .= "<button onclick='return copyManyToMany(\"source_" . $name ."\", \"dest_" . $name ."\")'>&lt;</button>";
-        $out .= "<button onclick='return copyManyToMany(\"dest_" . $name ."\", \"source_" . $name ."\")'>&gt;</button>";
-        $out .= "</div>\n"; 
-        $out .= "<div class='sourceitems'>\n";
-        $out .= "available:<br/>";
-        $out .= "<select name='source_" . $name . "' id='source_" . $name . "' size='" . intval($height) . "'/>";
-        if($rows) {
-          foreach($rows as $row){
-            $selected = "";
-            if(!$value){
-              $value = gvfw($name);
-            }
-            if($row[$name] == $value) {
-              $selected = " selected='selected' ";
-
-            }
-            if(!$row["has"] ){
-              $out .= "<option " . $itemToolString . $selected . " value='". $row[$name] . "'>" . $row["text"]  . "</option/>\n";
-            }
-
-          }
-        }
-        $out .= "</select>";
-        $out .= "</div>\n"; 
-        $out .= "<div class='toolpanel' id='panel_" . $name . "'>\n"; 
-        $out .= "</div>\n"; 
-
       } else if ($type == "bool" || $type == "checkbox"){
         $checked = "";
           if($value) {
@@ -247,9 +142,7 @@ function genericForm($data, $submitLabel, $waitingMesasage = "Saving...") { //$d
 
           $out .= "<input style='width:" . $width . "px'  " . $idString. " name='" . $name . "' value=\"" .  $value . "\" type='" . $type . "'/>\n";
         }
-        
       }
-      
       $out .= "</div>\n";
     }
     $columnCount++;
@@ -298,26 +191,19 @@ function loginUser($source = NULL) {
     die();
 
   }
-  //try{
-    $row = $result->fetch_assoc();
-    if($row  && $row["email"] && $row["password"]) {
-      $email = $row["email"];
-      $passwordHashed = $row["password"];
-      //for debugging:
-      //echo crypt($passwordIn, $encryptionPassword);
-      if (password_verify($passwordIn, $passwordHashed)) {
-        //echo "DDDADA";
-          setcookie($cookiename, openssl_encrypt($email, "AES-128-CTR", $encryptionPassword), time() + (30 * 365 * 24 * 60 * 60));
-          header('Location: '.$_SERVER['PHP_SELF']);
-          //echo "LOGGED IN!!!" . $email ;
-          die;
-      }
-    }
-    return false;
 
-  //}  catch(Exception $e) {
-    //header("location: .");
-  //}
+  $row = $result->fetch_assoc();
+  if($row  && $row["email"] && $row["password"]) {
+    $email = $row["email"];
+    $passwordHashed = $row["password"];
+    if (password_verify($passwordIn, $passwordHashed)) {
+        setcookie($cookiename, openssl_encrypt($email, "AES-128-CTR", $encryptionPassword), time() + (30 * 365 * 24 * 60 * 60));
+        header('Location: '.$_SERVER['PHP_SELF']);
+        die();
+    }
+  }
+  return false;
+
 }
 
 function gvfw($name, $fail = false){ //get value from wherever
@@ -375,17 +261,12 @@ function createUser(){
     } else {
   	  $sql = "INSERT INTO user(email, password, created) VALUES ('" . $email . "','" .  mysqli_real_escape_string($conn, $encryptedPassword) . "','" .$formatedDateTime . "')"; 
     }
-	  //echo $sql;
-    //die();
     $result = mysqli_query($conn, $sql);
     $id = mysqli_insert_id($conn);
-    //updateTablesFromTemplate($id);
-    //die("*" . $id);
     loginUser($_POST);
     header("Location: ?");
   } else {
   	return $errors;
-  
   }
   return false;
 }
@@ -402,20 +283,12 @@ function userList(){
   return $rows;
 }
 
- 
 function encryptLongString($plaintext, $password) {
-  // Generate a random initialization vector
   $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
-  
-  // Encrypt the plaintext using AES-256-CBC algorithm
   $ciphertext = openssl_encrypt($plaintext, 'aes-256-cbc', $password, 0, $iv);
-
   $iv = str_pad($iv, 16, "\0");
-  // Encode the ciphertext and IV as base64 strings
   $ivBase64 = base64_encode($iv);
   $ciphertextBase64 = base64_encode($ciphertext);
-  
-  // Concatenate IV and ciphertext with a separator
   return $ivBase64 . ':' . $ciphertextBase64;
 }
 
