@@ -14,6 +14,6 @@ The game includes the state of play you've reached in the two grids on the New Y
 
 If others are playing the same game as you are and you are both logged in, you can see their live scores and even send them messages.  
 
-As with my "Simple Spelling Bee" repo, this code uses no frameworks or Javascript libraries. I do have my own single-file PHP library I use for things, which I pared down to the minimum necessary to get the login system working.
+As with my "Simple Spelling Bee" repo, this code uses no frameworks or Javascript libraries. I do have my own single-file PHP library I use for things, which I pared down to the minimum necessary to get the user creation and login system working.
 
 Note: this version caches data from the New York Times to a file, so you might encounter permission problems that will cause the page not to render. If so, liberalize the write permissions in the directory this code is served from. Or alter the path of the cached file and liberalize the permissions that points to.
