@@ -152,17 +152,8 @@ function genericForm($data, $submitLabel, $waitingMesasage = "Saving...") { //$d
   
 	$out .= "</div>\n";
 	$out .= "</form>\n";
-  $out .= "\n<script>let onSubmitManyToManyItems=['" . implode("','", $onSubmitManyToManyItems) . "'];</script>\n";
   $out = "<form name='genericForm' onsubmit='formSubmitTasks();startWaiting(\"" . $waitingMesasage . "\")' method='post' name='genericform' id='genericform' enctype='multipart/form-data'>\n" . $out;
 	return $out;
-}
-
-function getUserById($id) {
-  Global $conn;
-  $sql = "SELECT * FROM `user` WHERE user_id = " . intval($id);
-  $result = mysqli_query($conn, $sql);
-  $row = $result->fetch_assoc();
-  return $row;
 }
 
 function getUser($email) {
@@ -183,13 +174,10 @@ function loginUser($source = NULL) {
   $email = gvfa("email", $source);
   $passwordIn = gvfa("password", $source);
   $sql = "SELECT `email`, `password` FROM `user` WHERE email = '" . mysqli_real_escape_string($conn, $email) . "' ";
-  //die($sql);
-
   $result = mysqli_query($conn, $sql);
   if(!$result){
     header("location: .");
     die();
-
   }
 
   $row = $result->fetch_assoc();
@@ -203,7 +191,6 @@ function loginUser($source = NULL) {
     }
   }
   return false;
-
 }
 
 function gvfw($name, $fail = false){ //get value from wherever
@@ -222,7 +209,6 @@ function gvfa($name, $source, $fail = false){ //get value from associative
 }
 
 function beginsWith($strIn, $what) {
-//Does $strIn begin with $what?
 	if (substr($strIn,0, strlen($what))==$what){
 		return true;
 	}
@@ -230,7 +216,6 @@ function beginsWith($strIn, $what) {
 }
 
 function endsWith($strIn, $what) {
-//Does $strIn end with $what?
 	if (substr($strIn, strlen($strIn)- strlen($what) , strlen($what))==$what) {
 		return true;
 	}
@@ -295,16 +280,10 @@ function encryptLongString($plaintext, $password) {
 function decryptLongString($encryptedData, $password) {
   // Split the IV and ciphertext from the encrypted data
   list($ivBase64, $ciphertextBase64) = explode(':', $encryptedData, 2);
-  
-  // Decode the IV and ciphertext from base64 strings
   $iv = base64_decode($ivBase64);
   $ciphertext = base64_decode($ciphertextBase64);
   $iv = str_pad($iv, 16, "\0");
-  //echo($iv . "|" . strlen($iv));
-  // Decrypt the ciphertext using AES-256-CBC algorithm
   $plaintext = openssl_decrypt($ciphertext, 'aes-256-cbc', $password, 0, $iv);
-  
-  // Return the decrypted plaintext
   return $plaintext;
 }
 
