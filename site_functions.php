@@ -1,4 +1,5 @@
 <?php 
+//generic php library, pruned down to just what is needed, August 9 2024 gus mueller
 
 function doesUserHaveRole($user, $role) {
   if($role == "") {
@@ -29,9 +30,9 @@ function logIn() {
 }
  
 function logOut() {
-	Global $cookiename;
-	setcookie($cookiename, "");
-	return false;
+  Global $cookiename;
+  setcookie($cookiename, "");
+  return false;
 }
  
 function loginForm() {
@@ -46,31 +47,31 @@ function loginForm() {
 }
  
 function newUserForm($error = NULL) {
-	$formData = array(
-  [
-    'label' => 'email',
-    'name' => 'email',
-    'width' => 100,
-    'value' => gvfa("email", $_POST), 
-    'error' => gvfa('email', $error)
-  ],
-  [
-    'title' => 'password',
-    'name' => 'password',
-    'type' => 'password',
-    'width' => 100,
-    'value' => gvfa("password", $_POST), 
-    'error' => gvfa('error', $error)
-  ],
-  [
-    'label' => 'password (again)',
-    'name' => 'password2',
-    'type' => 'password',
-    'width' => 100,
-    'value' => gvfa("password2", $_POST),
-    'error' => gvfa('password2', $error)
-	   ]
-	);
+  $formData = array(
+    [
+      'label' => 'email',
+      'name' => 'email',
+      'width' => 100,
+      'value' => gvfa("email", $_POST), 
+      'error' => gvfa('email', $error)
+    ],
+    [
+      'title' => 'password',
+      'name' => 'password',
+      'type' => 'password',
+      'width' => 100,
+      'value' => gvfa("password", $_POST), 
+      'error' => gvfa('error', $error)
+    ],
+    [
+      'label' => 'password (again)',
+      'name' => 'password2',
+      'type' => 'password',
+      'width' => 100,
+      'value' => gvfa("password2", $_POST),
+      'error' => gvfa('password2', $error)
+    ]
+  );
   $out = genericForm($formData, "create user");
   $out.= "<div style='padding-top:10px;text-align:right'><a class='basicbutton' href='?action=login'>return to login</a></div>";
   return $out;
@@ -122,9 +123,7 @@ function genericForm($data, $submitLabel, $waitingMesasage = "Saving...") { //$d
         if($value) {
           $out .= generateSubFormFromJson($name, $value, $template);
         } else {
-          
           $out .= generateSubFormFromJson($name, $template, $template);
-
         }
       } else if ($type == "bool" || $type == "checkbox"){
         $checked = "";
@@ -139,7 +138,6 @@ function genericForm($data, $submitLabel, $waitingMesasage = "Saving...") { //$d
         if($height){
           $out .= "<textarea " .  $idString . " style='width:" . $width . "px;height:" . $height . "px' name='" . $name . "'  />" .  $value  . "</textarea>\n";
         } else {
-
           $out .= "<input style='width:" . $width . "px'  " . $idString. " name='" . $name . "' value=\"" .  $value . "\" type='" . $type . "'/>\n";
         }
       }
@@ -149,7 +147,6 @@ function genericForm($data, $submitLabel, $waitingMesasage = "Saving...") { //$d
 	}
 	$out .= "<div class='genericformelementlabel'><input class='basicbutton' type='submit' name='action' id='action' value='" . $submitLabel . "'/></div>\n";
   $out .= "<input  name='_data' value=\"" . htmlspecialchars(json_encode($data)) . "\" type='hidden'/>";
-  
 	$out .= "</div>\n";
 	$out .= "</form>\n";
   $out = "<form name='genericForm' onsubmit='formSubmitTasks();startWaiting(\"" . $waitingMesasage . "\")' method='post' name='genericform' id='genericform' enctype='multipart/form-data'>\n" . $out;
@@ -290,6 +287,5 @@ function decryptLongString($encryptedData, $password) {
 function filterStringForSqlEntities($input) {
   // Replace characters that are not letters, numbers, dashes, or underscores with an empty string
   $filtered = preg_replace('/[^a-zA-Z0-9-_]/', '', $input);
-
   return $filtered;
 }
