@@ -14,13 +14,12 @@ function doesUserHaveRole($user, $role) {
 }
  
 function logIn() {
-  Global $encryptionPassword;
   Global $cookiename;
   if(!isset($_COOKIE[$cookiename])) {
     return false;
   } else {
    $cookieValue = $_COOKIE[$cookiename];
-   $email = openssl_decrypt($cookieValue, "AES-128-CTR", $encryptionPassword);
+   $email = siteDecrypt($cookieValue);
    if(strpos($email, "@") > 0){
       return getUser($email);
    } else {
@@ -163,7 +162,6 @@ function getUser($email) {
 
 function loginUser($source = NULL) {
   Global $conn;
-  Global $encryptionPassword;
   Global $cookiename;
   if($source == NULL) {
   	$source = $_REQUEST;
@@ -176,18 +174,34 @@ function loginUser($source = NULL) {
     header("location: .");
     die();
   }
-
   $row = $result->fetch_assoc();
   if($row  && $row["email"] && $row["password"]) {
     $email = $row["email"];
     $passwordHashed = $row["password"];
     if (password_verify($passwordIn, $passwordHashed)) {
-        setcookie($cookiename, openssl_encrypt($email, "AES-128-CTR", $encryptionPassword), time() + (30 * 365 * 24 * 60 * 60));
+        setcookie($cookiename, siteEncrypt($email), time() + (30 * 365 * 24 * 60 * 60));
         header('Location: '.$_SERVER['PHP_SELF']);
         die();
     }
   }
   return false;
+}
+
+function siteEncrypt($text){
+  Global $encryptionPassword;
+  $ivLength  = openssl_cipher_iv_length('AES-128-CTR');
+  $iv = openssl_random_pseudo_bytes($ivLength);
+  $out = base64_encode($iv . openssl_encrypt($text , "AES-128-CTR", $encryptionPassword, 0, $iv));
+  return $out;
+}
+
+function siteDecrypt($encrytedText){
+  Global $encryptionPassword;
+  $ivLength = openssl_cipher_iv_length('AES-128-CTR');
+  $data = base64_decode($encrytedText);
+  $iv = substr($data, 0, $ivLength);
+  $encrypted = substr($data, $ivLength);
+  return openssl_decrypt($encrypted, 'AES-128-CTR', $encryptionPassword, 0, $iv);
 }
 
 function gvfw($name, $fail = false){ //get value from wherever
