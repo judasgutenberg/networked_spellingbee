@@ -101,10 +101,11 @@ if($_POST) {
 								$foundUserSettings = json_decode($userGameRow["settings"], true);
 								
 								if(array_key_exists("found_words", $foundUserSettings)) {
-									if(count($latestWords) > 0){
+									$existingWordSet = $foundUserSettings["found_words"];
+									if(count($latestWords) > count($existingWordSet)){
 										$foundWords = $latestWords;
 									} else {
-										$foundWords = $foundUserSettings["found_words"];
+										$foundWords = $existingWordSet;
 									}
 								}
 							}
@@ -232,10 +233,10 @@ function obfuscateWords($words) {
 function getCachedContent($url, $cacheFile) {
 	// Get current time and today's date at 4:00 AM
 	$currentTime = time();
-	$earlyToday = strtotime('today 8:00 AM');
+	$earlyToday = strtotime('today 7:00 AM');
 	// If it's already past 4:00 AM today, use that timestamp; otherwise, use 4:00 AM yesterday
 	if ($currentTime < $earlyToday) {
-		$earlyToday = strtotime('yesterday 8:00 AM');
+		$earlyToday = strtotime('yesterday 7:00 AM');
 	}
 	// Check if cache file exists and was modified after 4:00 AM today
 	if (file_exists($cacheFile) && filemtime($cacheFile) > $earlyToday) {
