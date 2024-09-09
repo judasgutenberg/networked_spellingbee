@@ -178,10 +178,10 @@ function logPlay(wasValid){
 
 
 function updateGameDatabase(justPoll){
+  let nowDate = new Date(); 
+  let time = nowDate.getTime();
+  time = time - (time % 86400000);
   if(auth == ""){
-    let nowDate = new Date(); 
-    let time = nowDate.getTime();
-    time = time - (time % 86400000);
     //if we don't have a user, then let's store the game in the browser
     if(foundWords.length < 1) {
       let jsonFoundWords = localStorage.getItem("foundWords" + time);
@@ -226,9 +226,23 @@ function updateGameDatabase(justPoll){
         let otherScores = data["other_scores"];
         others(otherScores);
       }
+      let foundWordsLocal = [];
+      let foundWordsFromServer = data["found_words"];
       if(!justPoll){
-        foundWords = data["found_words"];
-        //console.log(foundWords);
+        let jsonFoundWords = localStorage.getItem("foundWords" + userId + "_" + gameId);
+        if(jsonFoundWords != ""  && jsonFoundWords != null){
+          //console.log(jsonFoundWords);
+          foundWordsLocal = JSON.parse(jsonFoundWords);
+          //updateFoundWords();
+          //recalculateScore();
+        }
+        if(foundWordsLocal.length > foundWordsFromServer.length){
+          foundWords = foundWordsLocal; 
+        } else {
+          foundWords = foundWordsFromServer;
+        }
+
+        //console.log(foundWords);dd
         updateFoundWords();
         //console.log(otherScores);
         recalculateScore();
@@ -241,6 +255,9 @@ function updateGameDatabase(justPoll){
   if(!justPoll){
     let data = {"answers": answers, "panagrams": panagrams, "centerLetter": centerLetter, "outerLetters": outerLetters};
     let userData = {"found_words": foundWords, "score": score, "premium_count": panagramsFound};
+    if(foundWordsLocal.length <= foundWords.length) {
+      localStorage.setItem("foundWords" + userId + "_" + gameId, JSON.stringify(foundWords));
+    }
     params.append("data", JSON.stringify(data));
     params.append("user_data", JSON.stringify(userData));
   }
