@@ -7,6 +7,7 @@ if(array_key_exists('HTTP_REFERER',  $_SERVER)) {
 }
 include("config.php");
 include("site_functions.php");
+$version = 1;
 $conn = mysqli_connect($servername, $username, $password, $database);
 $user = logIn();
 $table = strtolower(filterStringForSqlEntities(gvfw('table', "user"))); 
@@ -51,11 +52,11 @@ if(!$user) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src='spellingbee.js'></script>
+    <script src='spellingbee.js?v=<?php echo $version?>'></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spelling Bee</title>
-    <link rel='stylesheet' href='spellingbee.css'>
+    <link rel='stylesheet' href='spellingbee.css?v=<?php echo $version?>'>
     <link rel="icon" type="image/x-icon" href="./favicon.ico" />
 </head>
 <body>
