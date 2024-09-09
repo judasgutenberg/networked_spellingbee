@@ -6,6 +6,7 @@ let score = 0;
 let level = "Nice Start";
 let totalScore = 0;
 let gameId = 0;
+let userId = 0;
 let gameTypeId = 1;
 let panagramsFound = 0;
 let destUserId = 0;
@@ -206,15 +207,17 @@ function updateGameDatabase(justPoll){
     console.warn("No internet connection. Update aborted.");
     return;
   }
-
+  let foundWordsLocal = [];
+  let foundWordsFromServer = [];
 
   let xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
- 
+
     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
       //console.log(xmlhttp.responseText);
       let data = JSON.parse(xmlhttp.responseText);
       //set some globals
+      userId= data["user_id"];
       if('messages' in data) {
         let messages = data["messages"];
         showMessages(messages);
@@ -226,8 +229,7 @@ function updateGameDatabase(justPoll){
         let otherScores = data["other_scores"];
         others(otherScores);
       }
-      let foundWordsLocal = [];
-      let foundWordsFromServer = data["found_words"];
+      foundWordsFromServer = data["found_words"];
       if(!justPoll){
         let jsonFoundWords = localStorage.getItem("foundWords" + userId + "_" + gameId);
         if(jsonFoundWords != ""  && jsonFoundWords != null){

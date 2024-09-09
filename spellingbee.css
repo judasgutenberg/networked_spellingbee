@@ -91,7 +91,7 @@
         display:block;
         position:absolute;
         top: 33px;
-        left: 30px;
+        left: 20px;
         border: 1px solid #000000;
         font-size: 20px;
         font-weight: bold;
@@ -266,8 +266,9 @@
         font-size:20px;
         position: absolute;
         top: 60px;
-        left: 100px;
+        left: 20px;
         justify-content: center;
+        width: 300px;
         border:1px solid #ff0000;
         border-radius: 6px;
         background-color: #ffee66;
@@ -275,11 +276,12 @@
       }
 
       #score{
-        font-size:20px;
+        font-size:18px;
         position: absolute;
         top: 5px;
-        left: 30px;
+        left: 20px;
         justify-content: center;
+        width: 300px;
         background-color:#ffffee;
         border-radius: 5px;
         display: none;
