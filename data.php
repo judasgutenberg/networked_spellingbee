@@ -101,11 +101,10 @@ if($_POST) {
 								$foundUserSettings = json_decode($userGameRow["settings"], true);
 								
 								if(array_key_exists("found_words", $foundUserSettings)) {
-									$existingWordSet = $foundUserSettings["found_words"];
-									if(count($latestWords) > count($existingWordSet)){
+									if(count($latestWords) > 0){
 										$foundWords = $latestWords;
 									} else {
-										$foundWords = $existingWordSet;
+										$foundWords = $foundUserSettings["found_words"];
 									}
 								}
 							}
@@ -125,7 +124,7 @@ if($_POST) {
 								$error = mysqli_error($conn);
 							}
 						}
-						$out = ["game_id"=> $row["game_id"] , "found_words" => $foundWords, "error" => $error];
+						$out = ["user_id" => $userId, "game_id"=> $row["game_id"] , "found_words" => $foundWords, "error" => $error];
 					}
 				}
 			} 
@@ -141,7 +140,7 @@ if($_POST) {
 				$otherResult = mysqli_query($conn, $sql); 
 				$error = mysqli_error($conn);
 
-				$out = ["game_id"=> $gameId , "found_words" => $latestWords, "error" => $error];
+				$out = ["user_id" => $userId, "game_id"=> $gameId , "found_words" => $latestWords, "error" => $error];
 			}
 		}
 		if($action == "getanswers") {

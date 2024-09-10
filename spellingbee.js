@@ -217,7 +217,10 @@ function updateGameDatabase(justPoll){
       //console.log(xmlhttp.responseText);
       let data = JSON.parse(xmlhttp.responseText);
       //set some globals
-      userId= data["user_id"];
+      if(data["user_id"]){
+        userId = data["user_id"];
+      }
+      console.log(userId);
       if('messages' in data) {
         let messages = data["messages"];
         showMessages(messages);
@@ -230,6 +233,8 @@ function updateGameDatabase(justPoll){
         others(otherScores);
       }
       foundWordsFromServer = data["found_words"];
+      //console.log(foundWordsFromServer);
+        
       if(!justPoll){
         let jsonFoundWords = localStorage.getItem("foundWords" + userId + "_" + gameId);
         if(jsonFoundWords != ""  && jsonFoundWords != null){
@@ -243,7 +248,7 @@ function updateGameDatabase(justPoll){
         } else {
           foundWords = foundWordsFromServer;
         }
-
+        console.log(foundWords);
         //console.log(foundWords);dd
         updateFoundWords();
         //console.log(otherScores);
