@@ -1,5 +1,5 @@
 # networked_spellingbee
-This open source Spelling Bee allows you to play the day's New York Times Spelling Bee without a New York Times account.  How is this possible?  All the information to play the game is on the "demo" page that NYT serves to people without accounts.  I take that data and spin up a game!
+This open source Spelling Bee allows you to play the day's actual New York Times Spelling Bee without a New York Times account.  How is this possible?  All the information to play the game is on the "demo" page that NYT serves to people without accounts.  I take that data and spin up a game!
 
 This version allows you to log in, see the progress of others playing the same installation of the game, and continue play on a different machine. 
 
@@ -15,5 +15,7 @@ The game includes the state of play you've reached in the two grids on the New Y
 If others are playing the same game as you are and you are both logged in, you can see their live scores and even send them messages.  
 
 As with my "Simple Spelling Bee" repo, this code uses no frameworks or Javascript libraries. I do have my own single-file PHP library I use for things, which I pared down to the minimum necessary to get the user creation and login system working.
+
+Because my wife and I kept seeing at extra "a" that wasn't there in "pangram," I have used the term "panagram" for that concept in this version of the game.
 
 Note: this version caches data from the New York Times to a file, so you might encounter permission problems that will cause the page not to render. If so, liberalize the write permissions in the directory this code is served from. Or alter the path of the cached file and liberalize the permissions that points to.
