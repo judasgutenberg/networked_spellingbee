@@ -874,6 +874,14 @@ function handleKeyPress(event) {
           buttonKeys[key].click();
       }
     }
+    blurButtonsAndLinks();
+}
+
+function blurButtonsAndLinks() {
+  const buttons = document.querySelectorAll('.buttons button, a');
+  buttons.forEach(button => {
+    button.blur();
+  });
 }
 
 function setupButtons() {
