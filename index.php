@@ -7,7 +7,7 @@ if(array_key_exists('HTTP_REFERER',  $_SERVER)) {
 }
 include("config.php");
 include("site_functions.php");
-$version = 1.11;
+$version = 1.21;
 $conn = mysqli_connect($servername, $username, $password, $database);
 $user = logIn();
 $table = strtolower(filterStringForSqlEntities(gvfw('table', "user"))); 
@@ -69,9 +69,9 @@ if(!$user) {
     <div id="yesterdayanswers" onclick="this.style.display='none'"></div>
     <div id="links" >
       <a href='javascript:yesterday()'>yesterday's answers</a><br/>
-      <a href='javascript:showHints()'>show hints</a><br/>
       <a href='javascript:showLevels()'>show levels</a><br/>
       <a href='javascript:showStats()'>show your stats</a><br/>
+      <a href='javascript:showHints()'>show hints</a><br/>
       <a href='javascript:showOthers()'>show others</a><br/>
       <br/><br/>
       <a href='https://github.com/judasgutenberg/networked_spellingbee' target='_new'>source code</a><br/>
