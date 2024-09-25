@@ -90,7 +90,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     await getGameDataFromNYT();
     generateHexagons();
     setupButtons();
-    //hideStuff();
     calculateTotalPossibleScore();
     updateGameDatabase();
     
@@ -289,15 +288,26 @@ function clickLetter(letter){
   let thisDiv = document.getElementById("currentword");
   thisDiv.innerHTML = currentWord;
   thisDiv.style.display = "block";
-  
+  updateCurrentWordDisplay();
 }
 
 function deleteLetter(letter){
   if(currentWord != "") {
     currentWord = currentWord.substring(0, currentWord.length-1);
     document.getElementById("currentword").innerHTML = currentWord;
+    updateCurrentWordDisplay();
   }
   return false;
+}
+
+function updateCurrentWordDisplay(){
+  let currentWordDiv = document.getElementById('currentword');
+  if(currentWord== ""){
+    currentWordDiv.style.display = 'none';
+  } else {
+    currentWordDiv.style.display = 'block';
+  }
+
 }
 
 function enterWord(){
@@ -844,15 +854,6 @@ function backToPlay(){
   scoreDiv.style.display = "block";
   scoreDiv = document.getElementById("foundwords");
   scoreDiv.style.display = "block";
-}
-
-function hideStuff() {
-  let scoreDiv = document.getElementById("score");
-  scoreDiv.style.display = "none";
-  scoreDiv = document.getElementById("message");
-  scoreDiv.style.display = "none";
-  scoreDiv = document.getElementById("foundwords");
-  scoreDiv.style.display = "none";
 }
 
 function handleKeyPress(event) {
