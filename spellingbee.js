@@ -448,8 +448,9 @@ function recalculateScore(panagramFound) {
 
 function getLevelOrdinal(fraction) {
   let out = 9;
+  //console.log(Object.entries(levelValues));
   for (const [key, value] of Object.entries(levelValues)) {
-      if (fraction * 100 >= Math.floor(value * 100)) {
+    if (Math.floor(fraction * totalScore) >=  Math.floor(value * totalScore)) {
           return out;
       }
       out--;
@@ -460,7 +461,7 @@ function getLevelOrdinal(fraction) {
 
 function getLevel(fraction) {
   for (const [key, value] of Object.entries(levelValues)) {
-      if (fraction * 100 >= Math.floor(value * 100)) {
+      if (Math.floor(fraction * totalScore) >=  Math.floor(value * totalScore)) {
           return key;
       }
   }
