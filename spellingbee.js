@@ -912,8 +912,18 @@ function panagramParty(timesLeft, ordinal){
 function queenBeeParty(timesLeft){
   if(timesLeft > 0){
     document.body.style.backgroundImage = "";
-    if(timesLeft/2 == parseInt(timesLeft/2)) {
-      document.body.style.backgroundColor = '#ff0000'
+    if(timesLeft == 1) {
+      document.body.style.backgroundColor = '#ff0000';
+    } else if(timesLeft == 2) {
+        document.body.style.backgroundColor = '#0000ff';
+    } else if(timesLeft == 3) {
+        document.body.style.backgroundColor = '#00ff00';
+    } else if(timesLeft == 4) {
+        document.body.style.backgroundColor = '#00ffff';
+    } else if(timesLeft == 5) {
+        document.body.style.backgroundColor = '#ff00ff';
+    } else if(timesLeft/2 == parseInt(timesLeft/2)) {
+        document.body.style.backgroundColor = '#ffff00';
     } else {
       document.body.style.backgroundColor = '#000000'
     }
