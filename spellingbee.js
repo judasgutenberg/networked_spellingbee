@@ -574,6 +574,9 @@ function timeAgo(sqlDateTime) {
   const now = new Date();
   const past = new Date(sqlDateTime);
   const diffInSeconds = Math.floor((now - past) / 1000);
+  if(diffInSeconds < 0){
+    diffInSeconds = 0;
+  }
   const seconds = diffInSeconds % 60;
   const minutes = Math.floor(diffInSeconds / 60) % 60;
   const hours = Math.floor(diffInSeconds / 3600) % 24;
