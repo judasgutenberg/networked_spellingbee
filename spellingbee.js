@@ -803,10 +803,16 @@ function stats(wordList, div){
       let count = wordList
         .filter(word => word.toLowerCase().startsWith(pair.toLowerCase()))
         .length;
-      out2 += ":" + count ;
+
+      let cellClass = 'foundall';
       if(div == "hints"){
         yourStatArray["twoLetter"][pair] = count;
       }
+      if (yourStatArray["twoLetter"].hasOwnProperty(pair) && yourStatArray["twoLetter"][pair]  > count && div != "hints"){
+        //console.log(yourStatArray["twoLetter"][letter][i]);
+        cellClass = 'notfoundall';
+      }
+      out2 += ":<span class='" + cellClass + "'>" + count + "</span>" ;
       oldFirstLetter = firstLetter;
   }
   out2 += "</div>";
