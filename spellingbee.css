@@ -401,6 +401,15 @@
         color: #990000;
       }
 
+      .foundall{
+        color: black;
+      }
+      .notfoundall{
+        color: red;
+        font-weight: bold;
+      }
+
+
       #hexagon-container {
         position: absolute;
         width: 300px;

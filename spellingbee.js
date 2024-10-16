@@ -20,6 +20,7 @@ let outerLetters = [];
 let levelValues = {"Queen Bee": 1, "Genius": 0.7, "Amazing": 0.5, "Great": 0.4, "Nice": 0.25, "Solid": 0.15, "Good": 0.08, "Moving Up": 0.05, "Good start": 0.02, "Beginner": 0}
 let storedColor = "#ffffff";
 let storedBgColor = "#ffffff";
+let yourStatArray = {"oneLetter":{}, "twoLetter":{}};
 
 
 function generateHexagons() {
@@ -703,6 +704,7 @@ function yesterday() { //show the words you didn't get yesterday, assuming you p
 function stats(wordList, div){
   let out = "<div class='header'>";
   if(div != "hints"){
+    console.log(yourStatArray);
     out += "Your Word Counts by Beginning Letter";
   } else {
     out += "Word Counts by Beginning Letter";
@@ -717,12 +719,21 @@ function stats(wordList, div){
   let noheader = true;
   let columnCounts = {};
   for (const letter of sortedLetters) {
+    if(div == "hints"){
+      if(!yourStatArray["oneLetter"].hasOwnProperty(letter)){
+        yourStatArray["oneLetter"][letter] = {};
+      }
+    }
     let row = "";
     row += "<tr><td>" + letter.toUpperCase() + "</td>";
     count = 0;
     let total = 0;
     for(let i=4; i<=lengthOfLongestWord; i++) {
-
+      if(div == "hints"){
+        if(!yourStatArray["oneLetter"][letter].hasOwnProperty(i)){
+          yourStatArray["oneLetter"][letter][i] = 0;
+        }
+      }
       if(noheader){
         header += "<td>" + i + "</td>";
       }
@@ -730,12 +741,24 @@ function stats(wordList, div){
         .filter(word => word.toLowerCase().startsWith(letter.toLowerCase()))
         .filter(word => word.length === i)
         .length;
-        row += "<td>" + count + "</td>";
+      let cellClass = 'foundall';
+ 
+      if (yourStatArray["oneLetter"].hasOwnProperty(letter) && yourStatArray["oneLetter"][letter].hasOwnProperty(i) && yourStatArray["oneLetter"][letter][i] > count && div != "hints"){
+        console.log(yourStatArray["oneLetter"][letter][i]);
+        cellClass = 'notfoundall';
+      }
+      row += "<td class='" + cellClass + "'>" + count + "</td>";
       total += count;
       if(!columnCounts[i]){
         columnCounts[i] =  count;
+        if(div == "hints"){
+          yourStatArray["oneLetter"][letter][i] = count;
+        }
       } else {
         columnCounts[i] += count;
+        if(div == "hints"){
+          yourStatArray["oneLetter"][letter][i] += count;
+        }
       }
     }
     row += "<td>" + total+ "</td></tr>";
@@ -758,7 +781,7 @@ function stats(wordList, div){
   let uniquePairs = [...new Set(pairs)];
   noheader = true;
   let out2 = "<div class='header'>";
-  if(div != "hints"){
+  if(div == "hints"){
     out2 += "Your Word Counts by Beginning Two Letters";
   } else {
     out2 += "Word Counts by Beginning Two Letters";
@@ -767,6 +790,11 @@ function stats(wordList, div){
  
   let oldFirstLetter = "";
   for (const pair of uniquePairs) {
+    if(div == "hints"){
+    if(!yourStatArray["twoLetter"].hasOwnProperty(pair)){
+        yourStatArray["twoLetter"][pair] = 0;
+      }
+    }
     let firstLetter = pair[0];
     if(oldFirstLetter!= firstLetter && oldFirstLetter != ""){
       out2 += "</div><div>" ;
@@ -776,7 +804,9 @@ function stats(wordList, div){
         .filter(word => word.toLowerCase().startsWith(pair.toLowerCase()))
         .length;
       out2 += ":" + count ;
-
+      if(div == "hints"){
+        yourStatArray["twoLetter"][pair] = count;
+      }
       oldFirstLetter = firstLetter;
   }
   out2 += "</div>";
