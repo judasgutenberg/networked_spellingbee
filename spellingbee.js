@@ -781,7 +781,7 @@ function stats(wordList, div){
   let uniquePairs = [...new Set(pairs)];
   noheader = true;
   let out2 = "<div class='header'>";
-  if(div == "hints"){
+  if(div != "hints"){
     out2 += "Your Word Counts by Beginning Two Letters";
   } else {
     out2 += "Word Counts by Beginning Two Letters";
