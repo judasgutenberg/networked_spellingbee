@@ -12,7 +12,7 @@ There you can create a user (there's no email confirmation!) or play the game wi
 
 The game includes the state of play you've reached in the two grids on the New York Times "hints" page (and it can show those hints as well if you choose to see them), helping you quickly zero in on the traits of the words remaining (if you like to "cheat" that way). To make such cheating as easy as possible, in the grids of your stats, numbers for word groups you haven't found all the words of are colored red. To add some visual interest, there are large images of various bees with flowers in the background that change with every change of level while playing the game (sort of like in the classic version of Tetris).  There are also some seizure-inducing visuals when you achieve particularly notable things.
 
-If others are playing the same game as you are and you are both logged in, you can see their live scores and even send them messages.  
+If others are playing the same game as you are and you are both logged in, you can see their live scores and even send them messages (a feature that doesn't turn out to be very popular).  
 
 As with my "Simple Spelling Bee" repo, this code uses no frameworks or Javascript libraries. I do have my own single-file PHP library I use for things, which I pared down to the minimum necessary to get the user creation and login system working.
 
