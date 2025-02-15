@@ -29,6 +29,6 @@ Because my wife Gretchen and I kept seeing an extra "a" that wasn't there in "pa
 
 Note: this version caches data from the New York Times to a file, so you might encounter permission problems that will cause the page not to render. If so, liberalize the write permissions in the directory this code is served from. Or alter the path of the cached file and liberalize the permissions that points to.
 
-#Known Bugs#
+# Known Bugs #
 1. The calculation of what level you've reached is occasionally off by one, so you might linger too long in a level or get out of it prematurely under some circumstances.  I've had trouble tracking down the source of this issue, but it's probably a case of using round() instead of floor().
 2. Some of the comments you get when you attempt to play a non-word or word you've already played do not make grammatical sense or are inappropriate for the context.  At this point I kind of like the awkwardness, which reminds me of poorly-translated Japanese videogames.
