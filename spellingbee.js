@@ -147,6 +147,9 @@ function getGameDataFromNYT() {
           outerLetters = data["outerLetters"];
           panagrams = data["panagrams"];
           answers = data["answers"];
+          if(!letters){
+            letters = [...outerLetters, centerLetter];
+          }
           console.log(outerLetters, centerLetter, panagrams, answers);
           resolve();  // Resolve the promise once data is set
         } else {
