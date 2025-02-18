@@ -167,7 +167,20 @@ function getGameDataFromNYT() {
 
 function goToDate(date){
   let value = document.getElementById("pastDate").value;
-  window.location.href="?game_type_id=" + gameTypeId + "&date=" + value;
+  if(isDateBeforeNow(value) ){
+    window.location.href="?game_type_id=" + gameTypeId + "&date=" + value;
+  } else {
+    let delay = 2000;
+    let color = '#ff6600';
+    let messageDiv = document.getElementById("message");
+    messageDiv.innerHTML = "That date is in the future.";
+    messageDiv.style.display = 'block';
+    messageDiv.style.backgroundColor  = color;
+    stats(foundWords, "stats");
+    setTimeout(()=>{
+      messageDiv.style.display = 'none';
+    }, delay);
+  }
   return false;
 }
 
@@ -176,6 +189,10 @@ function revisitPast() {
   let content = "<div class='datepicker'>Pick a Date to Revisit an Old Game<br/><form><input type='date' id='pastDate' /> <input type='button' onclick='goToDate();' value='Go'/></form></div>";
   div.innerHTML = content;
   div.style.visible = 'block';
+}
+
+function isDateBeforeNow(dateString) {
+  return new Date(dateString) < new Date();
 }
 
 
