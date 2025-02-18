@@ -24,6 +24,9 @@ let yourStatArray = {"oneLetter":{}, "twoLetter":{}};
 
 
 function generateHexagons() {
+  if(!outerLetters){
+    return;
+  }
   let hexagons = document.getElementsByClassName('hexagon');
   for(let hexagon of hexagons) {
     hexagon.remove();
@@ -39,6 +42,7 @@ function generateHexagons() {
       let random = 0;
       if(i<6) {
         while(lettersUsed.indexOf(randomLetter) > -1 || randomLetter == "") {
+          console.log(outerLetters);
           random = Math.floor(Math.random() * outerLetters.length);
           randomLetter = outerLetters[random].toUpperCase();
         }
@@ -105,6 +109,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function calculateTotalPossibleScore() {
+  if(!answers){
+    return
+  }
   for(let word of answers){
     totalScore += wordPoints(word);
   }
@@ -120,6 +127,8 @@ function deobfuscate(phrase) {
 }
 
 function getGameDataFromNYT() {
+  const queryParams = new URLSearchParams(window.location.search);
+  const date = queryParams.get('date');
   return new Promise((resolve, reject) => {
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
@@ -128,6 +137,7 @@ function getGameDataFromNYT() {
           let data;
           try {
             data = JSON.parse(deobfuscate(xmlhttp.responseText));
+            console.log(data);
           } catch (error) {
             return reject(error);
           }
@@ -137,17 +147,37 @@ function getGameDataFromNYT() {
           outerLetters = data["outerLetters"];
           panagrams = data["panagrams"];
           answers = data["answers"];
+          console.log(outerLetters, centerLetter, panagrams, answers);
           resolve();  // Resolve the promise once data is set
         } else {
           reject(new Error(`Failed to fetch data: ${xmlhttp.statusText}`));
         }
       }
     };
-    let url = "data.php";
+    let url = "";
+    if(date) {
+      url = "data.php?game_type_id=1&date=" + date;
+    } else {
+      url = "data.php";
+    }
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
   });
 }
+
+function goToDate(date){
+  let value = document.getElementById("pastDate").value;
+  window.location.href="?game_type_id=" + gameTypeId + "&date=" + value;
+  return false;
+}
+
+function revisitPast() {
+  let div = document.getElementById("pastbrowser");
+  let content = "<div class='datepicker'>Pick a Date to Revisit an Old Game<br/><form><input type='date' id='pastDate' /> <input type='button' onclick='goToDate();' value='Go'/></form></div>";
+  div.innerHTML = content;
+  div.style.visible = 'block';
+}
+
 
 function logPlay(wasValid){
   let xmlhttp = new XMLHttpRequest();

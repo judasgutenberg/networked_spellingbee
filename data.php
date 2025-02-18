@@ -204,21 +204,28 @@ if($_POST) {
 			}  
 		}
 	} 
-} else { //otherwise just give me the day's data from the New Yawk Times!
-	$url = "https://www.nytimes.com/puzzles/spelling-bee/";
-	$src = getCachedContent($url, "cache.txt");
-	if (strlen($src) > 0) {
-		$centerLetter = getValueBetween($src, '"centerLetter":"', '"');
-		$outerLetters = getValueBetween($src, '"outerLetters":[', ']');
-		$answers = getValueBetween($src, '"answers":[', ']');
-		$panagrams = getValueBetween($src, '"pangrams":[', ']');
-		$out = [
-			"letters" => $centerLetter . implode("", str_getcsv($outerLetters)),
-			"outerLetters" => str_getcsv($outerLetters),
-			"centerLetter" => str_getcsv($centerLetter),
-			"answers" => str_getcsv($answers),
-			"panagrams" => str_getcsv($panagrams)
-		];
+} else { //otherwise just give me the day's data from the New Yawk Times or get data from an earlier game
+	if(gvfa('date', $_REQUEST) !=""){
+		$sql = "SELECT * FROM game WHERE game_date > '" . gvfw('date') . "' AND game_date< DATE_ADD('" . gvfw('date') . "', INTERVAL 1 DAY) AND game_type_id=" . $gameTypeId ;
+		$result = mysqli_query($conn, $sql);
+		$gameData = mysqli_fetch_array($result);
+		$out = json_decode($gameData["settings"]);
+	} else {
+		$url = "https://www.nytimes.com/puzzles/spelling-bee/";
+		$src = getCachedContent($url, "cache.txt");
+		if (strlen($src) > 0) {
+			$centerLetter = getValueBetween($src, '"centerLetter":"', '"');
+			$outerLetters = getValueBetween($src, '"outerLetters":[', ']');
+			$answers = getValueBetween($src, '"answers":[', ']');
+			$panagrams = getValueBetween($src, '"pangrams":[', ']');
+			$out = [
+				"letters" => $centerLetter . implode("", str_getcsv($outerLetters)),
+				"outerLetters" => str_getcsv($outerLetters),
+				"centerLetter" => str_getcsv($centerLetter),
+				"answers" => str_getcsv($answers),
+				"panagrams" => str_getcsv($panagrams)
+			];
+		}
 	}
 	die(base64_encode(json_encode($out)));
 }
@@ -232,10 +239,10 @@ function obfuscateWords($words) {
 function getCachedContent($url, $cacheFile) {
 	// Get current time and today's date at 4:00 AM
 	$currentTime = time();
-	$earlyToday = strtotime('today 7:00 AM');
+	$earlyToday = strtotime('today 8:00 AM');
 	// If it's already past 4:00 AM today, use that timestamp; otherwise, use 4:00 AM yesterday
 	if ($currentTime < $earlyToday) {
-		$earlyToday = strtotime('yesterday 7:00 AM');
+		$earlyToday = strtotime('yesterday 8:00 AM');
 	}
 	// Check if cache file exists and was modified after 4:00 AM today
 	if (file_exists($cacheFile) && filemtime($cacheFile) > $earlyToday) {
