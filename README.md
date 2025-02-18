@@ -20,6 +20,8 @@ The game includes the state of play you've reached in the two grids on the New Y
 
 If others are playing the same game as you are and you are both logged in, you can see their live scores and even send them messages (a feature that doesn't turn out to be very popular).  
 
+If you've played games in the past and want to return to them to keep playing, you can navigate to them by clicking "see past games" in the navigation.  There you can also see the state of other people who played the game on that day as well.
+
 
 As with my "Simple Spelling Bee" repo, this code uses no frameworks or Javascript libraries. I do have my own single-file PHP library I use for things, which I pared down to the minimum necessary to get the user creation and login system working.
 
