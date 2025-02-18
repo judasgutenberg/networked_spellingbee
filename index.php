@@ -73,7 +73,13 @@ if(!$user) {
       <a href='javascript:showStats()'>show your stats</a><br/>
       <a href='javascript:showHints()'>show hints</a><br/>
       <a href='javascript:showOthers()'>show others</a><br/>
-      <a href='javascript:revisitPast()'>see past games</a><br/>
+      <?php if(gvfw("date") != "") { 
+        
+        echo "on " . gvfw("date") ." (<a style='color:red' href=.>x</a>)";
+       } else { 
+        echo "<a href='javascript:revisitPast()'>see past games</a><br/>";
+      }
+      ?>
       <br/><br/>
       <a href='https://github.com/judasgutenberg/networked_spellingbee' target='_new'>source code</a><br/>
     </div>
