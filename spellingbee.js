@@ -126,6 +126,14 @@ function deobfuscate(phrase) {
   return atob(phrase);
 }
 
+function closeDivButton() {
+  return '<div class="close-btn" onclick="hideDiv(this)">X</div>';
+}
+
+function hideDiv(button) {
+  button.parentElement.style.display = "none";
+}
+
 function getGameDataFromNYT() {
   const queryParams = new URLSearchParams(window.location.search);
   const date = queryParams.get('date');
@@ -189,9 +197,9 @@ function goToDate(date){
 
 function revisitPast() {
   let div = document.getElementById("pastbrowser");
-  let content = "<div class='datepicker'>Pick a Date to Revisit an Old Game<br/><form><input type='date' id='pastDate' /> <input type='button' onclick='goToDate();' value='Go'/></form></div>";
+  let content = closeDivButton() + "<div class='datepicker'>Pick a Date to Revisit an Old Game<br/><form><input type='date' id='pastDate' /> <input type='button' onclick='goToDate();' value='Go'/></form></div>";
   div.innerHTML = content;
-  div.style.visible = 'block';
+  div.style.display = 'block';
 }
 
 function isDateBeforeNow(dateString) {
@@ -525,7 +533,7 @@ function pointLevels(){
     let levelValue = Math.round(totalScore * value);
     out += "<div class='level'>" + key + ": " + parseInt(levelValue) + "</div>";
   }
-  document.getElementById("levellist").innerHTML = out;
+  document.getElementById("levellist").innerHTML = closeDivButton() + out;
 }
 
 function showMessages(messages) {
@@ -557,7 +565,7 @@ function otherFoundWords(userId) {
     let answers = data["answers"];
     let foundWords =  data["found_words"];
     let panagrams = data["panagrams"];
-    yesterdayAnswers.innerHTML = "<div class='header'>"  + data["email"]; + "'s Game</div>";
+    yesterdayAnswers.innerHTML = closeDivButton() +  "<div class='header'>"  + data["email"]; + "'s Game</div>";
     yesterdayAnswers.innerHTML += "<div class='header' style='text-decoration:underline'><i style='color:red'>" + data["centerLetter"]+ "</i>" + data["outerLetters"].join("") + "</div>";
     for(let word of answers){
       let pgIndicationBegin = "";
@@ -618,7 +626,7 @@ function others(otherScores){
     out += "</tr>\n";
   }
   out += "</table>\n";
-  document.getElementById("others").innerHTML = out;
+  document.getElementById("others").innerHTML = closeDivButton() +  out;
 }
 
 function timeAgo(sqlDateTime) {
@@ -718,7 +726,7 @@ function yesterday() { //show the words you didn't get yesterday, assuming you p
       let answers = data["answers"];
       let foundWords =  data["found_words"];
       let panagrams = data["panagrams"];
-      yesterdayAnswers.innerHTML = "<div class='header'>Yesterday's Game</div>";
+      yesterdayAnswers.innerHTML = closeDivButton() +  "<div class='header'>Yesterday's Game</div>";
       yesterdayAnswers.innerHTML += "<div class='header' style='text-decoration:underline'><i style='color:red'>" + data["centerLetter"]+ "</i>" + data["outerLetters"].join("") + "</div>";
       for(let word of answers){
         let pgIndicationBegin = "";
@@ -870,7 +878,7 @@ function stats(wordList, div){
   if(div == "hints"){
     panagramHintInfo = panagramHints();
   }
-  document.getElementById(div).innerHTML = out + out2 + panagramHintInfo;
+  document.getElementById(div).innerHTML = closeDivButton() + out + out2 + panagramHintInfo;
 }
 
 function shuffle(){

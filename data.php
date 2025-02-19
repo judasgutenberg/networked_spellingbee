@@ -143,6 +143,10 @@ if($_POST) {
 				$out = ["user_id" => $userId, "game_id"=> $gameId , "found_words" => $latestWords, "error" => $error];
 			}
 		}
+		$answers = [];
+		$panagrams = [];
+		$centerLetter = [];
+		$outerLetters = [];
 		if($action == "getanswers") {
 			$sql = "SELECT * FROM game WHERE game_id = " . intval($gameId);
 			$gameResult = mysqli_query($conn, $sql);
@@ -152,10 +156,12 @@ if($_POST) {
 			if($gameRecords && count($gameRecords)>0) {
 				$gameRecord = $gameRecords[0];
 				$settings = json_decode($gameRecord["settings"], true);
-				$answers = $settings["answers"];
-				$panagrams = $settings["panagrams"];
-				$centerLetter = $settings["centerLetter"];
-				$outerLetters = $settings["outerLetters"];
+				if($settings){
+					$answers = $settings["answers"];
+					$panagrams = $settings["panagrams"];
+					$centerLetter = $settings["centerLetter"];
+					$outerLetters = $settings["outerLetters"];
+				}
 			}
 			if($otherUserId > 0) {
         $sql = "SELECT * FROM user WHERE  user_id = " . intval($otherUserId);
