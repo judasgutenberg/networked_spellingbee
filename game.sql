@@ -45,7 +45,7 @@ CREATE TABLE message(
   dest_user_id INT,
   game_id INT NULL,
   message TEXT NULL,
-   has_been_read TINYINT DEFAULT 0,
+  has_been_read TINYINT DEFAULT 0,
   created DATETIME
 );
  
