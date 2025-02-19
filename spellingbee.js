@@ -509,7 +509,7 @@ function getLevelOrdinal(fraction) {
   let out = 9;
   //console.log(Object.entries(levelValues));
   for (const [key, value] of Object.entries(levelValues)) {
-    if (Math.floor(fraction * totalScore) >=  Math.floor(value * totalScore)) {
+    if (Math.round(fraction * totalScore) >=  Math.round(value * totalScore)) {
           return out;
       }
       out--;
@@ -520,7 +520,7 @@ function getLevelOrdinal(fraction) {
 
 function getLevel(fraction) {
   for (const [key, value] of Object.entries(levelValues)) {
-      if (Math.floor(fraction * totalScore) >=  Math.floor(value * totalScore)) {
+      if (Math.round(fraction * totalScore) >=  Math.round(value * totalScore)) {
           return key;
       }
   }
@@ -749,8 +749,9 @@ function yesterday() { //show the words you didn't get yesterday, assuming you p
   const params = new URLSearchParams();
   params.append("auth", auth);
   params.append("game_type_id", gameTypeId);
-  params.append("game_id", gameId -1);
+  params.append("game_id", gameId);
   params.append("action", "getanswers");
+  params.append("subaction", "previous");
   let url = "data.php"; 
   //console.log(url);
   xmlhttp.open("POST", url, true);

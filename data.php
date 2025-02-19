@@ -14,6 +14,7 @@ $date = new DateTime("now", new DateTimeZone('America/New_York'));//obviously, y
 $formatedDateTime =  $date->format('Y-m-d H:i:s');
 $conn = mysqli_connect($servername, $username, $password, $database);
 $action = gvfw("action");
+$subAction = gvfw("subaction");
 $auth = gvfw("auth");
 $data = gvfw("data");
 $userData = gvfw("user_data");
@@ -148,7 +149,11 @@ if($_POST) {
 		$centerLetter = [];
 		$outerLetters = [];
 		if($action == "getanswers") {
-			$sql = "SELECT * FROM game WHERE game_id = " . intval($gameId);
+			if($subAction == "previous") {
+				$sql = "SELECT * FROM game WHERE game_id < " . intval($gameId) . " LIMIT 0, 1"; //get the previous game
+			} else {
+				$sql = "SELECT * FROM game WHERE game_id = " . intval($gameId);
+			}
 			$gameResult = mysqli_query($conn, $sql);
 			$error = mysqli_error($conn);
 			$gameRecords = mysqli_fetch_all($gameResult, MYSQLI_ASSOC);
