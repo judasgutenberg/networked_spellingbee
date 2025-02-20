@@ -726,6 +726,8 @@ function yesterday() { //show the words you didn't get yesterday, assuming you p
       let answers = data["answers"];
       let foundWords =  data["found_words"];
       let panagrams = data["panagrams"];
+      console.log(foundWords);
+      console.log(answers);
       yesterdayAnswers.innerHTML = closeDivButton() +  "<div class='header'>Yesterday's Game</div>";
       yesterdayAnswers.innerHTML += "<div class='header' style='text-decoration:underline'><i style='color:red'>" + data["centerLetter"]+ "</i>" + data["outerLetters"].join("") + "</div>";
       for(let word of answers){

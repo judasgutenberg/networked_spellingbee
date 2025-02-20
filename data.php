@@ -167,23 +167,25 @@ if($_POST) {
 					$centerLetter = $settings["centerLetter"];
 					$outerLetters = $settings["outerLetters"];
 				}
+				$recoveredGameId = $gameRecord["game_id"];
 			}
 			if($otherUserId > 0) {
-        $sql = "SELECT * FROM user WHERE  user_id = " . intval($otherUserId);
-        $userResult = mysqli_query($conn, $sql);
-        $error = mysqli_error($conn);
-        $userRecords = mysqli_fetch_all($userResult, MYSQLI_ASSOC);
-        if($userRecords && count($userRecords)>0) {
-          $userRecord = $userRecords[0];
-          $email = $userRecord ["email"];
+				$sql = "SELECT * FROM user WHERE  user_id = " . intval($otherUserId);
+				$userResult = mysqli_query($conn, $sql);
+				$error = mysqli_error($conn);
+				$userRecords = mysqli_fetch_all($userResult, MYSQLI_ASSOC);
+				if($userRecords && count($userRecords)>0) {
+					$userRecord = $userRecords[0];
+					$email = $userRecord ["email"];
 				}
         
-        $sql = "SELECT * FROM user_game WHERE game_id = " . intval($gameId) . " AND user_id = " . intval($otherUserId);
-        
+        		//$sql = "SELECT * FROM user_game WHERE game_id = " . intval($gameId) . " AND user_id = " . intval($otherUserId);
+				$userIdForGameLookup = intval($otherUserId);
 			} else {
-        $sql = "SELECT * FROM user_game WHERE game_id = " . intval($gameId) . " AND user_id = " . intval($userId);
+        		//$sql = "SELECT * FROM user_game WHERE game_id = " . intval($gameId) . " AND user_id = " . intval($userId);
+				$userIdForGameLookup = intval($userId);
 			}
-			
+			$sql = "SELECT * FROM user_game WHERE user_id=" . $userIdForGameLookup . "  AND game_id = " . intval($recoveredGameId);
 			$userResult = mysqli_query($conn, $sql);
 			$error = mysqli_error($conn);
 			$userRecords = mysqli_fetch_all($userResult, MYSQLI_ASSOC);
