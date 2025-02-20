@@ -21,6 +21,7 @@ let levelValues = {"Queen Bee": 1, "Genius": 0.7, "Amazing": 0.5, "Great": 0.4, 
 let storedColor = "#ffffff";
 let storedBgColor = "#ffffff";
 let yourStatArray = {"oneLetter":{}, "twoLetter":{}};
+let highestZ = 2000;
 
 
 function generateHexagons() {
@@ -127,11 +128,34 @@ function deobfuscate(phrase) {
 }
 
 function closeDivButton() {
-  return '<div class="close-btn" onclick="hideDiv(this)">X</div>';
+  let out = '<div class="dragbar" onmousedown="startDrag(event, this)">';
+  out += '<div class="close-btn" onclick="hideDiv(this)">X</div>';
+  out += '</div>';
+  return out;
 }
 
 function hideDiv(button) {
-  button.parentElement.style.display = "none";
+  button.parentElement.parentElement.style.display = "none";
+}
+
+function startDrag(event, dragbar) {
+  const dragDiv = dragbar.parentElement;
+  dragDiv.style.zIndex = highestZ++;
+  let offsetX = event.clientX - dragDiv.offsetLeft;
+  let offsetY = event.clientY - dragDiv.offsetTop;
+
+  function moveAt(e) {
+      dragDiv.style.left = e.clientX - offsetX + "px";
+      dragDiv.style.top = e.clientY - offsetY + "px";
+  }
+
+  function stopDrag() {
+      document.removeEventListener("mousemove", moveAt);
+      document.removeEventListener("mouseup", stopDrag);
+  }
+
+  document.addEventListener("mousemove", moveAt);
+  document.addEventListener("mouseup", stopDrag);
 }
 
 function getGameDataFromNYT() {
@@ -197,7 +221,7 @@ function goToDate(date){
 
 function revisitPast() {
   let div = document.getElementById("pastbrowser");
-  let content = closeDivButton() + "<div class='datepicker'>Pick a Date to Revisit an Old Game<br/><form><input type='date' id='pastDate' /> <input type='button' onclick='goToDate();' value='Go'/></form></div>";
+  let content = closeDivButton() + "Pick a Date to Revisit an Old Game<br/><form><input type='date' id='pastDate' /> <input type='button' onclick='goToDate();' value='Go'/></form>";
   div.innerHTML = content;
   div.style.display = 'block';
 }
