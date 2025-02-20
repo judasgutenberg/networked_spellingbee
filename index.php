@@ -77,7 +77,7 @@ if(!$user) {
         
         echo "on " . gvfw("date") ." (<a style='color:red' href=.>x</a>)";
        } else { 
-        echo "<a href='javascript:revisitPast()'>see past games</a><br/>";
+        echo "<a href='javascript:revisitPast()'>revisit old game</a><br/>";
       }
       ?>
       <br/><br/>

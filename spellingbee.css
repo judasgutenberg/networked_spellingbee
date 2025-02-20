@@ -167,6 +167,8 @@
       #levellist {
         position: absolute;
         padding: 4px;
+        padding-top:0px;
+        margin-top:0px;
         top:120px;
         left:550px;
         width: 140px;
@@ -182,7 +184,7 @@
       #stats {
         position: absolute;
         padding: 4px;
-        top: 300px;
+        top: 304px;
         left:550px;
         width: 140px;
         font-size:12px;
@@ -197,7 +199,7 @@
       #hints {
         position: absolute;
         padding: 4px;
-        top: 300px;
+        top: 304px;
         left:710px;
         width: 200px;
         font-size:12px;
@@ -212,7 +214,8 @@
       .header{
         font-size:14px;
         font-weight: bold;
-        padding-top:5px;
+        padding-top: 0px;
+        margin-top: 0px;
       }
 
       #foundwordslabel{
@@ -221,14 +224,6 @@
         left:340px;
         font-size:14px;
         color:#ffffff;
-      }
-
-      .datepicker{
-        width: 300px;
-        height: 100px;
-        background-color: #ffffff;
-        border:1px solid #0066ff;
-        border-radius: 6px;
       }
 
       #pastbrowser{
@@ -270,16 +265,16 @@
 
       .close-btn {
         position: absolute;
-        top: -3px;
-        right: -3px;
-        width: 20px;
-        height: 20px;
+        top: -2px;
+        right: -4px;
+        width: 16px;
+        height: 16px;
         background-color: red;
         color: white;
-        font-size: 14px;
+        font-size: 11px;
         font-weight: bold;
         text-align: center;
-        line-height: 20px;
+        line-height: 16px;
         cursor: pointer;
         border-radius: 50%;
     }

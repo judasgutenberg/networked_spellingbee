@@ -135,7 +135,8 @@ function closeDivButton() {
 }
 
 function hideDiv(button) {
-  button.parentElement.parentElement.style.display = "none";
+  let thisDiv = button.parentElement.parentElement;
+  thisDiv.style.display = "none";
 }
 
 function startDrag(event, dragbar) {
