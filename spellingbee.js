@@ -222,7 +222,7 @@ function goToDate(date){
 
 function revisitPast() {
   let div = document.getElementById("pastbrowser");
-  let content = closeDivButton() + "Pick a Date to Revisit an Old Game<br/><form><input type='date' id='pastDate' /> <input type='button' onclick='goToDate();' value='Go'/></form>";
+  let content = closeDivButton() + "<div class='header'>Pick a Date to Revisit an Old Game</div><form><input type='date' id='pastDate' /> <input type='button' onclick='goToDate();' value='Go'/></form>";
   div.innerHTML = content;
   div.style.display = 'block';
 }

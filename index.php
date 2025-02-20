@@ -83,13 +83,13 @@ if(!$user) {
       <br/><br/>
       <a href='https://github.com/judasgutenberg/networked_spellingbee' target='_new'>source code</a><br/>
     </div>
-    <div id="levellist"></div>
-    <div id="stats"></div>
-    <div id="hints"></div>
-    <div id="others"></div>
+    <div id="levellist" class='tempwindow'></div>
+    <div id="stats" class='tempwindow'></div>
+    <div id="hints" class='tempwindow'></div>
+    <div id="others" class='tempwindow'></div>
     <div id="foundwordslabel" >Words You Have Found</div>
     <div id="config"><input onchange='updateFoundWords()' type='checkbox' id='sortAlphabetically'/>sort alphabetically</div>
-    <div id="pastbrowser"></div>
+    <div id="pastbrowser" class='tempwindow'></div>
     <div id="foundwords" ><div id="foundwords1" ></div><div id="foundwords2" ></div></div>
     <div id="score" class='score'></div>
     <div id="currentword"></div>
