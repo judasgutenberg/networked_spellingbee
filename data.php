@@ -150,7 +150,7 @@ if($_POST) {
 		$outerLetters = [];
 		if($action == "getanswers") {
 			if($subAction == "previous") {
-				$sql = "SELECT * FROM game WHERE game_type_id=" . $gameTypeId . " AND game_id < " . intval($gameId) . " LIMIT 0, 1"; //get the previous game
+				$sql = "SELECT * FROM game WHERE game_type_id=" . $gameTypeId . " AND game_id < " . intval($gameId) . " ORDER BY game_date DESC LIMIT 0, 1"; //get the previous game
 			} else {
 				$sql = "SELECT * FROM game WHERE game_type_id=" . $gameTypeId . " AND game_id = " . intval($gameId);
 			}
