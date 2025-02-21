@@ -576,6 +576,15 @@ function showMessages(messages) {
 
 }
 
+function briefDate(mysqlDatetime) {
+  const date = new Date(mysqlDatetime);
+  return date.toLocaleDateString('en-US', {
+      month: 'short', // "Jan"
+      day: 'numeric', // "1"
+      year: 'numeric' // "'24"
+  }).replace(',', ''); // Removes comma after the day
+}
+
 function otherFoundWords(userId) {
   if(auth == ""){
     alert("This feature only works for logged-in users.");
@@ -590,7 +599,8 @@ function otherFoundWords(userId) {
     let answers = data["answers"];
     let foundWords =  data["found_words"];
     let panagrams = data["panagrams"];
-    yesterdayAnswers.innerHTML = closeDivButton() +  "<div class='header'>"  + data["email"]; + "'s Game</div>";
+    let gameDate = data["game_date"];
+    yesterdayAnswers.innerHTML = closeDivButton() + "<em>" + data["email"] + "</em>" + "'s<div class='header'>Game on " + briefDate(gameDate) + "</div>";
     yesterdayAnswers.innerHTML += "<div class='header' style='text-decoration:underline'><i style='color:red'>" + data["centerLetter"]+ "</i>" + data["outerLetters"].join("") + "</div>";
     for(let word of answers){
       let pgIndicationBegin = "";
@@ -751,9 +761,12 @@ function yesterday() { //show the words you didn't get yesterday, assuming you p
       let answers = data["answers"];
       let foundWords =  data["found_words"];
       let panagrams = data["panagrams"];
+      let gameDate = data['game_date'];
       console.log(foundWords);
       console.log(answers);
-      yesterdayAnswers.innerHTML = closeDivButton() +  "<div class='header'>Yesterday's Game</div>";
+      
+      yesterdayAnswers.innerHTML = closeDivButton() + "<div class='header'>Your Game on " + briefDate(gameDate) + "</div>";
+     // yesterdayAnswers.innerHTML = closeDivButton() +  "<div class='header'>Yesterday's Game</div>";
       yesterdayAnswers.innerHTML += "<div class='header' style='text-decoration:underline'><i style='color:red'>" + data["centerLetter"]+ "</i>" + data["outerLetters"].join("") + "</div>";
       for(let word of answers){
         let pgIndicationBegin = "";

@@ -168,6 +168,7 @@ if($_POST) {
 					$outerLetters = $settings["outerLetters"];
 				}
 				$recoveredGameId = $gameRecord["game_id"];
+				$gameDate = $gameRecord["game_date"];
 			}
 			if($otherUserId > 0) {
 				$sql = "SELECT * FROM user WHERE  user_id = " . intval($otherUserId);
@@ -196,7 +197,7 @@ if($_POST) {
 				$premiumCount = $userRecord["premium_count"];
 				$userSettings = json_decode($userRecord["settings"], true);
 				$foundWords = $userSettings["found_words"];
-				$out =  ["email" => $email, "game_id"=> $gameId , "found_words" => $foundWords, "score"=>$score, 
+				$out =  ["email" => $email, "game_id"=> $gameId ,  "game_date"=> $gameDate , "found_words" => $foundWords, "score"=>$score, 
 					"answers"=> $answers, "panagrams"=> $panagrams, "centerLetter" => $centerLetter, "outerLetters" => $outerLetters,
 					"item_count"=>$itemCount, "premium_count"=> $premiumCount, "error" => $error
 				];
