@@ -7,7 +7,7 @@ if(array_key_exists('HTTP_REFERER',  $_SERVER)) {
 }
 include("config.php");
 include("site_functions.php");
-$version = 1.33;
+$version = 1.35;
 $conn = mysqli_connect($servername, $username, $password, $database);
 $user = logIn();
 $table = strtolower(filterStringForSqlEntities(gvfw('table', "user"))); 
@@ -60,8 +60,7 @@ if(!$user) {
     <link rel="icon" type="image/x-icon" href="./favicon.ico" />
 </head>
 <body>
-
- <div class="centered-div" id="top-div">
+  <div class="centered-div" id="top-div">
     <div id="login" >
           <?php echo $content; ?>
     </div>
@@ -76,7 +75,7 @@ if(!$user) {
       <?php if(gvfw("date") != "") { 
         
         echo "on " . gvfw("date") ." (<a style='color:red' href=.>x</a>)";
-       } else { 
+        } else { 
         echo "<a href='javascript:revisitPast()'>revisit old game</a>";
       }
       ?>
@@ -89,8 +88,11 @@ if(!$user) {
     <div id="others" class='tempwindow'></div>
     <div id="foundwordslabel" >Words You Have Found</div>
     <div id="config"><input onchange='updateFoundWords()' type='checkbox' id='sortAlphabetically'/>sort alphabetically</div>
+    <div id="foundwords" >
+        <div id="foundwords1" ></div>
+        <div id="foundwords2" ></div>
+    </div>
     <div id="pastbrowser" class='tempwindow'></div>
-    <div id="foundwords" ><div id="foundwords1" ></div><div id="foundwords2" ></div></div>
     <div id="score" class='score'></div>
     <div id="currentword"></div>
     <div id="communicationmessage" ><script>document.write(closeDivButton())</script>
@@ -102,22 +104,22 @@ if(!$user) {
         </div>
       </form>
     </div>
- </div>
-<div id="hexagon-container"></div>
-  <div class="centered-div" id="top-div">
-  <div class='buttons'>
-    <button class='largebutton' data-key="Backspace" onclick='return(deleteLetter())' >delete</button>
-    <button class='largebutton' data-key="Enter" onclick='return(enterWord())' >enter</button>
-    <button class='largebutton' data-key=" " onclick='return(shuffle())' >shuffle</button>
   </div>
-<script>
-  <?php 
-    if($user){
-      echo "let auth = '" . $encryptedUser . "';". PHP_EOL;
-    } else {
-      echo "let auth = '';". PHP_EOL;
-    }
-    ?>
-</script>
+  <div id="hexagon-container"></div>
+    <div class="centered-div" id="top-div">
+    <div class='buttons'>
+      <button class='largebutton' data-key="Backspace" onclick='return(deleteLetter())' >delete</button>
+      <button class='largebutton' data-key="Enter" onclick='return(enterWord())' >enter</button>
+      <button class='largebutton' data-key=" " onclick='return(shuffle())' >shuffle</button>
+    </div>
+  <script>
+    <?php 
+      if($user){
+        echo "let auth = '" . $encryptedUser . "';". PHP_EOL;
+      } else {
+        echo "let auth = '';". PHP_EOL;
+      }
+      ?>
+  </script>
 </body>
 </html>
