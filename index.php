@@ -93,7 +93,7 @@ if(!$user) {
     <div id="foundwords" ><div id="foundwords1" ></div><div id="foundwords2" ></div></div>
     <div id="score" class='score'></div>
     <div id="currentword"></div>
-    <div id="communicationmessage" >
+    <div id="communicationmessage" ><script>document.write(closeDivButton())</script>
       <div id='receivedmessage' class='receivedmessage'></div>
       <form>
         <div>
