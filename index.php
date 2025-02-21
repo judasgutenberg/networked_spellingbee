@@ -7,7 +7,7 @@ if(array_key_exists('HTTP_REFERER',  $_SERVER)) {
 }
 include("config.php");
 include("site_functions.php");
-$version = 1.32;
+$version = 1.33;
 $conn = mysqli_connect($servername, $username, $password, $database);
 $user = logIn();
 $table = strtolower(filterStringForSqlEntities(gvfw('table', "user"))); 
@@ -77,10 +77,10 @@ if(!$user) {
         
         echo "on " . gvfw("date") ." (<a style='color:red' href=.>x</a>)";
        } else { 
-        echo "<a href='javascript:revisitPast()'>revisit old game</a><br/>";
+        echo "<a href='javascript:revisitPast()'>revisit old game</a>";
       }
       ?>
-      <br/><br/>
+      <br/><br/> 
       <a href='https://github.com/judasgutenberg/networked_spellingbee' target='_new'>source code</a><br/>
     </div>
     <div id="levellist" class='tempwindow'></div>
