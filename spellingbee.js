@@ -127,7 +127,7 @@ function deobfuscate(phrase) {
   return atob(phrase);
 }
 
-function closeDivButton() {
+function topWindowControls() {
   let out = '<div class="dragbar" onmousedown="startDrag(event, this)">';
   out += '<div class="close-btn" onclick="hideDiv(this)">X</div>';
   out += '</div>';
@@ -222,7 +222,7 @@ function goToDate(date){
 
 function revisitPast() {
   let div = document.getElementById("pastbrowser");
-  let content = closeDivButton() + "<div class='header'>Pick a Date to Revisit an Old Game</div><form><input type='date' id='pastDate' /> <input type='button' onclick='goToDate();' value='Go'/></form>";
+  let content = topWindowControls() + "<div class='header'>Pick a Date to Revisit an Old Game</div><form><input type='date' id='pastDate' /> <input type='button' onclick='goToDate();' value='Go'/></form>";
   div.innerHTML = content;
   div.style.display = 'block';
 }
@@ -558,7 +558,7 @@ function pointLevels(){
     let levelValue = Math.round(totalScore * value);
     out += "<div class='level'>" + key + ": " + parseInt(levelValue) + "</div>";
   }
-  document.getElementById("levellist").innerHTML = closeDivButton() + out;
+  document.getElementById("levellist").innerHTML = topWindowControls() + out;
 }
 
 function showMessages(messages) {
@@ -600,7 +600,7 @@ function otherFoundWords(userId) {
     let foundWords =  data["found_words"];
     let panagrams = data["panagrams"];
     let gameDate = data["game_date"];
-    yesterdayAnswers.innerHTML = closeDivButton() + "<em>" + data["email"] + "</em>" + "'s<div class='header'>Game on " + briefDate(gameDate) + "</div>";
+    yesterdayAnswers.innerHTML = topWindowControls() + "<em>" + data["email"] + "</em>" + "'s<div class='header'>Game on " + briefDate(gameDate) + "</div>";
     yesterdayAnswers.innerHTML += "<div class='header' style='text-decoration:underline'><i style='color:red'>" + data["centerLetter"]+ "</i>" + data["outerLetters"].join("") + "</div>";
     for(let word of answers){
       let pgIndicationBegin = "";
@@ -661,12 +661,13 @@ function others(otherScores){
     out += "</tr>\n";
   }
   out += "</table>\n";
-  document.getElementById("others").innerHTML = closeDivButton() +  out;
+  document.getElementById("others").innerHTML = topWindowControls() +  out;
 }
 
 function timeAgo(sqlDateTime) {
   const now = new Date();
-  const past = new Date(sqlDateTime);
+  const past = new Date(sqlDateTime.replace(" ", "T")); // Fix for Safari 11
+  if (isNaN(past.getTime())) return "Invalid date"; // Handle parsing failure
   const diffInSeconds = Math.floor((now - past) / 1000);
   if(diffInSeconds < 0){
     diffInSeconds = 0;
@@ -765,8 +766,8 @@ function yesterday() { //show the words you didn't get yesterday, assuming you p
       console.log(foundWords);
       console.log(answers);
       
-      yesterdayAnswers.innerHTML = closeDivButton() + "<div class='header'>Your Game on " + briefDate(gameDate) + "</div>";
-     // yesterdayAnswers.innerHTML = closeDivButton() +  "<div class='header'>Yesterday's Game</div>";
+      yesterdayAnswers.innerHTML = topWindowControls() + "<div class='header'>Your Game on " + briefDate(gameDate) + "</div>";
+     // yesterdayAnswers.innerHTML = topWindowControls() +  "<div class='header'>Yesterday's Game</div>";
       yesterdayAnswers.innerHTML += "<div class='header' style='text-decoration:underline'><i style='color:red'>" + data["centerLetter"]+ "</i>" + data["outerLetters"].join("") + "</div>";
       for(let word of answers){
         let pgIndicationBegin = "";
@@ -919,7 +920,7 @@ function stats(wordList, div){
   if(div == "hints"){
     panagramHintInfo = panagramHints();
   }
-  document.getElementById(div).innerHTML = closeDivButton() + out + out2 + panagramHintInfo;
+  document.getElementById(div).innerHTML = topWindowControls() + out + out2 + panagramHintInfo;
 }
 
 function shuffle(){

@@ -7,7 +7,7 @@ if(array_key_exists('HTTP_REFERER',  $_SERVER)) {
 }
 include("config.php");
 include("site_functions.php");
-$version = 1.36;
+$version = 1.37;
 $conn = mysqli_connect($servername, $username, $password, $database);
 $user = logIn();
 $table = strtolower(filterStringForSqlEntities(gvfw('table', "user"))); 
@@ -95,7 +95,7 @@ if(!$user) {
     <div id="pastbrowser" class='tempwindow'></div>
     <div id="score" class='score'></div>
     <div id="currentword"></div>
-    <div id="communicationmessage" ><script>document.write(closeDivButton())</script>
+    <div id="communicationmessage" ><script>document.write(topWindowControls())</script>
       <div id='receivedmessage' class='receivedmessage'></div>
       <form>
         <div>

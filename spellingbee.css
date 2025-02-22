@@ -488,6 +488,7 @@
         height: 110px;
         background-color: #eeee99;
         clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0% 50%);
+        -webkit-clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0% 50%);
         display: flex;
         justify-content: center;
         align-items: center;
