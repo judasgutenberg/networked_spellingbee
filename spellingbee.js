@@ -192,7 +192,7 @@ function getGameDataFromNYT() {
     };
     let url = "";
     if(date) {
-      url = "data.php?game_type_id=1&date=" + date;
+      url = "data.php?game_type_id=" + gameTypeId + "&date=" + date;
     } else {
       url = "data.php";
     }
