@@ -32,7 +32,7 @@ Because my wife Gretchen and I kept seeing an extra "a" that wasn't there in "pa
 Note: this version caches data from the New York Times to a file, so you might encounter permission problems that will cause the page not to render. If so, liberalize the write permissions in the directory this code is served from. Or alter the path of the cached file and liberalize the permissions that points to.
 
 # Known Bugs #
-1. The calculation of what level you've reached is occasionally off by one, so you might linger too long in a level or get out of it prematurely under some circumstances.  I've had trouble tracking down the source of this issue, but it's probably a case of using round() instead of floor().
-2. Some of the comments you get when you attempt to play a non-word or word you've already played do not make grammatical sense or are inappropriate for the context.  At this point I kind of like the awkwardness, which reminds me of poorly-translated Japanese videogames.
+1. The calculation of what level you've reached is occasionally off by one, so you might linger too long in a level or get out of it prematurely under some circumstances.  I've had trouble tracking down the source of this issue, but it's probably a case of using round() instead of floor(). UPDATE: I think I have fixed this, but please tell me if you still see this happening.
+2. Some of the messages you get when you attempt to play a non-word or word you've already played do not make grammatical sense or are inappropriate for the context.  At this point I kind of like the awkwardness, which reminds me of poorly-translated Japanese videogames.
 3. Games with very large numbers of words can cause the found word list to expand into the area occupied by the "Others Playing" window.  I've made such windows draggable to help with this situation.
 4. Games featuring especially long words can cause the stats grids to burst out of the "Your Stats" and "Hints" windows.
