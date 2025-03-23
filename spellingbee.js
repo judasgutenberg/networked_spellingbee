@@ -332,7 +332,7 @@ function updateGameDatabase(justPoll){
           foundWords = foundWordsFromServer;
         }
         console.log(foundWords);
-        //console.log(foundWords);dd
+        //console.log(foundWords);
         updateFoundWords();
         //console.log(otherScores);
         recalculateScore();
@@ -357,6 +357,7 @@ function updateGameDatabase(justPoll){
   if(justPoll){
     //console.log("polling");
     params.append("action", "poll");
+    params.append("random", Math.random());
   } else {
     params.append("action", "savegame");
   }
@@ -668,7 +669,7 @@ function timeAgo(sqlDateTime) {
   const now = new Date();
   const past = new Date(sqlDateTime.replace(" ", "T")); // Fix for Safari 11
   if (isNaN(past.getTime())) return "Invalid date"; // Handle parsing failure
-  const diffInSeconds = Math.floor((now - past) / 1000);
+  let diffInSeconds = Math.floor((now - past) / 1000);
   if(diffInSeconds < 0){
     diffInSeconds = 0;
   }
