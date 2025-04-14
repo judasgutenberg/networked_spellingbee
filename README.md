@@ -26,7 +26,7 @@ If you've played games in the past and want to return to them to keep playing, y
 As with my "Simple Spelling Bee" repo, this code uses no frameworks or Javascript libraries. I do have my own single-file PHP library I use for things, which I pared down to the absolute minimum necessary to get the user creation and login system working.  So far I haven't built out a way for users to change their passwords.
 
 
-Because my wife Gretchen and I kept seeing an extra "a" that wasn't there in "pangram," I have used the term "panagram" for that concept in this version of the game.
+Because my wife Gretchen and I kept seeing an extra "a" that wasn't there in the word "pangram," I have used the term "panagram" for that concept in this version of the game.
 
 
 Note: this version caches data from the New York Times to a file, so you might encounter permission problems that will cause the page not to render. If so, liberalize the write permissions in the directory this code is served from. Or alter the path of the cached file and liberalize the permissions that points to.
