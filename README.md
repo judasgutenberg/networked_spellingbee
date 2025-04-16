@@ -23,7 +23,7 @@ If others are playing the same game as you are and you are both logged in, you c
 If you've played games in the past and want to return to them to keep playing, you can navigate to them by clicking "see past games" in the navigation. This brings up a calendar interface.  Once you use that to navigate to a historic game, you can see the state of other people who played the game on that day as well.
 
 
-As with my "Simple Spelling Bee" repo, this code uses no frameworks or Javascript libraries. I do have my own single-file PHP library I use for things, which I pared down to the absolute minimum necessary to get the user creation and login system working.  So far I haven't built out a way for users to change their passwords.
+As with my "Simple Spelling Bee" repo, this code uses no frameworks or Javascript libraries. I do have my own single-file PHP library I use for things, which I pared down to the absolute minimum necessary to get the user creation and login system working.  The lack of frameworks keeps the code base very small and means it works without compilation, which I've found to be a hit-or-miss experience when working with other people's code. So far I haven't built out a way for users to change their passwords.
 
 
 Because my wife Gretchen and I kept seeing an extra "a" that wasn't there in the word "pangram," I have used the term "panagram" for that concept in this version of the game.
