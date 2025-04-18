@@ -203,7 +203,7 @@ if($_POST) {
 				];
 			}
 		} else if($gameId  && $userId) {
-			$sql = "SELECT score, item_count, premium_count, ug.user_id, email, modified FROM user_game ug JOIN user u ON ug.user_id=u.user_id WHERE game_id=" . intval($gameId) . " AND ug.user_id<>" . intval($userId);
+			$sql = "SELECT score, item_count, premium_count, ug.user_id, email, modified FROM user_game ug JOIN user u ON ug.user_id=u.user_id WHERE game_id=" . intval($gameId);// . " AND ug.user_id<>" . intval($userId);
 			//die($sql);
 			$gameResult = mysqli_query($conn, $sql);
 			$otherGameRecords = mysqli_fetch_all($gameResult, MYSQLI_ASSOC);

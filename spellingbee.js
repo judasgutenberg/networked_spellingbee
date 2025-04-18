@@ -656,7 +656,11 @@ function others(otherScores){
     out += "</td>";
     out += "<td>" + other["premium_count"] + "</td>";
     out += "<td>" + level+ "</td><td>" + timeAgo(other["modified"]) + "</td>";
-    out += "<td><a class='basicbutton' href='javascript:composeMessage(" + other["user_id"] + ")'>send</a></td>";
+    out += "<td>";
+    if(other["user_id"] != userId) { 
+      out += "<a class='basicbutton' href='javascript:composeMessage(" + other["user_id"] + ")'>send</a>";
+    }
+    out += "</td>";
     
  
     out += "</tr>\n";
