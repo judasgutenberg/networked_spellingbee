@@ -636,7 +636,7 @@ function otherFoundWords(userId) {
 }
 
 function others(otherScores){
-  let out = "<div class='header'>Others Playing This Game</div>\n";
+  let out = "<div class='header'>Players Playing This Game</div>\n";
   out += "<table class='otherscorestable'>\n";
   out += "<tr class='otherscoresheader'><th>who</th><th> score</th><th> word count</th><th>panagrams</th><th>level</th><th>last active</th><th>message</th></tr>\n";
   //console.log(otherScores, otherScores.length);
