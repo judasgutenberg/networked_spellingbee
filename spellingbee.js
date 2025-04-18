@@ -586,8 +586,7 @@ function briefDate(mysqlDatetime) {
   }).replace(',', ''); // Removes comma after the day
 }
 
-function otherFoundWords(userId) {
-  const otherAlphabetical = false;
+function otherFoundWords(userId, otherAlphabetical) {
   if(auth == ""){
     alert("This feature only works for logged-in users.");
     return;
@@ -602,7 +601,12 @@ function otherFoundWords(userId) {
     let foundWords =  data["found_words"];
     let panagrams = data["panagrams"];
     let gameDate = data["game_date"];
+    let checked = "";
+    if(otherAlphabetical){
+      checked = "checked";
+    }
     yesterdayAnswers.innerHTML = topWindowControls() + "<em>" + data["email"] + "</em>" + "'s<div class='header'>Game on " + briefDate(gameDate) + "</div>";
+    yesterdayAnswers.innerHTML += "<div><input " + checked + " onclick='let oa = 0; if(this.checked){oa=1;}otherFoundWords(" + userId + ",oa)' type='checkbox' id='othersSortAlphabetically'/>sort alphabetically</div>";
     yesterdayAnswers.innerHTML += "<div class='header' style='text-decoration:underline'><i style='color:red'>" + data["centerLetter"]+ "</i>" + data["outerLetters"].join("") + "</div>";
     if(otherAlphabetical) {
       for(let word of answers){
@@ -770,8 +774,7 @@ function showOthers() {
   hints.style.display = 'block';
 }
 
-function yesterday() { //show the words you didn't get yesterday, assuming you played
-  let otherAlphabetical = false;
+function yesterday(otherAlphabetical) { //show the words you didn't get yesterday, assuming you played
   if(auth == ""){
     alert("This feature only works for logged-in users.");
     return;
@@ -786,12 +789,16 @@ function yesterday() { //show the words you didn't get yesterday, assuming you p
       let foundWords =  data["found_words"];
       let panagrams = data["panagrams"];
       let gameDate = data['game_date'];
-      console.log(foundWords);
-      console.log(answers);
-      
+      //console.log(foundWords);
+      //console.log(answers);
+      let checked = "";
+      if(otherAlphabetical){
+        checked = "checked";
+      }
       yesterdayAnswers.innerHTML = topWindowControls() + "<div class='header'>Your Game on " + briefDate(gameDate) + "</div>";
      // yesterdayAnswers.innerHTML = topWindowControls() +  "<div class='header'>Yesterday's Game</div>";
       yesterdayAnswers.innerHTML += "<div class='header' style='text-decoration:underline'><i style='color:red'>" + data["centerLetter"]+ "</i>" + data["outerLetters"].join("") + "</div>";
+      yesterdayAnswers.innerHTML += "<div><input " + checked + " onclick='let oa = 0; if(this.checked){oa=1;}yesterday(oa)' type='checkbox' id='othersSortAlphabetically'/>sort alphabetically</div>";
       if(otherAlphabetical) {
         for(let word of answers){
           let pgIndicationBegin = "";
