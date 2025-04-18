@@ -7,7 +7,7 @@ if(array_key_exists('HTTP_REFERER',  $_SERVER)) {
 }
 include("config.php");
 include("site_functions.php");
-$version = 1.37;
+$version = 1.38;
 $conn = mysqli_connect($servername, $username, $password, $database);
 $user = logIn();
 $table = strtolower(filterStringForSqlEntities(gvfw('table', "user"))); 
@@ -71,7 +71,7 @@ if(!$user) {
       <a href='javascript:showLevels()'>show levels</a><br/>
       <a href='javascript:showStats()'>show your stats</a><br/>
       <a href='javascript:showHints()'>show hints</a><br/>
-      <a href='javascript:showOthers()'>show others</a><br/>
+      <a href='javascript:showOthers()'>show players</a><br/>
       <?php if(gvfw("date") != "") { 
         
         echo "on " . gvfw("date") ." (<a style='color:red' href=.>x</a>)";
