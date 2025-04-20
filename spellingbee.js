@@ -634,6 +634,12 @@ function otherFoundWords(userId, otherAlphabetical) {
         yesterdayAnswers.innerHTML += "<div class='foundyesterday'>" + pgIndicationBegin +  word +  pgIndicationEnd + "</div>"; 
       }
       for(let word of answers){
+        let pgIndicationBegin = "";
+        let pgIndicationEnd = "";
+        if(panagrams.indexOf(word) > -1){
+          pgIndicationBegin = "<div class='panagram'>";
+          pgIndicationEnd = "</div>";
+        }
         if(foundWords.indexOf(word) == -1){
           yesterdayAnswers.innerHTML += "<div class='notfoundyesterday'>" + pgIndicationBegin +  word +  pgIndicationEnd + "</div>";
         }
@@ -825,6 +831,12 @@ function yesterday(otherAlphabetical) { //show the words you didn't get yesterda
           yesterdayAnswers.innerHTML += "<div class='foundyesterday'>" + pgIndicationBegin +  word +  pgIndicationEnd + "</div>"; 
         }
         for(let word of answers){
+          let pgIndicationBegin = "";
+          let pgIndicationEnd = "";
+          if(panagrams.indexOf(word) > -1){
+            pgIndicationBegin = "<div class='panagram'>";
+            pgIndicationEnd = "</div>";
+          }
           if(foundWords.indexOf(word) == -1){
             yesterdayAnswers.innerHTML += "<div class='notfoundyesterday'>" + pgIndicationBegin +  word +  pgIndicationEnd + "</div>";
           }
