@@ -8,4 +8,7 @@ $password = "secret";
 
 $encryptionPassword = "xdog marfa snark";
 $cookiename = "whatevs";
+
+$remoteEmailPassword = "another_password";
+$remoteEmailUrl = "http://your_other_domain.com/externalmailer.php";
  
