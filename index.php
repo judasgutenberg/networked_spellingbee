@@ -14,15 +14,49 @@ $table = strtolower(filterStringForSqlEntities(gvfw('table', "user")));
 $errors = "";
 $content = "";
 $action = gvfw("action");
-
-if ($action == "login") {
+$skipLogin = false;
+ 
+if(strtolower($action) == "forgotpassword" || strtolower($action) == "reset password" || strtolower($action) == "change password") {
+  $email = gvfw("email");
+  $token = gvfw("token");
+  if($email  && $token == ""){
+    if(sendPasswordResetEmail($email)) {
+      $out = "A password reset email was sent.  Check your email.";
+    } else {
+      $out = "Reset email could not be sent. Complain to the admin if you can somehow.";
+    }
+  } else {
+    if($token){
+      $userPassword = gvfw("password");
+      $userPassword2 = gvfw("password2");
+      if($userPassword) {
+        //update the password
+        if($userPassword != $userPassword2){
+          $errors = [];
+          $errors["password"] = "Your passwords must be identical.";
+        } else {
+          updatePasswordOnUserWithToken($email, $userPassword, $token);
+          header("Location: ?action=login");
+          die();
+        }
+      } 
+      if($errors || $userPassword =="") {
+        $out = changePasswordForm($email, $token, $errors);
+      }
+    } else {
+      $out = forgotPassword();
+    }
+  }
+  $content = $out;
+  $skipLogin = true;
+} else if ($action == "login") {
 	loginUser();
 } else if ($action == "logout") {
 	logOut();
 	header("Location: ?action=login");
 }
  
-if(!$user) {
+if(!$user && !$skipLogin) {
   if(beginswith(strtolower($action), "create")) {
     $errors = createUser();
     if($errors == ""){
@@ -30,7 +64,7 @@ if(!$user) {
       header("Location: ?action=login");
     }
   }
-	if(gvfa("password", $_POST) != "") {
+	if(gvfa("password", $_POST) != ""  ) {
       $content .= "<div class='genericformerror'>The credentials you entered have failed.</div>";
     }
     if (($table == "user" || !is_null($errors)) && $action == "startcreate" ) {

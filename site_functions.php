@@ -40,10 +40,116 @@ function loginForm() {
   $out .= "<strong>Login here:</strong>  email: <input name='email' type='text'>\n";
   $out .= "password: <input name='password' type='password' style='width:100px'>\n";
   $out .= "<button name='action' value='login' type='submit'>login</button>\n";
-  $out .= "<div style='margin-top:6px'> or  <div class='basicbutton'><a href=\"?table=user&action=startcreate\">create account</a></div></div>\n";
+  $out .= "<div style='margin-top:6px'> or  <div class='basicbutton'><a href=\"?table=user&action=startcreate\">create account</a></div> (<a href=\"?action=forgotpassword\">Forgot password?</a>)</div>\n";
   $out .= "</form></div>\n";
   return $out;
 }
+
+//useful if you can't get sendmail working on this server
+function remoteEmail($recipient, $message, $subject) {
+  global $remoteEmailPassword;
+  global $remoteEmailUrl;
+  $postData = [
+    "password" => $remoteEmailPassword, //used to make sure your email sender elsewhere isn't used by spammers
+    "email" => $recipient,
+    "subject" => $subject,
+    "body" => $message
+  ];
+  $url = $remoteEmailUrl;
+  $ch = curl_init();
+
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_POST, true);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData)); // Convert data to query string
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return the response
+  $response = curl_exec($ch);
+  curl_close($ch);
+  return $response;
+}
+
+
+function forgotPassword() {
+  $out = "";
+  $formData = array(
+    [
+	    'label' => 'What is your email?',
+      'name' => 'email',
+      'type' => 'text'
+	  ],
+    [
+	    'label' => 'Your email',
+      'name' => 'action',
+      'type' => 'hidden',
+      'value' => "forgotpassword"
+	  ]
+  );
+  $form = genericForm($formData, "Reset Password", "Resetting Password");
+ 
+  $out = "\n<div id='utilityDiv'>Forgot your password?</div>\n";
+  $out .= $form;
+  $out .= "\n<div id='utilityDiv'></div>\n";
+  return $out;
+}
+
+function sendPasswordResetEmail($email){
+  Global $conn;
+  $token = sprintf("%08x", random_int(0, 0xFFFFFFFFFFFF));
+  $sql = "UPDATE user  SET reset_password_token ='" . mysqli_real_escape_string($conn, $token) . "' WHERE email = '" . mysqli_real_escape_string($conn, $email) . "'";
+  $result = mysqli_query($conn, $sql);
+  $emailBody = "Follow this link to reset your password:\n\r\n\r ";
+  $emailBody .= getCurrentUrl() . "&token=" . $token . "&email=" . $email;
+  return remoteEmail($email, $emailBody, "Reset Your Email on " . $_SERVER['SERVER_NAME']);
+  //echo $emailBody;
+}
+
+function updatePasswordOnUserWithToken($email, $userPassword, $token){
+  global $conn;
+  global $encryptionPassword;
+  $encryptedPassword = crypt($userPassword, $encryptionPassword);
+  $sql = "UPDATE user SET password = '" . mysqli_real_escape_string($conn, $encryptedPassword) . "', reset_password_token = NULL WHERE reset_password_token='" . mysqli_real_escape_string($conn, $token) . "' AND email = '" . mysqli_real_escape_string($conn, $email) ."'";
+  mysqli_query($conn, $sql);
+}
+
+
+function changePasswordForm($email, $token, $errors){
+  $out = "";
+  $formData = array(
+    [
+	    'label' => 'password',
+      'name' => 'password',
+      'type' => 'password',
+      'error' => gvfa("password", $errors),
+	  ],
+    [
+      'label' => 'password (again)',
+      'name' => 'password2',
+      'type' => 'password'
+	  ],
+    [
+      'name' => 'token',
+      'type' => 'hidden',
+      'value' => $token
+	  ],
+    [
+      'name' => 'email',
+      'type' => 'hidden',
+      'value' => $email
+	  ]
+  );
+  $form = genericForm($formData, "Change Password", "Changing Password");
+  $out = "\n<div id='utilityDiv'>Change your password</div>\n";
+  $out .= $form;
+  $out .= "\n<div id='utilityDiv'></div>\n";
+  return $out;
+}
+
+function getCurrentUrl() {
+  $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
+  $host     = $_SERVER['HTTP_HOST'];
+  $uri      = $_SERVER['REQUEST_URI'];
+  return "$protocol://$host$uri";
+}
+
  
 function newUserForm($error = NULL) {
   $formData = array(
@@ -168,7 +274,8 @@ function loginUser($source = NULL) {
   }
   $email = gvfa("email", $source);
   $passwordIn = gvfa("password", $source);
-  $sql = "SELECT `email`, `password` FROM `user` WHERE email = '" . mysqli_real_escape_string($conn, $email) . "' ";
+  $sql = "SELECT `email`, `password` FROM `user` WHERE email = '" . mysqli_real_escape_string($conn, trim($email)) . "' ";
+  //die($sql);
   $result = mysqli_query($conn, $sql);
   if(!$result){
     header("location: .");
