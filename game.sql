@@ -6,6 +6,7 @@ CREATE TABLE user(
   password VARCHAR(100) NULL,
   expired DATETIME NULL,
   preferences TEXT NULL,
+  reset_password_token VARCHAR(30) NULL,
   created DATETIME
 );
 
