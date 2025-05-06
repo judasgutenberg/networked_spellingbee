@@ -116,7 +116,6 @@ function updatePasswordOnUserWithToken($email, $userPassword, $token){
   mysqli_query($conn, $sql);
 }
 
-
 function changePasswordForm($email, $token, $errors){
   $out = "";
   $formData = array(
