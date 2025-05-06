@@ -74,7 +74,7 @@ function remoteEmail($recipient, $message, $subject) {
 
 
 function forgotPassword() {
-  $out = "";
+  $out = "<div><a href='?action=login'>Normal login</a></div>";
   $formData = array(
     [
 	    'label' => 'What is your email?',
@@ -90,7 +90,7 @@ function forgotPassword() {
   );
   $form = genericForm($formData, "Reset Password", "Resetting Password");
  
-  $out = "\n<div id='utilityDiv'>Forgot your password?</div>\n";
+  $out .= "\n<div id='utilityDiv'>Forgot your password?</div>\n";
   $out .= $form;
   $out .= "\n<div id='utilityDiv'></div>\n";
   return $out;
