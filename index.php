@@ -16,7 +16,7 @@ $content = "";
 $action = gvfw("action");
 $skipLogin = false;
  
-if(strtolower($action) == "forgotpassword" || strtolower($action) == "reset password" || strtolower($action) == "change password") {
+if(strpos(strtolower($action), "password") !== false) {
   $email = gvfw("email");
   $token = gvfw("token");
   if($email  && $token == ""){
