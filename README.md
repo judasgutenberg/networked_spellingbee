@@ -9,7 +9,7 @@ This version allows you to log in, see the progress of others playing the same i
 
 
 To get this working, you need to put all of this code on a server capable of serving PHP and connecting to a MySQL database.  Run game.sql on your MySQL server and set the values for your database in config.php. 
-To see this working in the real world (which is much easier than installing it on a sever, though this version is extremely easy to install on a server), go here: http://randomsprocket.com/spellingbee. 
+To see this working in the real world (which is much easier than installing it on a sever, though this version is extremely easy to install on a server), go here: https://randomsprocket.com/spellingbee. 
 
 
 There you can create a user (there's no email confirmation, though if you forget your password, you will want to have given your actual email address) or play the game without one.  If you play without creating a login, it saves your game state in your browser so it can resume if the page is refreshed or you close the window and then come back.  Without a login, though, you cannot see yesterday's answers, see the state of other players' games, or send messages.  Bonus!  If you make it to Queen Bee (that is, you find all the words) then you get to see what words the other players have found so far and even see them in the order they were played.
