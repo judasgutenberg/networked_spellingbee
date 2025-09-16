@@ -201,6 +201,97 @@ function getGameDataFromNYT() {
   });
 }
 
+function editUser(userId) {
+  let xmlhttp = new XMLHttpRequest();
+  let editable = ["full_name", "email"];
+  xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState === XMLHttpRequest.DONE) {
+      if (xmlhttp.status === 200) {
+        try {
+          //deobfuscate + parse JSON
+          let data = JSON.parse(xmlhttp.responseText);
+          console.log(data);
+
+          // assume data["user"] is a flat object like { name: "Bob", email: "bob@example.com" }
+          let user = data["user"];
+
+          // find the container
+          let container = document.getElementById("usereditor");
+          container.style.zIndex = 600000;
+          container.style.backgroundColor = "#cccccc";
+          container.style.display = "block";
+          container.innerHTML = topWindowControls(); // clear old contents
+          container.innerHTML += "<b>Edit User</b><br/>";
+          container.innerHTML += "<input type='hidden' name='action' value='saveuser'/>";
+          // create a form element
+          let form = document.createElement("form");
+          form.method = "post";
+          form.id = "userForm";
+
+          // loop through the keys of the user object
+          
+          let input = document.createElement("input");
+          input.type = "hidden";
+          input.name = "action";
+          input.id = "action";
+          input.value = "saveuser";
+              
+          form.appendChild(input);
+          
+          for (let key in user) {
+            if(editable.indexOf(key) > -1) {
+              if (user.hasOwnProperty(key)) {
+                let value = user[key];
+
+                // wrapper div
+                let fieldDiv = document.createElement("div");
+                fieldDiv.style.marginBottom = "8px";
+
+                // label
+                let label = document.createElement("label");
+                label.textContent = key;
+                label.setAttribute("for", key);
+                label.style.display = "block";
+
+                // input
+                let input = document.createElement("input");
+                input.type = "text";
+                input.name = key;
+                input.id = key;
+                input.value = value ?? "";
+
+                // add to wrapper
+                fieldDiv.appendChild(label);
+                fieldDiv.appendChild(input);
+
+                form.appendChild(fieldDiv);
+              }
+            }
+          }
+
+          // add submit button
+          let submitBtn = document.createElement("button");
+          submitBtn.type = "submit";
+          submitBtn.textContent = "Save";
+          form.appendChild(submitBtn);
+
+          // attach form to container
+          container.appendChild(form);
+
+        } catch (e) {
+          console.error("Error parsing or building form:", e);
+        }
+      }
+    }
+  };
+
+  let url = "data.php?auth=" + encodeURIComponent(auth) + "&action=getuser&userId=" + encodeURIComponent(userId);
+  xmlhttp.open("GET", url, true);
+  xmlhttp.send();
+}
+
+
+
 function goToDate(date){
   let value = document.getElementById("pastDate").value;
   if(isDateBeforeNow(value) ){

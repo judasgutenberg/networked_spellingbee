@@ -221,6 +221,13 @@ if($_POST) {
 			}  
 		}
 	} 
+} else if($action == "getuser") {
+  $sql = "SELECT * FROM user WHERE user_id=" . intval($userId);
+  $userResult = mysqli_query($conn, $sql);
+  $userData = mysqli_fetch_all($userResult, MYSQLI_ASSOC);
+  if($userData && count($userData)>0) {
+    $out["user"] = $userData[0];
+  }
 } else { //otherwise just give me the day's data from the New Yawk Times or get data from an earlier game
 	if(gvfa('date', $_REQUEST) !=""){
 		$sql = "SELECT * FROM game WHERE game_date > '" . gvfw('date') . "' AND game_date< DATE_ADD('" . gvfw('date') . "', INTERVAL 1 DAY) AND game_type_id=" . $gameTypeId ;

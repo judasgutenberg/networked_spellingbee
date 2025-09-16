@@ -7,7 +7,7 @@ if(array_key_exists('HTTP_REFERER',  $_SERVER)) {
 }
 include("config.php");
 include("site_functions.php");
-$version = 1.53;
+$version = 1.56;
 $conn = mysqli_connect($servername, $username, $password, $database);
 $user = logIn();
 $table = strtolower(filterStringForSqlEntities(gvfw('table', "user"))); 
@@ -49,6 +49,14 @@ if(strpos(strtolower($action), "password") !== false) {
   }
   $content = $out;
   $skipLogin = true;
+} else if ($action == "saveuser") {
+
+  $sql = "UPDATE user SET email='" . mysqli_real_escape_string($conn, $_POST["email"]) . "', full_name='" .  mysqli_real_escape_string($conn, $_POST["full_name"])  . "' WHERE user_id=" . intval($user["user_id"]);
+  //die($sql);
+  $result = mysqli_query($conn, $sql);
+  $user["full_name"] = $_POST["full_name"];
+  $user["email"] = $_POST["email"];
+
 } else if ($action == "login") {
 	loginUser();
 } else if ($action == "logout") {
@@ -78,7 +86,7 @@ if(!$user && !$skipLogin) {
 
 } else {
   if($user) {
-    $content .= "<div class='loggedin'>You are logged in as <b>" . userDisplayText($user) . "</b>   <div class='basicbutton'><a href=\"?action=logout\">logout</a></div></div>\n";
+    $content .= "<div class='loggedin'>You are logged in as <b><a href='javascript:editUser(" . $user["user_id"] . ")'>" . userDisplayText($user) . "</a></b>   <div class='basicbutton'><a href=\"?action=logout\">logout</a></div></div>\n";
     $encryptedUser = encryptLongString($user["user_id"], $encryptionPassword);
 	}
 }
@@ -95,6 +103,7 @@ if(!$user && !$skipLogin) {
 </head>
 <body>
   <div class="centered-div" id="top-div">
+    <div id="usereditor" class='tempwindow'></div>
     <div id="login" >
           <?php echo $content; ?>
     </div>
@@ -116,6 +125,7 @@ if(!$user && !$skipLogin) {
       <br/><br/> 
       <a href='https://github.com/judasgutenberg/networked_spellingbee' target='_new'>source code</a><br/>
     </div>
+    
     <div id="levellist" class='tempwindow'></div>
     <div id="stats" class='tempwindow'></div>
     <div id="hints" class='tempwindow'></div>
