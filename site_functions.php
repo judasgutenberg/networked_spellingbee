@@ -415,3 +415,10 @@ function filterStringForSqlEntities($input) {
   $filtered = preg_replace('/[^a-zA-Z0-9-_]/', '', $input);
   return $filtered;
 }
+
+function userDisplayText($user) {
+  if($user["full_name"]) {
+    return $user["full_name"];
+  }
+  return $user["email"];
+}

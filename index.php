@@ -78,7 +78,7 @@ if(!$user && !$skipLogin) {
 
 } else {
   if($user) {
-    $content .= "<div class='loggedin'>You are logged in as <b>" . $user["email"] . "</b>   <div class='basicbutton'><a href=\"?action=logout\">logout</a></div></div>\n";
+    $content .= "<div class='loggedin'>You are logged in as <b>" . userDisplayText($user) . "</b>   <div class='basicbutton'><a href=\"?action=logout\">logout</a></div></div>\n";
     $encryptedUser = encryptLongString($user["user_id"], $encryptionPassword);
 	}
 }

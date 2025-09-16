@@ -178,6 +178,7 @@ if($_POST) {
 				if($userRecords && count($userRecords)>0) {
 					$userRecord = $userRecords[0];
 					$email = $userRecord ["email"];
+					$fullName = $userRecord ["full_name"];
 				}
         
         		//$sql = "SELECT * FROM user_game WHERE game_id = " . intval($gameId) . " AND user_id = " . intval($otherUserId);
@@ -187,9 +188,11 @@ if($_POST) {
 				$userIdForGameLookup = intval($userId);
 			}
 			$sql = "SELECT * FROM user_game WHERE user_id=" . $userIdForGameLookup . "  AND game_id = " . intval($recoveredGameId);
+			//echo $sql;
 			$userResult = mysqli_query($conn, $sql);
 			$error = mysqli_error($conn);
 			$userRecords = mysqli_fetch_all($userResult, MYSQLI_ASSOC);
+			//var_dump($userRecords);
 			if($userRecords && count($userRecords)>0) {
 				$userRecord = $userRecords[0];
 				$score = $userRecord["score"];
@@ -197,13 +200,13 @@ if($_POST) {
 				$premiumCount = $userRecord["premium_count"];
 				$userSettings = json_decode($userRecord["settings"], true);
 				$foundWords = $userSettings["found_words"];
-				$out =  ["email" => $email, "game_id"=> $gameId ,  "game_date"=> $gameDate , "found_words" => $foundWords, "score"=>$score, 
+				$out =  ["email" => $email, "full_name" => $full_name, "game_id"=> $gameId ,  "game_date"=> $gameDate , "found_words" => $foundWords, "score"=>$score, 
 					"answers"=> $answers, "panagrams"=> $panagrams, "centerLetter" => $centerLetter, "outerLetters" => $outerLetters,
 					"item_count"=>$itemCount, "premium_count"=> $premiumCount, "error" => $error
 				];
 			}
 		} else if($gameId  && $userId) {
-			$sql = "SELECT score, item_count, premium_count, ug.user_id, email, modified FROM user_game ug JOIN user u ON ug.user_id=u.user_id WHERE game_id=" . intval($gameId);// . " AND ug.user_id<>" . intval($userId);
+			$sql = "SELECT score, item_count, premium_count, ug.user_id, email, full_name, modified FROM user_game ug JOIN user u ON ug.user_id=u.user_id WHERE game_id=" . intval($gameId);// . " AND ug.user_id<>" . intval($userId);
 			//die($sql);
 			$gameResult = mysqli_query($conn, $sql);
 			$otherGameRecords = mysqli_fetch_all($gameResult, MYSQLI_ASSOC);
@@ -227,7 +230,9 @@ if($_POST) {
 	} else {
 		$url = "https://www.nytimes.com/puzzles/spelling-bee/";
 		$src = getCachedContent($url, "cache.txt");
+  
 		if (strlen($src) > 0) {
+      
 			$centerLetter = getValueBetween($src, '"centerLetter":"', '"');
 			$outerLetters = getValueBetween($src, '"outerLetters":[', ']');
 			$answers = getValueBetween($src, '"answers":[', ']');

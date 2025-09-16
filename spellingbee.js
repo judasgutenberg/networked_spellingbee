@@ -670,7 +670,12 @@ function others(otherScores){
   for (let other of otherScores) {
     let fraction = other["score"]/totalScore;
     let level = getLevel(fraction);
-    out += "<tr class='otherscores'><td>" + other["email"] + "</td>";
+    let printName = other["email"];
+    console.log(other);
+    if(other["full_name"]) {
+      printName = other["full_name"];
+    }
+    out += "<tr class='otherscores'><td>" + printName + "</td>";
     out += "<td> " +  other["score"] +  "</td>";
     out += "<td>";
     if(totalScore/score  == 1) { //you only get this if you're a queen bee
