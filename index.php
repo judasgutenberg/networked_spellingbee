@@ -50,13 +50,7 @@ if(strpos(strtolower($action), "password") !== false) {
   $content = $out;
   $skipLogin = true;
 } else if ($action == "saveuser") {
-
-  $sql = "UPDATE user SET email='" . mysqli_real_escape_string($conn, $_POST["email"]) . "', full_name='" .  mysqli_real_escape_string($conn, $_POST["full_name"])  . "' WHERE user_id=" . intval($user["user_id"]);
-  //die($sql);
-  $result = mysqli_query($conn, $sql);
-  $user["full_name"] = $_POST["full_name"];
-  $user["email"] = $_POST["email"];
-
+  saveUser();
 } else if ($action == "login") {
 	loginUser();
 } else if ($action == "logout") {

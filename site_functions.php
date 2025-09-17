@@ -159,6 +159,13 @@ function getCurrentUrl() {
 function newUserForm($error = NULL) {
   $formData = array(
     [
+      'label' => 'full_name',
+      'name' => 'full_name',
+      'width' => 100,
+      'value' => gvfa("full_name", $_POST), 
+      'error' => gvfa('full_name', $error)
+    ],
+    [
       'label' => 'email',
       'name' => 'email',
       'width' => 100,
@@ -345,6 +352,15 @@ function endsWith($strIn, $what) {
 	return false;
 }
 
+function saveUser() {
+  global $conn;
+  $sql = "UPDATE user SET email='" . mysqli_real_escape_string($conn, $_POST["email"]) . "', full_name='" .  mysqli_real_escape_string($conn, $_POST["full_name"])  . "' WHERE user_id=" . intval($user["user_id"]);
+  //die($sql);
+  $result = mysqli_query($conn, $sql);
+  $user["full_name"] = $_POST["full_name"];
+  $user["email"] = $_POST["email"];
+}
+
 function createUser(){
   Global $conn;
   Global $encryptionPassword;
@@ -354,6 +370,7 @@ function createUser(){
   $password = gvfa("password", $_POST);
   $password2 = gvfa("password2", $_POST);
   $email = gvfa("email", $_POST);
+  $fullName = gvfa("full_name", $_POST);
   if($password != $password2 || $password == "") {
   	$errors["password2"] = "Passwords must be identical and have a value";
   }
@@ -363,12 +380,13 @@ function createUser(){
   if(is_null($errors)) {
   	$encryptedPassword =  crypt($password, $encryptionPassword);
     $userList = userList();
+    $role = "normal";
     if(count(userList()) == 0) {
-      //if there are no users, create the first one as admin
-      $sql = "INSERT INTO user(email, password, created, role) VALUES ('" . $email . "','" .  mysqli_real_escape_string($conn, $encryptedPassword) . "','" .$formatedDateTime . "','admin')"; 
-    } else {
-  	  $sql = "INSERT INTO user(email, password, created) VALUES ('" . $email . "','" .  mysqli_real_escape_string($conn, $encryptedPassword) . "','" .$formatedDateTime . "')"; 
+      $role = "admin";
     }
+    //if there are no users, create the first one as admin
+    $sql = "INSERT INTO user(email, password, full_name, created, role) VALUES ('" . $email . "','" .  mysqli_real_escape_string($conn, $encryptedPassword) . "','" .  mysqli_real_escape_string($conn, $fullName) . "','" .$formatedDateTime . "','" . $role . "')"; 
+
     $result = mysqli_query($conn, $sql);
     $id = mysqli_insert_id($conn);
     loginUser($_POST);
