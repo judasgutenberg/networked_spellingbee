@@ -2,6 +2,8 @@
 CREATE TABLE user(
   user_id INT AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(100) NULL,
+  full_name VARCHAR(200) NULL,
+  sort_name VARCHAR(200) NULL,
   role VARCHAR(100) NULL,
   password VARCHAR(100) NULL,
   expired DATETIME NULL,
