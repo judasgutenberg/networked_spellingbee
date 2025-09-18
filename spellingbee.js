@@ -242,7 +242,9 @@ function editUser(userId) {
             if(editable.indexOf(key) > -1) {
               if (user.hasOwnProperty(key)) {
                 let value = user[key];
-
+                 if(!value) {
+                  value= "";
+                 }
                 // wrapper div
                 let fieldDiv = document.createElement("div");
                 fieldDiv.style.marginBottom = "8px";
@@ -258,7 +260,7 @@ function editUser(userId) {
                 input.type = "text";
                 input.name = key;
                 input.id = key;
-                input.value = value ?? "";
+                input.value = value;
 
                 // add to wrapper
                 fieldDiv.appendChild(label);
