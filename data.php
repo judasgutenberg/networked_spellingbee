@@ -29,6 +29,7 @@ $gameId = gvfw("game_id");
 $gameTypeId = gvfw("game_type_id");
 $foundAGame = false;
 $otherUserId = gvfw("other_user_id");
+ 
 
 if($_POST) {
 	if ($action == "logplay") {
@@ -170,6 +171,7 @@ if($_POST) {
 				$recoveredGameId = $gameRecord["game_id"];
 				$gameDate = $gameRecord["game_date"];
 			}
+			$fullName = "";
 			if($otherUserId > 0) {
 				$sql = "SELECT * FROM user WHERE  user_id = " . intval($otherUserId);
 				$userResult = mysqli_query($conn, $sql);
@@ -200,7 +202,7 @@ if($_POST) {
 				$premiumCount = $userRecord["premium_count"];
 				$userSettings = json_decode($userRecord["settings"], true);
 				$foundWords = $userSettings["found_words"];
-				$out =  ["email" => $email, "full_name" => $full_name, "game_id"=> $gameId ,  "game_date"=> $gameDate , "found_words" => $foundWords, "score"=>$score, 
+				$out =  ["email" => $email, "full_name" => $fullName, "game_id"=> $gameId ,  "game_date"=> $gameDate , "found_words" => $foundWords, "score"=>$score, 
 					"answers"=> $answers, "panagrams"=> $panagrams, "centerLetter" => $centerLetter, "outerLetters" => $outerLetters,
 					"item_count"=>$itemCount, "premium_count"=> $premiumCount, "error" => $error
 				];
