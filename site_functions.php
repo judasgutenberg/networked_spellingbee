@@ -352,7 +352,7 @@ function endsWith($strIn, $what) {
 	return false;
 }
 
-function saveUser() {
+function saveUser($user) {
   global $conn;
   $sql = "UPDATE user SET email='" . mysqli_real_escape_string($conn, $_POST["email"]) . "', full_name='" .  mysqli_real_escape_string($conn, $_POST["full_name"])  . "' WHERE user_id=" . intval($user["user_id"]);
   //die($sql);

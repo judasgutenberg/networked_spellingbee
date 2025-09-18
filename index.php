@@ -50,7 +50,7 @@ if(strpos(strtolower($action), "password") !== false) {
   $content = $out;
   $skipLogin = true;
 } else if ($action == "saveuser") {
-  saveUser();
+  saveUser($user);
 } else if ($action == "login") {
 	loginUser();
 } else if ($action == "logout") {
