@@ -29,7 +29,7 @@ $gameId = gvfw("game_id");
 $gameTypeId = gvfw("game_type_id");
 $foundAGame = false;
 $otherUserId = gvfw("other_user_id");
- 
+$existingWords = array();
 
 if($_POST) {
 	if ($action == "logplay") {
@@ -120,14 +120,10 @@ if($_POST) {
 							$error = mysqli_error($conn);
 
 						} else {
-							if(count($latestWords) < count($existingWords)) {
 							
-                $userDataObject["found_words"] = array_values(array_unique(array_merge($latestWords, $existingWords)));
-                $userData = json_encode($userDataObject);
-							} else {
-                $userDataObject["found_words"] = array_values(array_unique($latestWords));
-                $userData = json_encode($userDataObject);
-							}
+              $userDataObject["found_words"] = array_values(array_unique(array_merge($latestWords, $existingWords)));
+              $userData = json_encode($userDataObject);
+		
               if(count($latestWords) > 0) {
 								$sql = "UPDATE user_game SET settings = '" . mysqli_real_escape_string($conn, $userData) . "', modified ='" . $formatedDateTime . "', score = " . intval($score) . ", premium_count = " . intval($premiumCount) . ", item_count=" . intval($itemCount) . "
 										WHERE user_id=" . intval($userId) . " AND game_id= " . intval($gameId);

@@ -353,6 +353,12 @@ function logPlay(wasValid){
   xmlhttp.send(params);
 }
 
+function hasExtraElements(arr1, arr2) {
+  if(!arr1  || !arr2) {
+    return false;
+  }
+  return arr1.some(item => !arr2.includes(item));
+}
 
 function updateGameDatabase(justPoll){
   let nowDate = new Date(); 
@@ -410,12 +416,13 @@ function updateGameDatabase(justPoll){
       }
       
       foundWordsFromServer = data["found_words"];
-      /*
+
       let existingWords = data["existing_words"];
-      if(foundWordsFromServer.length() >  existingWords.length()) {
-        window.location.refresh();
+      if(hasExtraElements(existingWords, foundWordsFromServer)) {
+        //console.log(existingWords, foundWordsFromServer
+        window.location.reload();
       }
-      */
+    
   
       //console.log(foundWordsFromServer);
         
