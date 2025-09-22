@@ -408,7 +408,15 @@ function updateGameDatabase(justPoll){
         let otherScores = data["other_scores"];
         others(otherScores);
       }
+      
       foundWordsFromServer = data["found_words"];
+      /*
+      let existingWords = data["existing_words"];
+      if(foundWordsFromServer.length() >  existingWords.length()) {
+        window.location.refresh();
+      }
+      */
+  
       //console.log(foundWordsFromServer);
         
       if(!justPoll){
@@ -450,10 +458,10 @@ function updateGameDatabase(justPoll){
   if(justPoll){
     //console.log("polling");
     params.append("action", "poll");
-    params.append("random", Math.random());
   } else {
     params.append("action", "savegame");
   }
+  params.append("random", Math.random());
   let url = "data.php"; 
   //console.log(url);
   xmlhttp.open("POST", url, true);

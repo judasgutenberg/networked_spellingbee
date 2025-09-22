@@ -103,10 +103,11 @@ if($_POST) {
 								$foundUserSettings = json_decode($userGameRow["settings"], true);
 								
 								if(array_key_exists("found_words", $foundUserSettings)) {
+                  $existingWords = $foundUserSettings["found_words"];
 									if(count($latestWords) > 0){
 										$foundWords = $latestWords;
 									} else {
-										$foundWords = $foundUserSettings["found_words"];
+										$foundWords = $existingWords;
 									}
 								}
 							}
@@ -119,14 +120,22 @@ if($_POST) {
 							$error = mysqli_error($conn);
 
 						} else {
-							if(count($latestWords) > 0) {
+							if(count($latestWords) < count($existingWords)) {
+							
+                $userDataObject["found_words"] = array_values(array_unique(array_merge($latestWords, $existingWords)));
+                $userData = json_encode($userDataObject);
+							} else {
+                $userDataObject["found_words"] = array_values(array_unique($latestWords));
+                $userData = json_encode($userDataObject);
+							}
+              if(count($latestWords) > 0) {
 								$sql = "UPDATE user_game SET settings = '" . mysqli_real_escape_string($conn, $userData) . "', modified ='" . $formatedDateTime . "', score = " . intval($score) . ", premium_count = " . intval($premiumCount) . ", item_count=" . intval($itemCount) . "
 										WHERE user_id=" . intval($userId) . " AND game_id= " . intval($gameId);
 								$otherResult = mysqli_query($conn, $sql);
 								$error = mysqli_error($conn);
 							}
 						}
-						$out = ["user_id" => $userId, "game_id"=> $row["game_id"] , "found_words" => $foundWords, "error" => $error];
+						$out = ["user_id" => $userId, "game_id"=> $row["game_id"] , "found_words" => $foundWords, "existing_words" => $existingWords, "error" => $error];
 					}
 				}
 			} 
