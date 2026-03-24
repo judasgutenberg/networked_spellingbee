@@ -18,6 +18,7 @@ $subAction = gvfw("subaction");
 $auth = gvfw("auth");
 $data = gvfw("data");
 $userData = gvfw("user_data");
+$name = "unknown";
 $out = [];
 if($auth) {
 	$userId = decryptLongString($auth, $encryptionPassword);
@@ -74,6 +75,7 @@ if($_POST) {
 			$score = 0;
 			if($userData) {
 				$userDataObject = json_decode($userData, true);
+				//$name = userDisplayText($userDataObject);
 				$latestWords =  gvfa("found_words", $userDataObject);
 				$itemCount = count($latestWords);
 				$score = gvfa("score", $userDataObject);
@@ -154,6 +156,7 @@ if($_POST) {
 		$panagrams = [];
 		$centerLetter = [];
 		$outerLetters = [];
+		
 		if($action == "getanswers") {
 			if($subAction == "previous") {
 				$sql = "SELECT * FROM game WHERE game_type_id=" . $gameTypeId . " AND game_id < " . intval($gameId) . " ORDER BY game_date DESC LIMIT 0, 1"; //get the previous game
@@ -164,6 +167,7 @@ if($_POST) {
 			$error = mysqli_error($conn);
 			$gameRecords = mysqli_fetch_all($gameResult, MYSQLI_ASSOC);
 			$email = "unknownuser";
+			
 			if($gameRecords && count($gameRecords)>0) {
 				$gameRecord = $gameRecords[0];
 				$settings = json_decode($gameRecord["settings"], true);
