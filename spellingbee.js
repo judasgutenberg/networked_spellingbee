@@ -419,8 +419,9 @@ function updateGameDatabase(justPoll){
 
       let existingWords = data["existing_words"];
       if(hasExtraElements(existingWords, foundWordsFromServer)) {
-        //console.log(existingWords, foundWordsFromServer
+        console.log(existingWords, foundWordsFromServer);
         window.location.reload();
+        //getGameDataFromNYT();
       }
     
   
@@ -713,7 +714,7 @@ function otherFoundWords(userId, otherAlphabetical) {
     if(otherAlphabetical){
       checked = "checked";
     }
-    yesterdayAnswers.innerHTML = topWindowControls() + "<em>" + data["email"] + "</em>" + "'s<div class='header'>Game on " + briefDate(gameDate) + "</div>";
+    yesterdayAnswers.innerHTML = topWindowControls() + "<em>" + data["name"] + "</em>" + "'s<div class='header'>Game on " + briefDate(gameDate) + "</div>";
     yesterdayAnswers.innerHTML += "<div><input " + checked + " onclick='let oa = 0; if(this.checked){oa=1;}otherFoundWords(" + userId + ",oa)' type='checkbox' id='othersSortAlphabetically'/>sort alphabetically</div>";
     yesterdayAnswers.innerHTML += "<div class='header' style='text-decoration:underline'><i style='color:red'>" + data["centerLetter"]+ "</i>" + data["outerLetters"].join("") + "</div>";
     if(otherAlphabetical) {

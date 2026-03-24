@@ -186,6 +186,7 @@ if($_POST) {
 					$userRecord = $userRecords[0];
 					$email = $userRecord ["email"];
 					$fullName = $userRecord ["full_name"];
+					$name = userDisplayText($userRecord);
 				}
         
         		//$sql = "SELECT * FROM user_game WHERE game_id = " . intval($gameId) . " AND user_id = " . intval($otherUserId);
@@ -207,7 +208,7 @@ if($_POST) {
 				$premiumCount = $userRecord["premium_count"];
 				$userSettings = json_decode($userRecord["settings"], true);
 				$foundWords = $userSettings["found_words"];
-				$out =  ["email" => $email, "full_name" => $fullName, "game_id"=> $gameId ,  "game_date"=> $gameDate , "found_words" => $foundWords, "score"=>$score, 
+				$out =  ["name" => $name, "email" => $email, "full_name" => $fullName, "game_id"=> $gameId ,  "game_date"=> $gameDate , "found_words" => $foundWords, "score"=>$score, 
 					"answers"=> $answers, "panagrams"=> $panagrams, "centerLetter" => $centerLetter, "outerLetters" => $outerLetters,
 					"item_count"=>$itemCount, "premium_count"=> $premiumCount, "error" => $error
 				];
