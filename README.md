@@ -33,4 +33,4 @@ Note: this version caches data from the New York Times to a file, so you might e
 # Known Bugs #
 1. Some of the messages you get when you attempt to play a non-word or word you've already played do not make grammatical sense or are inappropriate for the context.  At this point I kind of like the awkwardness, which reminds me of poorly-translated Japanese videogames.
 2. Games with very large numbers of words can cause the found word list to expand into the area occupied by the "Others Playing" window.  I've made such windows draggable to help with this situation.
-3. Games featuring especially long words can cause the stats grids to burst out of the "Your Stats" and "Hints" windows.  I've made the grids big, so we're talking 15-letter words here.
+3. Games featuring especially long words can cause the stats grids to leak out of the "Your Stats" and "Hints" windows.  I've made the grids big, so we're talking 15-letter words here.
